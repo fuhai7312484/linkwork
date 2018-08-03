@@ -6,9 +6,14 @@
 
 <script>
 import './assets/style/global.css';
+
+
 export default {
 
   name: 'App',
+//   created(){
+//     this.$store.dispatch('getUser');
+// }
 }
 </script>
 

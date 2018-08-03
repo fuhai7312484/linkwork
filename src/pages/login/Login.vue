@@ -1,148 +1,171 @@
 <template>
-    <div class="bgImage">
+    <div class="bgImage" :style="{backgroundImage:'url(' + require('../../assets/images/loginBg.png')+')'}">
         <p class="logo"><img src="../../assets/images/logo.png"></p>
         <div class="login">
-            <a class="svSign">密码登录</a>
-            <a class="pwSign">扫码登录</a>
+            <div class="loginBox">
+             <el-tabs v-model="activeName" @tab-click="handleClick" class="el-tabs_bor" :stretch="true">
+                  <el-tab-pane label="密码登录" name="first">
+                         <login-allpw :delivery="delivery"></login-allpw>
+                      </el-tab-pane>
+             <el-tab-pane label="扫码登录" name="second">
+<login-allsv :delivery="delivery"></login-allsv>
 
 
-            <div class="allsv">
-                <div class="qr"></div>
-                <p class="wsv">链工作扫码登录</p>
-            </div>
-        <login-allpw></login-allpw>
+                 </el-tab-pane>
+                 </el-tabs>
+                    <div class="footSign">
+                        <div class="footLeftSwitch">
+    <el-switch v-model="delivery"></el-switch>
+ 
 
+    允许自动登录
 
-         
-            <div class="footSign">
-                <div class="footRightSign">
-                    <a href="#/resetPw"><span class="forgetPw">忘记密码</span></a>
-                </div>
-            </div>
-        </div>
+                        </div>
+                        <div class="footRightSign">
+                            <a href="#/resetPw"><span class="forgetPw">忘记密码 </span><span class="forgetPw">马上注册</span></a>
+                        </div>
+                    </div>
         
+    </div>
+        </div>
     </div> 
-    
-
 </template>
 
 <script>
-import LoginAllpw from './components/Allpw';
-
+import { strPhone } from '../../assets/lib/myStorage.js'
+import LoginAllpw from "./components/Allpw";
+import LoginAllsv from "./components/Allsv"
 export default {
-    name:"LoginIndex",
-    components:{
-        LoginAllpw,
-    },
-}
+  name: "LoginIndex",
+  data() {
+    return {
+      activeName: "first",
+       delivery: true,
+    };
+  },
+  methods: {
+    handleClick(tab, event) {
+        // console.log(strPhone(12321212112))
+    //   console.log(tab, event);
+    }
+  },
+  components: {
+    LoginAllpw,
+   LoginAllsv
+
+  }
+};
 </script>
-<style scoped>
+<style>
 /* @import 'src/assets/style/login.css'; */
 
+.bgImage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 972px;
+  height: 752px;
+  margin: -378px 0 0 -514px;
 
-.bgImage{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 972px;
-    height: 752px;
-    margin:-378px 0 0 -514px;
-    /* background: url(../images/login.png) 0 0 no-repeat; */
 }
-.logo{
-    margin-top:196px;
-    text-align: center;
+.footLeftSwitch{
+    float: left;
 }
-.login{
-    position: relative;
-    width: 418px;
-    height: 302px;
-    margin-top:12px;
-    background: white;
-    margin-left: 276px;
+.loginBox{
+    width: 334px;
+    height: 100%;
+
+    margin: 0 auto;
+    overflow: hidden;
 }
-.svSign,.pwSign{
-    display: inline-block;
-    line-height: 44px;
+.logo {
+  margin-top: 196px;
+  text-align: center;
+}
+.login {
+  position: relative;
+  width: 418px;
+  height: 302px;
+  margin-top: 12px;
+  background: white;
+  margin-left: 276px;
+}
+.el-tabs__item{
+    height: 50px;
     font-size: 16px;
-    border-bottom:4px solid #B5B5B5;
-    width: 166px;
-    text-align: center;
-    color:#B5B5B5;
-    opacity: 1;
+    margin-top:10px; 
+    color: #b5b5b5;
+
 }
-.svSign{
-    margin-left: 44px;
-    color:#379FFE;
-    border-color: #379FFE;
+.el-tabs_bor{
+height: 5px;
 }
-.pwSign{
-    margin-left: -5px;
-    
+.svSign,
+.pwSign {
+  display: inline-block;
+  line-height: 44px;
+  font-size: 16px;
+  border-bottom: 4px solid #b5b5b5;
+  width: 166px;
+  text-align: center;
+  color: #b5b5b5;
+  opacity: 1;
 }
-.qr{
-    width: 123px;
-    height: 123px;
-    background:#379FFE;
-    margin-top: 33px;
-    margin-left: 147px;
+.svSign {
+  margin-left: 44px;
+  color: #379ffe;
+  border-color: #379ffe;
 }
-.wsv{
-    margin-top: 17px;
-    text-align: center;
-    font-size: 14px;
-    color: #21232E;
-}
-.allsv{
-    display: none;
-}
-.telPrompt{
-    position: absolute;
-    top: 91px;
-    left: 78px;
-    border-radius: 6px;
-    opacity: 1;
-    text-indent: 18px;
-    padding-right: 18px; 
-    height: 38px;
-    font-size: 14px;
-    background: #E1E1E1;
-    line-height: 38px;
-    color:#666666;
-    display: none;
+.pwSign {
+  margin-left: -5px;
 }
 
 
-.footSign{
-    color:#999999;
-    font-size: 14px;
-    position: absolute;
-    bottom: 0;
-    width: 374px;
-    margin-bottom: 20px;
-}
-.checkSign{
-    background: red;
-}
-.footLeftSign{
-    clear: both;
-    float: left;
-}
-.footRightSign{
-    float: right;
+.telPrompt {
+  position: absolute;
+  top: 91px;
+  left: 78px;
+  border-radius: 6px;
+  opacity: 1;
+  text-indent: 18px;
+  padding-right: 18px;
+  height: 38px;
+  font-size: 14px;
+  background: #e1e1e1;
+  line-height: 38px;
+  color: #666666;
+  display: none;
 }
 
-.forgetPw{
-    float: left;
-    margin-right: 13px;
-    color: #999999;
+.footSign {
+  color: #999999;
+  font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  width: 334px;
+  margin-bottom: 20px;
+}
+.checkSign {
+  background: red;
+}
+.footLeftSign {
+  clear: both;
+  float: left;
+}
+.footRightSign {
+  float: right;
 }
 
-.regAway{
-    margin-left: 13px;
-    float: right;
-    color: #999999;
+.forgetPw {
+  float: left;
+  margin-right: 13px;
+  color: #999999;
 }
 
+.regAway {
+  margin-left: 13px;
+  float: right;
+  color: #999999;
+}
 </style>
 
