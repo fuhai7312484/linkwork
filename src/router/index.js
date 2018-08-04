@@ -3,6 +3,7 @@ import Router from "vue-router";
 // import HelloWorld from '@/components/HelloWorld'
 import LoginIndex from "../pages/login/Login";
 import Home from "../pages/home/Index";
+import ResetPass from '../pages/login/components/ResetPw'
 import router from '../router'
 
 Vue.use(Router);
@@ -23,6 +24,11 @@ export default new Router({
       path: "/login",
       name: "LoginIndex",
       component: LoginIndex
+    },
+    {
+      path: "/resetpw",
+      name: "ResetPass",
+      component: ResetPass
     }
   ]
 });

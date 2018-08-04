@@ -1,5 +1,6 @@
 <template>
    <div class="allpw">
+     <!-- <el-button :plain="true" @click="open2">成功</el-button> -->
 <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" >
      <el-form-item prop="username">
     <el-input class="iconfont" prefix-icon="icon-dianhua" v-model.number="ruleForm2.username" placeholder="请输入手机号"></el-input>
@@ -8,14 +9,15 @@
     <el-input class="iconfont" prefix-icon="icon-suo"  type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="请输入密码"></el-input>
   </el-form-item> 
         <el-form-item> 
-      <el-button :type="buttonType?'primary':'info'" :disabled="!buttonType" class="signInBtn" @click="submitForm('ruleForm2')">提交</el-button> 
+      <el-button :type="buttonType?'primary':'info'" :disabled="!buttonType" :loading="loading" class="signInBtn" @click="submitForm('ruleForm2')">{{loading?'登录中...':'提交'}}</el-button> 
         </el-form-item> 
         </el-form>
             </div>
 </template>
 <script>
-import { setStorage } from '../../../assets/lib/myStorage.js'
-import router from '../../../router'
+import { setStorage,getPostInfo,PhoneReg } from "../../../assets/lib/myStorage.js";
+import router from "../../../router";
+import axios from 'axios'
 
 export default {
   name: "LoginAllpw",
@@ -25,6 +27,8 @@ export default {
   data() {
     return {
       buttonType: false,
+      loading:false,
+      resData:{},
       ruleForm2: {
         pass: "",
         username: ""
@@ -35,20 +39,54 @@ export default {
       }
     };
   },
+    mounted() {
+        // this.getHomeInfo()  
+    },
   methods: {
-    //axios get请求接口
-    // getCityInfo(){
-    //     axios.get('/api/city.json')
+    // axios get请求接口
+    // getCityInfo() {
+    //   // axios.get('/api/city.json')
+    //   // .then(this.getCityInfoSucc)
+
+    //   axios.post("http://39.107.254.60:8081/yq_api/user/login", {
+    //       mobile: "Fred",
+    //       password: "Flintstone",
+    //       type:'',
+    //     })
     //     .then(this.getCityInfoSucc)
-    //   },
-    // getCityInfoSucc(res){
-    //     res = res.data;
-    //     if(res.ret && res.data){
-    //         let data = res.data;
-    //     this.cities = data.cities;
-    //     this.hotCities = data.hotCities;
-    //     }
-    //   },
+    //     .catch(function(error) {
+    //       console.log(error);
+    //     });
+    // },
+    // getCityInfoSucc(res) {
+    //   console.log(res)
+    //   res = res.data;
+     
+    //   this.resData = res;
+
+    //   // console.log(this.resData)
+    //   // console.log(res)
+    //   // if (res.ret && res.data) {
+    //   //   let data = res.data;
+    //   //   this.cities = data.cities;
+    //   //   this.hotCities = data.hotCities;
+    //   // }
+    // },
+
+   open2(){
+        this.$message({
+          message: '恭喜你，这是一条成功消息',
+          type: 'success'
+        });
+     
+      },
+
+        open4(msg) {
+        this.$message({
+           message:msg,
+          type: 'error'
+        })
+      },
 
     checkUsername(rule, value, callback) {
       if (!value) {
@@ -59,24 +97,25 @@ export default {
           callback(new Error("请输入数字值"));
         } else {
           //    console.log(value.length)
-
-          if ((value + "").length < 11) {
-            callback(new Error("请输入11位手机号"));
-          } else {
+  if(PhoneReg(value)){
             callback();
-          }
+
+        }else{
+             callback(new Error("手机号格式不正确！请正确填写11位手机号码！"));
+        }
+
         }
       }, 1000);
     },
     validatePass(rule, value, callback) {
-    //   console.log(value);
+      //   console.log(value);
       if (value === "") {
         callback(new Error("请输入密码"));
       } else {
-        if (value.length < 8) {
-          callback(new Error("密码不能小于8位"));
-        } else if (value.length > 20) {
-          callback(new Error("密码不能大于20位"));
+        if (value.length < 6) {
+          callback(new Error("密码不能小于6位"));
+        } else if (value.length > 12) {
+          callback(new Error("密码不能大于12位"));
         } else {
           callback();
         }
@@ -84,32 +123,54 @@ export default {
     },
 
     submitForm(formName) {
+          this.loading = true;
       this.$refs[formName].validate(valid => {
         if (valid) {
-        //   console.log(
-        //     this.ruleForm2.username,
-        //     this.ruleForm2.pass,
-        //     this.delivery
-        //   );
-          if(this.delivery){
-            setStorage('userName',this.ruleForm2.username)
+            console.log(
+              this.ruleForm2.username+'',
+              this.ruleForm2.pass,
+              this.delivery
+            );
            
-            setTimeout(function(){
-                console.log('这里登录成功！！')
-                   
-                    // this.$store.commit('changeLogin',100)
-                    // console.log(this.$store)
-                   
-                router.push('/')
-                
-                // this.$router.push('/')
-            },3000)
-          }
-          this.ruleForm2.username = this.ruleForm2.pass = "";
+        
+         
+            let loginObj = {
+              mobile: this.ruleForm2.username+'',
+              password: this.ruleForm2.pass,
+              type:'1',
+            }
+               let _that = this;
+                    getPostInfo('yq_api/user/login',loginObj).then(
+                      function(res){
+                        console.log(res.data)
+                        if(res.data.code === 1003){
+                          console.log(res.data.msg)
+                           _that.loading = false;
+                        _that.open4(res.data.msg);
+             
+                          _that.ruleForm2.pass = "";
+                        }else if(res.data.code === 200){
+                          if(_that.delivery){
+                            console.log(_that.delivery)
+                            setStorage("userName", _that.ruleForm2.username);
+                          }
+                          
+                          _that.open2(res.data.msg);
+                          setTimeout(function(){
+                             router.push("/");
+                              _that.loading = false;
+                              _that.buttonType = false;
+                          _that.ruleForm2.username = _that.ruleForm2.pass = "";
+                          },1000)
+                        
+                        }
+                      }
+                    )
+
 
           // alert('submit!',this.delivery);
         } else {
-        //   console.log("error submit!!");
+          //   console.log("error submit!!");
           return false;
         }
       });
@@ -119,15 +180,15 @@ export default {
       // console.log(this.$refs[formName])
     }
   },
+  
   watch: {
     ruleForm2: {
       handler(newValue, oldValue) {
         if (
           (newValue.username + "").length >= 11 &&
-          (newValue.pass + "").length >= 8
+          (newValue.pass + "").length >= 6
         ) {
           this.buttonType = true;
-          
         } else {
           this.buttonType = false;
         }
@@ -174,14 +235,6 @@ export default {
 .el-input--prefix .el-input__inner {
   padding-left: 40px;
   font-size: 14px;
-}
-.icon-dianhua:before,
-.icon-suo:before {
-  font-style: normal;
-  font-size: 20px;
-  margin: 0 10px;
-  color: #379ffe;
-  vertical-align: middle;
 }
 
 .openEye {
