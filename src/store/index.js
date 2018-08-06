@@ -1,16 +1,49 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import state from './state'
-// import actions from './actions'
-import mutations from './mutations'
-Vue.use(Vuex)
+// import Vue from 'vue'
+// import Vuex from 'vuex'
 
-export default new Vuex.Store({
-    state,
+// // import actions from './actions'
+// import mutations from './mutations'
+// Vue.use(Vuex)
+
+// export default new Vuex.Store({
+    
+//     actions:{
+//         changeCity(ctx,city){
+//             ctx.commit('changeCity',city)
+//         }
+//     },
+//     mutations,
+// })
+
+
+
+import Vue from 'vue'
+import vuex from 'vuex'
+import testStore from './testStore.js'
+Vue.use(vuex);
+
+export default new vuex.Store({
+    state:{
+        show:false,
+        isLogin:0, 
+    },
+    mutations:{
+        updateState(state,message){
+            state.message = message;
+        },
+        changeLogin(state,data){
+            state.isLogin = data;
+          }
+
+    },
     actions:{
-        changeCity(ctx,city){
-            ctx.commit('changeCity',city)
+        updateState({commit}){
+            commit('updateState','new')
         }
     },
-    mutations,
+    modules:{
+        testStore
+    }
 })
+
+

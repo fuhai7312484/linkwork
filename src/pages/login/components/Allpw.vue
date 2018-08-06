@@ -1,5 +1,6 @@
 <template>
    <div class="allpw">
+   
      <!-- <el-button :plain="true" @click="open2">成功</el-button> -->
 <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" >
      <el-form-item prop="username">
@@ -17,10 +18,19 @@
 <script>
 import { setStorage,getPostInfo,PhoneReg } from "../../../assets/lib/myStorage.js";
 import router from "../../../router";
+import {mapState, mapMutations} from 'vuex'
 import axios from 'axios'
 
 export default {
   name: "LoginAllpw",
+  computed:{
+    ...mapState({
+      count:state => state.testStore.count,
+      show:state =>state.show,
+      isLogin:state=>state.isLogin,
+    })
+
+  },
   props: {
     delivery: Boolean
   },
@@ -43,6 +53,9 @@ export default {
         // this.getHomeInfo()  
     },
   methods: {
+
+
+    ...mapMutations(['changeLogin']),
     // axios get请求接口
     // getCityInfo() {
     //   // axios.get('/api/city.json')
@@ -73,9 +86,9 @@ export default {
     //   // }
     // },
 
-   open2(){
+   open2(msg){
         this.$message({
-          message: '恭喜你，这是一条成功消息',
+          message: msg,
           type: 'success'
         });
      
@@ -96,7 +109,7 @@ export default {
         if (!Number.isInteger(value)) {
           callback(new Error("请输入数字值"));
         } else {
-          //    console.log(value.length)
+         
   if(PhoneReg(value)){
             callback();
 
@@ -108,7 +121,7 @@ export default {
       }, 1000);
     },
     validatePass(rule, value, callback) {
-      //   console.log(value);
+  
       if (value === "") {
         callback(new Error("请输入密码"));
       } else {
@@ -126,11 +139,6 @@ export default {
           this.loading = true;
       this.$refs[formName].validate(valid => {
         if (valid) {
-            console.log(
-              this.ruleForm2.username+'',
-              this.ruleForm2.pass,
-              this.delivery
-            );
            
         
          
@@ -142,20 +150,22 @@ export default {
                let _that = this;
                     getPostInfo('yq_api/user/login',loginObj).then(
                       function(res){
-                        console.log(res.data)
+                     
                         if(res.data.code === 1003){
-                          console.log(res.data.msg)
+                      
                            _that.loading = false;
                         _that.open4(res.data.msg);
              
                           _that.ruleForm2.pass = "";
                         }else if(res.data.code === 200){
                           if(_that.delivery){
-                            console.log(_that.delivery)
                             setStorage("userName", _that.ruleForm2.username);
                           }
-                          
-                          _that.open2(res.data.msg);
+                         
+                          _that.changeLogin(100)
+                         let date = res.data.data.data
+                             console.log(date)
+                          _that.open2('登录成功！');
                           setTimeout(function(){
                              router.push("/");
                               _that.loading = false;
@@ -185,7 +195,8 @@ export default {
     ruleForm2: {
       handler(newValue, oldValue) {
         if (
-          (newValue.username + "").length >= 11 &&
+           (newValue.username + "").length == 11 &&
+         (newValue.pass + "").length <= 12 &&
           (newValue.pass + "").length >= 6
         ) {
           this.buttonType = true;

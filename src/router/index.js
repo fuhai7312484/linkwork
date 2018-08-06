@@ -4,6 +4,7 @@ import Router from "vue-router";
 import LoginIndex from "../pages/login/Login";
 import Home from "../pages/home/Index";
 import ResetPass from '../pages/login/components/ResetPw'
+import Register from '../pages/login/components/register'
 import router from '../router'
 
 Vue.use(Router);
@@ -29,6 +30,12 @@ export default new Router({
       path: "/resetpw",
       name: "ResetPass",
       component: ResetPass
-    }
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: Register
+    },
+    
   ]
 });

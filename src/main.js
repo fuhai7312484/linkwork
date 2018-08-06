@@ -8,6 +8,14 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './assets/style/iconfont.css';
 import {getStorage} from './assets/lib/myStorage'
 
+import store from './store'
+
+
+// import store from './store'
+
+import vuex from 'vuex'
+Vue.use(vuex);
+
 
 Vue.use(ElementUI);
 
@@ -17,7 +25,9 @@ Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requireAuth)) {
     // 判断该路由是否需要登录权限    
-    if (getStorage('userName')) {
+    console.log(store.state.isLogin)
+    
+    if (getStorage('userName') || store.state.isLogin==100) {
       // 判断当前的token是否存在
       next();
     } else {
@@ -34,6 +44,7 @@ router.beforeEach((to, from, next) => {
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'

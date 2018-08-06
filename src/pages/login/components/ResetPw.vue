@@ -26,12 +26,10 @@
                         <el-input
                          class="iconfont"
                          prefix-icon="icon-shuru" 
-                         v-model.number="ruleForm2.dxcode"
+                         v-model="ruleForm2.dxcode"
                          placeholder="请输入验证码">
                          </el-input>
                     </el-form-item>
-
-
                     <el-form-item prop="newpass">
                         <el-input class="iconfont"
                          prefix-icon="icon-suo" 
@@ -63,8 +61,9 @@
 </template>
 <script>
 import { getPostInfo,PhoneReg} from "../../../assets/lib/myStorage.js";
+import router from "../../../router";
     export default {
-        name: "ResetPass",
+        name: "Register",
         data() {
             return {
                 buttonType: false,
@@ -86,35 +85,41 @@ import { getPostInfo,PhoneReg} from "../../../assets/lib/myStorage.js";
         methods: {
             dxCodeBt() {
                 if(PhoneReg(this.ruleForm2.username)){
-                        this.isdxCode = false;
+                        // this.isdxCode = false;
                         let isdxCoedObj = {
                             mobile:this.ruleForm2.username+'',
                             type:'repassword',
                         };
-                console.log(isdxCoedObj)
-                //   getPostInfo('yq_api/user/repassword',resetPwObj).then()
+              
+                 let _that = this;
+                  getPostInfo('yq_api/user/sms',isdxCoedObj).then(
+                      function(res){
+                      
+                        if(res.data.code===1001){
+                            _that.open4(res.data.msg)
+                        }else if(res.data.code===200){
+                        _that.isdxCode = false;
+                        let dx_djs = setInterval(() => {
+                            if (_that.time-- <= 0) {
+                                _that.time = 120;
+                                _that.isdxCode = true;
+                                clearInterval(dx_djs);
+                            }
+                        }, 2000);
 
-
-                let dx_djs = setInterval(() => {
-                    if (this.time-- <= 0) {
-                        this.time = 120;
-                        this.isdxCode = true;
-                        clearInterval(dx_djs);
-                    }
-                }, 2000);
-
+                        }else if(res.data.code===0){
+                            console.log(res.data)
+                             _that.open4('短信验证码已发送！请勿重复发送')
+                        }
+                        }
+                  )
                 }else{
                     this.open4('请先正确填写手机号')
-                    // console.log('请先填写手机号')
-
                 }
-
-            
             },
-
-   open2(){
+   open2(msg){
         this.$message({
-          message: '恭喜你，这是一条成功消息',
+          message: msg,
           type: 'success'
         });
      
@@ -178,12 +183,7 @@ import { getPostInfo,PhoneReg} from "../../../assets/lib/myStorage.js";
           this.loading = true;
       this.$refs[formName].validate(valid => {
         if (valid) {
-            console.log(
-              this.ruleForm2.username+'',
-              this.ruleForm2.dxcode,
-              this.ruleForm2.newpass,
-            
-            );
+           
             let resetPwObj = {
               mobile: this.ruleForm2.username+'',
               mobileCode:this.ruleForm2.dxcode +'',
@@ -193,33 +193,21 @@ import { getPostInfo,PhoneReg} from "../../../assets/lib/myStorage.js";
                let _that = this;
                     getPostInfo('yq_api/user/repassword',resetPwObj).then(
                       function(res){
-                        console.log(res.data)
+                       
                         if(res.data.code === 1004){
-                          console.log(res.data.msg)
+                       
                            _that.loading = false;
                         _that.open4(res.data.msg);
                           _that.ruleForm2.newpass = "";
                            _that.ruleForm2.dxcode = "";
+                        }else if(res.data.code === 200){
+                             _that.open2('密码重置成功！请重新登录');
+                               router.push("/login");
+                                 _that.loading = false;
+                              _that.buttonType = false;
+                            _that.ruleForm2.dxcode =  _that.ruleForm2.username = _that.ruleForm2.newpass = "";
+
                         }
-                        
-                        // else if(res.data.code === 200){
-                        //   if(_that.delivery){
-                        //     console.log(_that.delivery)
-                        //     setStorage("userName", _that.ruleForm2.username);
-                        //   }
-                          
-                        //   _that.open2(res.data.msg);
-                        //   setTimeout(function(){
-                        //      router.push("/");
-                        //       _that.loading = false;
-                        //       _that.buttonType = false;
-                        //   _that.ruleForm2.username = _that.ruleForm2.pass = "";
-                        //   },1000)
-                        
-                        // }
-
-
-
 
                       }
                     )
@@ -244,9 +232,10 @@ import { getPostInfo,PhoneReg} from "../../../assets/lib/myStorage.js";
     ruleForm2: {
       handler(newValue, oldValue) {
         if (
-          (newValue.username + "").length >= 11 &&
+          (newValue.username + "").length == 11 &&
+          (newValue.newpass + "").length <= 12 &&
           (newValue.newpass + "").length >= 6 &&
-           (newValue.dxcode + "").length >= 6
+            (newValue.dxcode + "").length == 6 
         ) {
           this.buttonType = true;
         } else {

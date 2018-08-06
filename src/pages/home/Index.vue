@@ -1,6 +1,6 @@
 <template>
     <div>
-        登录成功！
+        这里是登录成功后跳转到首页
 
     </div>
 </template>

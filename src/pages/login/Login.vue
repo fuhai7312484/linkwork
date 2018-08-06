@@ -25,7 +25,9 @@
                           <router-link to="/resetpw">
                             <span class="forgetPw">忘记密码 </span>
                           </router-link>
+                           <router-link to="/register">
                             <span class="forgetPw">马上注册</span>
+                            </router-link>
                         </div>
                     </div>
         
@@ -38,6 +40,7 @@
 import { strPhone } from '../../assets/lib/myStorage.js'
 import LoginAllpw from "./components/Allpw";
 import LoginAllsv from "./components/Allsv";
+import Register from "./components/register";
 export default {
   name: "LoginIndex",
   data() {
@@ -54,7 +57,8 @@ export default {
   },
   components: {
     LoginAllpw,
-   LoginAllsv
+   LoginAllsv,
+   Register
 
   }
 };
