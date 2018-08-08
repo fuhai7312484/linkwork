@@ -1,3 +1,336 @@
-body{
-    color:#ccc;
+html,body {
+    margin: 0;
+    width:100%;
+    height: 100%;
+
+    /*超出body范围部分隐藏*/
+    overflow: hidden;
+}
+#app{
+    min-width:653px; 
+    /* max-width: 1000px; */
+}
+
+.el-row {
+    margin-bottom: 20px;
+    
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    /* border-radius: 4px; */
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+
+  .leftMenu{
+      width: 86px;
+      background: #3e3f3f;
+      float: left;
+      height: 100%;
+      position: relative;
+ 
+  }
+.leftMenuListBox{
+    margin-top:20px; 
+}
+.leftMenuList{
+    width: 100%;
+    height:86px;
+    cursor: pointer;
+    text-align: center;
+    
+}
+
+.router-link-active{
+    background: #396971;
+}
+.leftMenuList:hover{
+    background: #396971;
+}
+.leftMenuList span{
+    padding-top:8px; 
+    display: block;
+    width: 100%;
+    height: 50px;
+    color: #fff;
+    font-size: 40px;
+    text-align: center;
+    line-height: 50px;
+}
+.leftMenuList p{
+    font-weight:bold; 
+}
+
+  .mainPicBox{
+      width: 100%;
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      text-align:center;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+
+  }
+  .mainPicBox img{
+      border-radius:50%; 
+      border: 5px #fff solid;
+
+  }
+  .mainPicBox p{
+      margin-top: 10px;
+      color: #fff;
+      font-size:14px;
+      font-weight:bold; 
+  }
+
+
+
+  .rightMenu{
+      /* float: right; */
+      background: #fff;
+      border-left:1px solid #e1e1e1;
+      width: 65px;
+      position: fixed;
+      right: 0;
+      top: 0;
+  }
+  .RightMenuListBox{
+
+
+  }
+  .RightMenuList{
+     
+     
+      /* height: 98px; */
+    border-bottom:2px solid #f1f1f1;
+    margin: 0 auto;
+    color: #7e96ae;
+    font-size: 12px;
+    text-align: center;
+    padding: 21px 0; 
+    cursor: pointer;
+
+  }
+  .RightMenuList:hover{
+      background: #f1f1f1;
+
+  }
+  .RightMenuList span{
+      font-size: 30px;
+      margin-bottom:10px; 
+
+
+  }
+  .RightMenuList:nth-last-child(1){
+    border-bottom:0;
+  }
+
+.ItemDec{
+    width: 6px;
+    height: 6px;
+    display: block; 
+    border-radius:50%; 
+    margin:8px 5px 0 0; 
+    float: left;
+}
+
+.remarkBox{
+    width: 168px;
+    position: relative;
+    float: left;
+    background: #f7f7f7;
+    color: #535353;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.proTitleBox{
+
+}
+.proTitleBox h1,.proTitleBox h2,.proTitleBox h3{
+    margin: 10px 0;
+    font-family:'微软雅黑'; 
+}
+.proCreateBtn{
+    font-size:22px; 
+    color: #2fbad3;
+    margin: 30px 0;
+   cursor: pointer;
+   font-family:'微软雅黑'; 
+}
+.proCreateBtn .addproIcon{
+    vertical-align: middle;
+    font-size:30px; 
+    color: #2fbad3;
+    margin: 0 5px 0 0;
+  
+}
+.remark{
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    line-height: 20px;
+    padding: 10px;
+   
+}
+.remark h3{
+    margin: 5px 0;
+}
+.remark p{
+    margin: 15px 0;
+}
+.remark p .el-progress{ vertical-align: middle; margin-right:10px; }
+.remark p span{
+    font-weight:bold;
+    font-size: 14px;
+}
+.remark li{
+    overflow: hidden;
+    margin: 7px 0;
+}
+
+.ItemDecText{
+    float: left;
+    display: block;
+    width: 85%;
+}
+
+
+
+/* -------------------内容区样式------------------------- */
+.contentBox{
+ 
+    color: #333;
+    /* text-align: center; */
+    flex-basis: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-left:251px; 
+    margin-right:65px; 
+    min-width:500px; 
+   
+
+}
+.content{
+    /* background: #ccc; */
+    padding:20px 30px;
+    line-height: 24px;
+}
+.searchBox{
+   
+    height: 45px;
+    overflow: hidden;
+    width: 100%;
+    margin-bottom:20px; 
+}
+.search{
+    float: left;
+
+}
+.searchInput{
+    /* border: 1px solid #3d6284; */
+    border-radius:4px; 
+}
+.searchInput .el-input__inner{
+     /* border: 0px solid #3d6284; */
+     /* border-right:0px;  */
+     /* color: #fff; */
+}
+button.el-button{
+    background: #3d6284;
+}
+.SortBtn{
+    float: right;
+    background: #3d6284;
+    width: 56px;
+    height: 26px;
+    border-radius:13px 13px; 
+    line-height: 26px;
+    color: #fff;
+    font-size:14px; 
+    font-weight: bold;
+    font-family: '微软雅黑';
+    padding-left:10px;
+    position: relative;
+    margin: 7px 0;
+}
+.SortBtn .el-dropdown{
+    color: #fff;
+    cursor: pointer;
+}
+.sortSeesaw{
+    height: 20px;
+    width: 20px;
+    background: #fff;
+    border-radius:50%; 
+    position: absolute;
+    right: 3px;
+    top: 3px;
+}
+.sortUp{
+    height:0px;
+    width: 0px;
+    margin: -5px auto 0 auto;
+    border-width: 7px;
+    border-style: solid;
+    border-color:transparent transparent #3d6284 transparent;
+    cursor: pointer;
+}
+.sortDown{
+    height:0px;
+    width: 0px;
+    margin: 3px auto 0 auto;
+    border-width: 7px;
+    border-style: solid;
+    border-color:#3d6284 transparent transparent transparent;
+    cursor: pointer;
+}
+
+.porList{
+    width: 100%;
+    border: 1px solid #e7e7e7;
+   
+    margin: 10px 0;
+    box-sizing: border-box; 
+    /* cursor: pointer; */
+}
+.porList:hover{
+    background: #e9f8ff;
+    border: 1px solid #e9f8ff;
+}
+.porListNameBox{
+    border-bottom:1px solid #e1e1e1;
+    padding: 12px;
+    overflow: hidden;
+}
+.porDatesBox{
+    padding:6px 12px;
+    color: #bababa;
+    overflow: hidden;
+}
+.porListTitle{
+    line-height: 39px;
+    height: 39px;
+    cursor: pointer;
+    overflow: hidden;
+  
+  
+}
+.RingType{
+    text-align: center;
+    vertical-align: middle;
 }

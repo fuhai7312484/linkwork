@@ -5,6 +5,9 @@ import LoginIndex from "../pages/login/Login";
 import Home from "../pages/home/Index";
 import ResetPass from '../pages/login/components/ResetPw'
 import Register from '../pages/login/components/register'
+import InformAtc from '../pages/login/components/Information'
+import ProList from '../pages/Project/Prolist.vue'
+
 import router from '../router'
 
 Vue.use(Router);
@@ -22,6 +25,14 @@ export default new Router({
       component: Home
     },
     {
+      path: "/proList",
+      name: "ProList",
+      meta: {
+        requireAuth: true 
+      },
+      component: ProList
+    },
+    {
       path: "/login",
       name: "LoginIndex",
       component: LoginIndex
@@ -35,6 +46,11 @@ export default new Router({
       path: "/register",
       name: "Register",
       component: Register
+    },
+    {
+      path: "/informatc",
+      name: "InformAtc",
+      component: InformAtc
     },
     
   ]

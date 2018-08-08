@@ -26,6 +26,8 @@ export default new vuex.Store({
     state:{
         show:false,
         isLogin:0, 
+        userInfo:localStorage.userInfo,
+        sWHeight:'590px',
     },
     mutations:{
         updateState(state,message){
@@ -33,7 +35,17 @@ export default new vuex.Store({
         },
         changeLogin(state,data){
             state.isLogin = data;
-          }
+          },
+          getUserInfo(state,data){
+            //   localStorage.userInfo = data;
+                state.userInfo = data;
+           
+          },
+          getScrllH(state,data){
+            state.sWHeight = data;
+
+          },
+
 
     },
     actions:{

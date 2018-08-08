@@ -29,7 +29,7 @@
                         <el-input
                          class="iconfont"
                          prefix-icon="icon-shuru" 
-                         v-model.number="ruleForm2.dxcode"
+                         v-model="ruleForm2.dxcode"
                          placeholder="请输入验证码">
                          </el-input>
                     </el-form-item>

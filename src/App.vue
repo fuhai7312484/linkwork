@@ -6,6 +6,7 @@
 
 <script>
 import './assets/style/global.css';
+import './assets/style/tools.css';
 
 
 export default {
@@ -18,4 +19,5 @@ export default {
 </script>
 
 <style>
+
 </style>
