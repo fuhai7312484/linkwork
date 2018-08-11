@@ -6,18 +6,22 @@ import Home from "../pages/home/Index";
 import ResetPass from '../pages/login/components/ResetPw'
 import Register from '../pages/login/components/register'
 import InformAtc from '../pages/login/components/Information'
-import ProList from '../pages/Project/Prolist.vue'
+import ProList from '../pages/Project/components/ProList.vue'
+import PorIndex from '../pages/Project/index.vue'
+import CreatePro from '../pages/Project/components/Createpro.vue'
+import Step1 from '../pages/Project/components/Step1.vue'
+import Step2 from '../pages/Project/components/Step2.vue'
+import Step3 from '../pages/Project/components/Step3.vue'
 
 import router from '../router'
 
 Vue.use(Router);
 
 
-
 export default new Router({
   routes: [
     {
-      path: "/",
+      path: "/home",
       name: "Home",
       meta: {
         requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
@@ -25,12 +29,43 @@ export default new Router({
       component: Home
     },
     {
-      path: "/proList",
-      name: "ProList",
+      path: "/project",
+      name: "PorIndex",
       meta: {
         requireAuth: true 
       },
-      component: ProList
+      redirect: '/project/prolist',
+      component: PorIndex,
+      children:[
+        {
+          path: "/project/createpro",
+          name: "CreatePro",
+          // redirect: '/project/step_1',
+          // children:[
+          //   {
+          //     path: "/project/step_1",
+          //     name: "Step1",
+          //     component: Step1
+          //   },
+          //   {
+          //     path: "/project/step_2",
+          //     name: "Step2",
+          //     component: Step2
+          //   },
+          //   {
+          //     path: "/project/step_3",
+          //     name: "Step3",
+          //     component: Step3
+          //   },
+          // ],
+          component: CreatePro
+        },
+        {
+          path: "/project/prolist",
+          name: "ProList",
+          component: ProList
+        },
+      ]
     },
     {
       path: "/login",
@@ -52,6 +87,7 @@ export default new Router({
       name: "InformAtc",
       component: InformAtc
     },
+   
     
   ]
 });

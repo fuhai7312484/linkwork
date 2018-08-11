@@ -189,12 +189,7 @@ export default {
                               _that.buttonType = false;
                           _that.ruleForm2.username = _that.ruleForm2.pass = "";
                           },1000)
-                           
                          }
-                        
-                      
-                      
-                        
                         }
                       }
                     )
@@ -209,7 +204,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      // console.log(this.$refs[formName])
+     
     }
   },
   

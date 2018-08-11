@@ -9,8 +9,6 @@
                       </el-tab-pane>
              <el-tab-pane label="扫码登录" name="second">
 <login-allsv :delivery="delivery"></login-allsv>
-
-
                  </el-tab-pane>
                  </el-tabs>
                     <div class="footSign">
@@ -46,7 +44,7 @@ export default {
   data() {
     return {
       activeName: "first",
-       delivery: true,
+       delivery: false,
     };
   },
   methods: {

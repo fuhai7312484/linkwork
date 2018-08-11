@@ -3,14 +3,7 @@ import axios from "axios";
 export function getPostInfo(url, obj) {
   let ipUrl = "http://39.107.254.60:8081/";
   var qs = require("qs");
-
   return axios.post(ipUrl + url, qs.stringify(obj));
-  // .then(
-  //   callback
-  // )
-  // .catch(function(error) {
-  //   console.log(error);
-  // });
 }
 
 //设置Cookie
@@ -124,6 +117,15 @@ export function getToTime(timeStamp, str) {
   let m = toDou(date.getMinutes()) + ":";
   let s = toDou(date.getSeconds());
   return Y + M + D + h + m + s;
+}
+//获取当前时间的时间戳和过去3个月的时间戳
+export function getTimestamp(){
+  let startTime = new Date();
+  let timeStampArr = [Date.parse(startTime)];
+  let endTime = startTime.setMonth(startTime.getMonth()+3);
+  // let endTime = startTime.setTime(startTime.getTime() + 3600 * 1000 * 24 * 90);
+  timeStampArr.push(endTime);
+  return timeStampArr;
 }
 
 export function autodivheight(){ //函数：获取尺寸

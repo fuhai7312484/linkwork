@@ -1,19 +1,17 @@
 <template>
-  <el-row>
-
-    <left-menu></left-menu>
-
+  <div>
+   
     <div class="remarkBox" :style="{height:sWHeight}">
       <div class="proTitleBox">
         <h1>
           链工作APP项目
-          <!-- <list></list> -->
+        
         </h1>
         <h2>标题名称：项目</h2>
         <h3>节点：测试</h3>
       </div>
 
-      <router-link tag="div" to="/jj" class="proCreateBtn">
+      <router-link tag="div" to="/project/createpro" class="proCreateBtn">
         <span class="iconfont addproIcon">&#xe659;</span>创建项目</router-link>
 
       <div class="remark">
@@ -36,12 +34,13 @@
               <span :style="item.style">{{item.colorName}}</span>
             </span>
           </li>
-
         </ul>
       </div>
     </div>
-    <div class="contentBox" :style="{height:sWHeight}">
-      <div class="content">
+    <div class="contentBox">
+      <div class="content" 
+      :style="{maxHeight:sWHeight}"
+      >
         {{searchInput}}
         <div class="searchBox">
           <div class="search">
@@ -98,7 +97,7 @@
 
                 <el-dropdown trigger="click">
                   <span class="el-dropdown-link">
-                    操作
+                    设置
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
@@ -116,27 +115,16 @@
               </el-col>
               <el-col :span="10">加入时间:{{item.addInDate}}</el-col>
               <el-col :span="4"> 参与人数:{{item.num}}</el-col>
-
             </div>
-
-
           </li>
-
         </ul>
+        <div class="clear"></div>
       </div>
-
-
     </div>
-
-    <right-menu></right-menu>
-  </el-row>
-
+  </div>
 </template>
 <script>
-  import LeftMenu from "../../components/LeftMenu";
-  import RightMenu from "../../components/RightMenu";
-  import List from "./Prolist/components/list";
-  import { autodivheight } from "../../assets/lib/myStorage.js";
+  import { autodivheight } from "../../../assets/lib/myStorage.js";
   import { mapState } from "vuex";
   export default {
     name: "ProList",
@@ -226,14 +214,45 @@
             num: 7,
             taskState: 5,
           },
+             {
+            name: "链工作开发与测试项目阶段一的开发",
+            createDate: "2016-05-03",
+            addInDate: "2018-04-12",
+            progress: 90,
+            task: 51,
+            num: 7,
+            taskState: 2,
+          },
+          {
+            name: "链工作开发与测试项目阶段一的开发",
+            createDate: "2016-05-03",
+            addInDate: "2018-04-12",
+            progress: 17,
+            task: 1,
+            num: 7,
+            taskState: 3,
+          },
+          {
+            name: "链工作开发与测试项目阶段一的开发",
+            createDate: "2016-05-03",
+            addInDate: "2018-04-12",
+            progress: 58,
+            task: 99,
+            num: 7,
+            taskState: 4,
+          },
+          {
+            name: "链工作开发与测试项目阶段一的开发",
+            createDate: "2016-05-03",
+            addInDate: "2018-04-12",
+            progress: 28,
+            task: 37,
+            num: 7,
+            taskState: 5,
+          },
 
         ]
       };
-    },
-    components: {
-      LeftMenu,
-      RightMenu,
-      List
     },
     computed: {
       ...mapState({
@@ -277,17 +296,5 @@
   };
 </script>
 <style>
-  /* .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
-  }
-  
-  .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: center;
-    line-height: 160px;
-  } */
+
 </style>

@@ -62,3 +62,39 @@ hr {
 body{
     color:#ccc;
 }
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.hr{
+     margin: 10px 0;
+     height: 0px;
+     border-top:1px dashed #dfe0e5; 
+}
+.proScaleBox{
+    height: 40px;
+    margin-bottom: 22px;
+
+}
+.proScaleTitle{
+    width: 120px;
+    height: 40px;
+
+
+
+}
+.proScaleTitle input{
+    text-align: right;
+}
+.proScaleInput{
+    width: 67.8%;
+    min-width:300px;
+    float: left;
+  
+}
+.proScaleInput input{
+   
+
+}
