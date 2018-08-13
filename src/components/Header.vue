@@ -90,6 +90,8 @@
 </template>
 <script>
 import {getStorage,autodivheight,stoRemove,stClear} from '../assets/lib/myStorage.js'
+import router from "../router";
+import {mapState, mapMutations} from 'vuex'
 export default {
     name:"GHeader",
     data(){
@@ -191,22 +193,34 @@ export default {
         }
     },
     methods:{
+       ...mapMutations(['changeLogin']),
            signOut(){
     //    stoRemove('userName');
              stClear();
        this.changeLogin(0)
         router.push("/login");
-
-
     },
     },
       mounted(){
       this.userData = getStorage('userInfo');
       let _that=this;
-      document.addEventListener('click',function(ev){
-          if(!!_that.$refs.headPorList.contains(ev.target)) return;
+
+       document.addEventListener('click',function(ev){
+        // console.log(_that.$refs.headPorList)
+        if(_that.$refs.headPorList){
+        if(!!_that.$refs.headPorList.contains(ev.target)) return;
            _that.show3 = false;
+        }else{
+          return;
+        }
+         
       })
+
+      // document.addEventListener('click',function(ev){
+      //   console.log(_that.$refs.headPorList)
+      //     if(!!_that.$refs.headPorList.contains(ev.target)) return;
+      //      _that.show3 = false;
+      // })
       }
 }
 </script>

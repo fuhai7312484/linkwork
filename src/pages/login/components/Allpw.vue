@@ -184,7 +184,7 @@ export default {
                             //  console.log(date)
                           _that.open2('登录成功！');
                           setTimeout(function(){
-                             router.push("/");
+                             router.push("/home");
                               _that.loading = false;
                               _that.buttonType = false;
                           _that.ruleForm2.username = _that.ruleForm2.pass = "";

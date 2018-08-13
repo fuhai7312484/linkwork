@@ -1,11 +1,8 @@
 <template>
   <div>
-    <div>
-      这里是第一步
-      <br/> 项目规模（type:text）选填
-      <br/> 项目造价（type:text）选填
-      <br/> 项目地址（type:text）选填
-      <br/>
+    <div class="stepH1Title">
+     <h1>项目信息填写</h1>
+
     </div>
 
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
@@ -74,7 +71,7 @@
 
 
       <el-form-item label="项目全称">
-        <el-input v-model="ruleForm.name" placeholder="请输入项目全称"></el-input>
+        <el-input v-model="ruleForm.name1" placeholder="请输入项目全称"></el-input>
       </el-form-item>
 
       <el-form-item label="项目简称" prop="name">
@@ -82,12 +79,11 @@
       </el-form-item>
 
       <el-form-item label="当前人力">
-        <el-input placeholder="当前人力" v-model="input1" :disabled="true">
+        <el-input placeholder="当前人力" v-model="input1" :disabled="true" style="width:100px;">
         </el-input>
 
       </el-form-item>
       <div class="hr"></div>
-
       <el-form-item label="项目日期" class="block">
         <!-- {{ruleForm.StartData}} -->
         <el-date-picker v-model="ruleForm.StartData" type="daterange" align="left" unlink-panels range-separator="至" start-placeholder="起始日期"
@@ -98,17 +94,33 @@
 
 
    <div class="proScaleBox">
-     <span class="proScaleTitle fl">
 
- <el-input
+    
+
+     <span class="proScaleTitle fl">
+  <el-popover
+    placement="top-start"
+    trigger="manual"
+    :content="input6"
+    v-model="visible">
+    <!-- <el-button slot="reference" @click="visible = !visible">手动激活</el-button> -->
+
+     <el-input
+      slot="reference"
     placeholder="请输入内容"
     suffix-icon="el-icon-edit el-input__icon"
+    :style="{border:'0px'}"
+    @focus="focus($event)"
+    @blur="blur($event)"
     v-model="input6">
   </el-input>
+  </el-popover>
+  
+
 
      </span>
      <div class="proScaleInput fl">
- <el-input v-model="ruleForm.name" placeholder="请输入"></el-input>
+ <el-input v-model="ruleForm.name2" placeholder="请输入内容"></el-input>
 
      </div>
 
@@ -122,12 +134,13 @@
  <el-input
     placeholder="请输入内容"
     suffix-icon="el-icon-edit el-input__icon"
+    @focus="focus($event)"
     v-model="input7">
   </el-input>
 
      </span>
      <div class="proScaleInput fl">
- <el-input v-model="ruleForm.name" placeholder="请输入"></el-input>
+ <el-input v-model="ruleForm.name3" placeholder="请输入内容"></el-input>
 
      </div>
 
@@ -140,12 +153,13 @@
  <el-input
     placeholder="请输入内容"
     suffix-icon="el-icon-edit el-input__icon"
+    @focus="focus($event)"
     v-model="input8">
   </el-input>
 
      </span>
      <div class="proScaleInput fl">
- <el-input v-model="ruleForm.name" placeholder="请输入"></el-input>
+ <el-input v-model="ruleForm.name4" placeholder="请输入内容"></el-input>
 
      </div>
 
@@ -155,18 +169,23 @@
  <div class="hr"></div>
 
 <el-form-item label="项目描述">
-      <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 10}" placeholder="没有描述,怎么知道项目要做什么呢？" v-model="textarea3">
+      <el-input type="textarea"
+      :autosize="{ minRows: 2, maxRows: 4}" 
+      placeholder="没有描述,怎么知道项目要做什么呢？" v-model="textarea3">
       </el-input>
  </el-form-item>
 
     </el-form>
-    <el-button @click="submitForm('ruleForm')" style="margin-top: 12px;">
-      编辑完成，下一步
+<div class="stepBtnStyle">
+    <el-button @click="submitForm('ruleForm')"  type="primary">
+      编辑完成，继续编辑单位信息
     </el-button>
+</div>
   </div>
 </template>
 <script>
   import { getTimestamp } from "../../../assets/lib/myStorage.js";
+  import router from "../../../router";
   export default {
     name: "Step1",
     data() {
@@ -222,6 +241,8 @@
 
         dialogImageUrl: "",
         dialogVisible: false,
+        visible:false,
+
         pickerOptions2: {
           shortcuts: [
             {
@@ -256,6 +277,10 @@
         fileList: [],
         ruleForm: {
           name: "",
+          name1: "",
+          name2: "",
+          name3: "",
+          name4: "",
           StartData: [],
           fileList: []
         },
@@ -268,6 +293,21 @@
       };
     },
     methods: {
+      focus(ev) {
+ev.currentTarget.select();
+if(ev.target.value.length>=6)this.visible = true;
+// console.log(ev.target.value.length)
+
+
+},
+blur(ev){
+  if(!ev.target.value)ev.target.value ='项目规模'
+   this.visible = false;
+   
+  
+  // console.log(ev.target.value)
+
+},
       open4(msg) {
         this.$message({
           message: msg,
@@ -329,7 +369,8 @@
             // console.log(this.$refs.upload)
 
             // alert('您填写的内容是：' + this.ruleForm.name);
-            // this.$emit('next')
+            router.push('/project/step_2')
+            this.$emit('next',1)
           } else {
             console.log("error submit!!");
             return false;
@@ -340,8 +381,14 @@
         this.$refs[formName].resetFields();
       }
     },
+    watch: {
+      input6(){
+        this.input6.length >=6?this.visible = true: this.visible = false;
+      }
+    },
     mounted() {
       this.ruleForm.StartData = getTimestamp();
+       this.$emit('next',0)
     }
   };
 </script>

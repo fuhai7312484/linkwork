@@ -15,10 +15,11 @@
       <div class="content" 
       :style="{maxHeight:sWHeight}"
       >
-      {{active}}
-      <step1 @next="next" v-if="active===0"></step1>
+      <!-- {{active}} -->
+      <router-view @next="next"></router-view>
+      <!-- <step1 @next="next" v-if="active===0"></step1>
       <step2 @next="next" v-if="active===1"></step2>
-      <step3 @next="next" v-if="active===2"></step3>
+      <step3 @next="next" v-if="active===2"></step3> -->
         <div class="clear"></div>
       </div>
     </div>
@@ -52,10 +53,11 @@ export default {
   },
   methods: {
 
-    next() {
+    next(num) {
       //  this.active++;
-      if (this.active++ > 2) this.active = 0;
-      console.log(this.active);
+      // if (this.active++ > 2) this.active = 0;
+      this.active = num;
+      // console.log(this.active);
      
 
       //     if(this.active===1){

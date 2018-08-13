@@ -1,15 +1,18 @@
 <template>
   <el-row>
-
+      <g-header></g-header>
     <left-menu></left-menu>
      <router-view></router-view>
     <right-menu></right-menu>
+       <g-footer></g-footer>
   </el-row>
 
 </template>
 <script>
   import LeftMenu from "../../components/LeftMenu";
   import RightMenu from "../../components/RightMenu";
+  import GHeader from '../../components/Header.vue'
+  import GFooter from '../../components/Footer.vue'
   import { autodivheight } from "../../assets/lib/myStorage.js";
   import { mapState } from "vuex";
   export default {
@@ -22,6 +25,8 @@
     components: {
       LeftMenu,
       RightMenu,
+      GHeader,
+      GFooter,
     },
     computed: {
       ...mapState({

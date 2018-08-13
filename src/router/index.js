@@ -21,6 +21,14 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
+      path: "/",
+      name: "Home",
+      meta: {
+        requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+      },
+      component: Home
+    },
+    {
       path: "/home",
       name: "Home",
       meta: {
@@ -40,24 +48,24 @@ export default new Router({
         {
           path: "/project/createpro",
           name: "CreatePro",
-          // redirect: '/project/step_1',
-          // children:[
-          //   {
-          //     path: "/project/step_1",
-          //     name: "Step1",
-          //     component: Step1
-          //   },
-          //   {
-          //     path: "/project/step_2",
-          //     name: "Step2",
-          //     component: Step2
-          //   },
-          //   {
-          //     path: "/project/step_3",
-          //     name: "Step3",
-          //     component: Step3
-          //   },
-          // ],
+          redirect: '/project/step_1',
+          children:[
+            {
+              path: "/project/step_1",
+              name: "Step1",
+              component: Step1
+            },
+            {
+              path: "/project/step_2",
+              name: "Step2",
+              component: Step2
+            },
+            {
+              path: "/project/step_3",
+              name: "Step3",
+              component: Step3
+            },
+          ],
           component: CreatePro
         },
         {

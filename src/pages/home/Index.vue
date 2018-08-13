@@ -1,14 +1,11 @@
 <template>
 <el-row>
-
-    <left-menu></left-menu>
-
-    
-  <el-col :span="5"><div class="grid-content bg-purple-light"></div></el-col>
-  <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
-
+    <g-header></g-header>
+        <left-menu></left-menu>
+        <el-col :span="5"><div class="grid-content bg-purple-light"></div></el-col>
+        <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
 <right-menu></right-menu>
-
+  <g-footer></g-footer>
 </el-row>
 
 
@@ -16,11 +13,15 @@
 <script>
 import LeftMenu from "../../components/LeftMenu";
 import RightMenu from "../../components/RightMenu";
+import GHeader from '../../components/Header.vue';
+import GFooter from '../../components/Footer.vue'
 
 export default {
     name:"Home",
     components:{
         LeftMenu,
+        GHeader,
+        GFooter,
         RightMenu,
 
     },

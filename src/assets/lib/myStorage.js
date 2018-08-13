@@ -127,6 +127,14 @@ export function getTimestamp(){
   timeStampArr.push(endTime);
   return timeStampArr;
 }
+export function character(index){
+  //  for(var i=0;i<25;i++){
+    // console.log(index)
+    index>=25?index=0:index;
+       return String.fromCharCode((65+index))
+              
+              // }
+    }
 
 export function autodivheight(){ //函数：获取尺寸
   //获取浏览器窗口高度
@@ -144,3 +152,4 @@ export function autodivheight(){ //函数：获取尺寸
   //DIV高度为浏览器窗口高度的一半
   // document.getElementById(el).style.height= winHeight/2 +"px";
 }
+
