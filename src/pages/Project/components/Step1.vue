@@ -101,18 +101,18 @@
   <el-popover
     placement="top-start"
     trigger="manual"
-    :content="input6"
-    v-model="visible">
+    :content="scaleInput"
+    v-model="scaleVisible">
     <!-- <el-button slot="reference" @click="visible = !visible">手动激活</el-button> -->
 
      <el-input
       slot="reference"
     placeholder="请输入内容"
-    suffix-icon="el-icon-edit el-input__icon"
-    :style="{border:'0px'}"
-    @focus="focus($event)"
-    @blur="blur($event)"
-    v-model="input6">
+   suffix-icon="el-icon-edit el-input__icon"
+    :style="{border:'0px',width:'110px'}"
+    @focus="scaleFocus($event)"
+    @blur="scaleBlur($event)"
+    v-model="scaleInput">
   </el-input>
   </el-popover>
   
@@ -130,13 +130,23 @@
 
      <div class="proScaleBox">
      <span class="proScaleTitle fl">
+  <el-popover
+    placement="top-start"
+    trigger="manual"
+    :content="costInput"
+    v-model="costVisible">
 
  <el-input
+  slot="reference"
     placeholder="请输入内容"
     suffix-icon="el-icon-edit el-input__icon"
-    @focus="focus($event)"
-    v-model="input7">
+    :style="{border:'0px',width:'110px'}"
+    @focus="costFocus($event)"
+     @blur="costBlur($event)"
+    v-model="costInput">
   </el-input>
+
+   </el-popover>
 
      </span>
      <div class="proScaleInput fl">
@@ -150,13 +160,21 @@
      <div class="proScaleBox">
      <span class="proScaleTitle fl">
 
- <el-input
-    placeholder="请输入内容"
-    suffix-icon="el-icon-edit el-input__icon"
-    @focus="focus($event)"
-    v-model="input8">
-  </el-input>
-
+         <el-popover
+    placement="top-start"
+    trigger="manual"
+    :content="addInput"
+    v-model="addVisible">
+          <el-input
+            slot="reference"
+              placeholder="请输入内容"
+              suffix-icon="el-icon-edit el-input__icon"
+              :style="{border:'0px',width:'110px'}"
+              @focus="addFocus($event)"
+               @blur="addBlur($event)"
+              v-model="addInput">
+            </el-input>
+   </el-popover>
      </span>
      <div class="proScaleInput fl">
  <el-input v-model="ruleForm.name4" placeholder="请输入内容"></el-input>
@@ -235,13 +253,15 @@
         value11: [],
         input1: "1人",
         textarea3: "",
-        input6:'项目规模',
-         input7:'项目造价',
-          input8:'项目地址',
+        scaleInput:'项目规模',
+        costInput:'项目造价',
+        addInput:'项目地址',
 
         dialogImageUrl: "",
         dialogVisible: false,
-        visible:false,
+        scaleVisible:false,
+        costVisible:false,
+        addVisible:false,
 
         pickerOptions2: {
           shortcuts: [
@@ -293,21 +313,34 @@
       };
     },
     methods: {
-      focus(ev) {
+      scaleFocus(ev) {
 ev.currentTarget.select();
-if(ev.target.value.length>=6)this.visible = true;
-// console.log(ev.target.value.length)
-
-
+if(ev.target.value.length>=6)this.scaleVisible = true;
 },
-blur(ev){
+scaleBlur(ev){
   if(!ev.target.value)ev.target.value ='项目规模'
-   this.visible = false;
-   
-  
-  // console.log(ev.target.value)
-
+   this.scaleVisible = false;
 },
+      costFocus(ev) {
+ev.currentTarget.select();
+if(ev.target.value.length>=6)this.costVisible = true;
+},
+costBlur(ev){
+  if(!ev.target.value)ev.target.value ='项目造价'
+   this.costVisible = false;
+},
+
+
+          addFocus(ev) {
+        ev.currentTarget.select();
+        if(ev.target.value.length>=6)this.addVisible = true;
+        },
+        addBlur(ev){
+          if(!ev.target.value)ev.target.value ='项目造价'
+          this.addVisible = false;
+        },
+
+
       open4(msg) {
         this.$message({
           message: msg,
@@ -382,9 +415,15 @@ blur(ev){
       }
     },
     watch: {
-      input6(){
-        this.input6.length >=6?this.visible = true: this.visible = false;
-      }
+      scaleInput(){
+        this.scaleInput.length >=6?this.scaleVisible = true: this.scaleVisible = false;
+      },
+      costInput(){
+       this.costInput.length >=6?this.costVisible = true:this.costVisible = false;
+      },
+        addInput(){
+       this.addInput.length >=6?this.addVisible = true:this.addVisible = false;
+      },
     },
     mounted() {
       this.ruleForm.StartData = getTimestamp();

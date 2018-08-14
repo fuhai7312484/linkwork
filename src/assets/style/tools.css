@@ -81,9 +81,7 @@ body{
 .proScaleTitle{
     width: 120px;
     height: 40px;
-
-
-
+    /* text-align: right;  */
 }
 .proScaleTitle input{
     text-align: right;
@@ -97,4 +95,9 @@ body{
 .proScaleInput input{
    
 
+}
+
+.marginBot{
+    height: 40px;
+    margin-bottom:0; 
 }
