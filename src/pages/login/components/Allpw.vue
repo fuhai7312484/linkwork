@@ -56,7 +56,7 @@ export default {
   methods: {
 
 
-    ...mapMutations(['changeLogin','getUserInfo']),
+    ...mapMutations(['changeLogin','setUserInfo']),
     // axios get请求接口
     // getCityInfo() {
     //   // axios.get('/api/city.json')
@@ -180,9 +180,10 @@ export default {
                           }
                           _that.changeLogin(100)
                           setStorage("userInfo",data);
-                          _that.getUserInfo(data)
+                          _that.setUserInfo(data)
                             //  console.log(date)
                           _that.open2('登录成功！');
+                          console.log(data)
                           setTimeout(function(){
                              router.push("/home");
                               _that.loading = false;

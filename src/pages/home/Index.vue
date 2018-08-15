@@ -11,10 +11,10 @@
 
 </template>
 <script>
-import LeftMenu from "../../components/LeftMenu";
-import RightMenu from "../../components/RightMenu";
-import GHeader from '../../components/Header.vue';
-import GFooter from '../../components/Footer.vue'
+import LeftMenu from "@/components/LeftMenu";
+import RightMenu from "@/components/RightMenu";
+import GHeader from '@/components/Header.vue';
+import GFooter from '@/components/Footer.vue'
 
 export default {
     name:"Home",

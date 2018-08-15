@@ -79,12 +79,15 @@
 
         </div>
         <ul>
-          <li class="porList" v-for="(item, index) in tableData" :key="index">
+          <li class="porList" v-for="(item, index) in tableData" :key="index" >
             <div class="porListNameBox">
               <el-col :span="16" class="porListTitle">
-                <h2 :style="setTaskState(item.taskState)">
+                 <h2 :style="setTaskState(item.taskState)" @click="handChangproTitle(item.name,('/detail/'+ index))">
                   {{indexMethod(index)}}.{{item.name}}
                 </h2>
+                <!-- <h2 :style="setTaskState(item.taskState)" @click="handChangproTitle(item.name)">
+                  {{indexMethod(index)}}.{{item.name}}
+                </h2> -->
               </el-col>
 
               <el-col :span="3" class="RingType">
@@ -125,7 +128,7 @@
 </template>
 <script>
   import { autodivheight } from "../../../assets/lib/myStorage.js";
-  import { mapState } from "vuex";
+  import { mapState,mapMutations } from "vuex";
   export default {
     name: "ProList",
     data() {
@@ -260,6 +263,26 @@
       })
     },
     methods: {
+      ...mapMutations(['proTitleChang','showLoading']),
+      //  craetChangproTitle(title){
+      //  this.proTitleChang(title)
+      //  this.$router.push('/project/createpro')
+      // },
+
+      handChangproTitle(title,url){
+        this.showLoading(true)
+         this.proTitleChang(title)
+       this.$router.push(url)
+
+      //   setTimeout(() => {
+      //       this.proTitleChang(title)
+      //  this.$router.push(url)
+
+      //   }, 1000);
+
+      //  this.proTitleChang(title)
+      //  this.$router.push(url)
+      },
       indexMethod(index) {
         return (index * 1) + 1;
       },

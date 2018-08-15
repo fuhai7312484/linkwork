@@ -235,7 +235,7 @@ size="small"
 <div class="hr"></div>
 
     <!-- {{mapSearch}} -->
-    经度：{{lng}} 纬度：{{lat}} 
+    经度：{{lng}}纬度：{{lat}} 
 
 <div class="secrecyBox">
     <div class="secrecyLeft">
@@ -267,7 +267,7 @@ size="small"
 
 <el-form-item label="个人说明">
       <el-input type="textarea"
-      :autosize="{ minRows: 2, maxRows: 4}" 
+      :autosize="{ minRows: 10, maxRows: 14}" 
       placeholder="请输入个人说明" v-model="ruleForm.textarea">
       </el-input>
  </el-form-item>
@@ -331,6 +331,15 @@ userInfo:{},
     };
   },
   methods: {
+
+         open4(msg) {
+        this.$message({
+          message: msg,
+          type: "error"
+        });
+      },
+
+
     handNext() {
       this.$emit("next");
     },
@@ -345,10 +354,18 @@ userInfo:{},
       },
 
       showInput() {
+      //  console.log(this.dynamicTags.length)
+      if(this.dynamicTags.length>=6){
+       this.open4('技能标签最多只可填写6个')
+        // console.log('大于6个了')
+      }else{
         this.inputVisible = true;
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
         });
+      }
+      
+      
       },
 
       handleInputConfirm() {

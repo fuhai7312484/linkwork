@@ -27,7 +27,7 @@
     </div>
   </div>
    <span class="iconfont headPorList" ref="headPorList" slot="reference" @click="show3 = !show3" >&#xe658;</span>
-               <h2> 示例项目</h2>
+               <h2> {{proTitle}}</h2>
         </div>
 
 
@@ -94,6 +94,10 @@ import router from "../router";
 import {mapState, mapMutations} from 'vuex'
 export default {
     name:"GHeader",
+      computed:{
+      ...mapState(['proTitle']),
+    
+  },
     data(){
         return {
              userData:{},

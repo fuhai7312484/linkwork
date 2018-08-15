@@ -12,8 +12,8 @@ import CreatePro from '../pages/Project/components/Createpro.vue'
 import Step1 from '../pages/Project/components/Step1.vue'
 import Step2 from '../pages/Project/components/Step2.vue'
 import Step3 from '../pages/Project/components/Step3.vue'
-
 import router from '../router'
+import store from '../store'
 
 Vue.use(Router);
 
@@ -99,3 +99,21 @@ export default new Router({
     
   ]
 });
+// 路由跳转前的钩子
+router.beforeEach(function (to, from, next) {
+  // console.log(store.state.isLoding)
+  // console.log(to)
+  store.commit('showLoading',true)
+  next()
+})
+
+// 路由跳转后的钩子
+router.afterEach(function (to) {
+  // console.log(store.state.isLoding)
+  store.commit('showLoading',false)
+
+  // setTimeout(function(){
+  //   store.commit('showLoading',false)
+  // },1000)
+ 
+})
