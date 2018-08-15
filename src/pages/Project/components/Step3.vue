@@ -4,19 +4,47 @@
      <h1>我在项目中的个人信息</h1>
 
     </div>
- {{userInfo}}
+ <!-- {{userInfo}}--- {{ruleForm.sex}} -->
+ <!-- {{ruleForm.nickname}} -->
 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
 
 <div class="proUserInfoBox">
     <div class="proUserAvatarBox">
-        <div class="AvatImgBox">
+
+
+<el-upload
+  class="AvatImgBox"
+  action="https://jsonplaceholder.typicode.com/posts/"
+  :show-file-list="false"
+  :on-success="handleAvatarSuccess"
+  :before-upload="beforeAvatarUpload">
+  <img :src="imageUrl" class="avatar">
+   <div class="editAvatar">
+               <i class="el-icon-edit"></i> 编辑
+            </div>
+  <!-- <i class="el-icon-edit ">编辑</i> -->
+</el-upload>
+
+
+
+
+
+
+        <!-- <div class="AvatImgBox">
+
+
+
             <div class="editAvatar">
+
                <i class="el-icon-edit"></i> 编辑
             </div>
             <img :src="userInfo.mainPic"/>
            
 
-        </div>
+        </div> -->
+
+
+
         <p class="proUserName">
             {{userInfo.name}}
         </p>
@@ -30,15 +58,31 @@
 
 <div class="secrecyBox marginBot">
     <div class="secrecyLeft">
- <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
-<el-form-item label="用户名">
-        <el-input v-model="ruleForm.companyName" placeholder="请输入用户名"></el-input>
+
+<el-form-item label="账号">
+        <el-input v-model="userInfo.mobile" :disabled="true" placeholder="请输入用户名"></el-input>
       </el-form-item>
 
     </div>
 
   
-      <div class="secrecyRight"><el-checkbox v-model="checked">保密</el-checkbox></div>
+      <div class="secrecyRight"><el-checkbox v-model="checked3">保密</el-checkbox></div>
+
+
+</div>
+
+
+<div class="secrecyBox marginBot">
+    <div class="secrecyLeft">
+ 
+<el-form-item label="昵称">
+        <el-input v-model="ruleForm.nickname" placeholder="请输入昵称"></el-input>
+      </el-form-item>
+
+    </div>
+
+  
+     
 
 
 </div>
@@ -46,9 +90,21 @@
 
 
 
+<div class="secrecyBox marginBot">
+    <div class="secrecyLeft">
+
+<el-form-item label="性别">
+       <el-radio v-model="ruleForm.sex" label="男">男</el-radio>
+  <el-radio v-model="ruleForm.sex" label="女">女</el-radio>
+      </el-form-item>
+
+    </div>
+
+  
+      <div class="secrecyRight"><el-checkbox v-model="checked4">保密</el-checkbox></div>
 
 
-
+</div>
 
 
     </div>
@@ -56,6 +112,72 @@
 
 </div>
 
+
+
+
+<div class="secrecyBox">
+    <div class="secrecyLeft">
+
+<el-form-item label="联系方式">
+        <el-input v-model="userInfo.mobile" placeholder="请输入联系方式"></el-input>
+      </el-form-item>
+
+    </div>
+
+  
+      <div class="secrecyRight"><el-checkbox v-model="checked5">保密</el-checkbox></div>
+
+
+</div>
+
+
+<div class="secrecyBox">
+    <div class="secrecyLeft">
+ 
+<el-form-item label="邮箱">
+        <el-input v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
+      </el-form-item>
+
+    </div>
+
+  
+      <div class="secrecyRight"><el-checkbox v-model="checked5">保密</el-checkbox></div>
+
+
+</div>
+
+
+  <el-form-item label="职称">
+        <el-input v-model="ruleForm.jobTitle" placeholder="请输入职称"></el-input>
+      </el-form-item>
+
+
+      <div class="hr"></div>
+
+
+  <el-form-item label="单位(团队或者组织)"  class="speLabel">
+        <el-input v-model="ruleForm.team" placeholder="请输入职称"></el-input>
+      </el-form-item>
+
+  <el-form-item label="部门">
+        <el-input v-model="ruleForm.section" placeholder="请输入部门"></el-input>
+      </el-form-item>
+
+
+<div class="secrecyBox">
+    <div class="secrecyLeft">
+ 
+<el-form-item label="角色转换">
+        <el-input v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
+      </el-form-item>
+
+    </div>
+
+  
+      <div class="secrecyRight"><el-checkbox v-model="checked5">保密</el-checkbox></div>
+
+
+</div>
 
 <div class="hr"></div>
 
@@ -89,7 +211,10 @@
   @blur="handleInputConfirm"
 >
 </el-input>
-<el-button v-else class="button-new-tag" size="small" @click="showInput"><i class="el-icon-plus"></i> 添加标签</el-button>
+<el-button v-else class="button-new-tag" 
+size="small" 
+@click="showInput"
+><i class="el-icon-plus"></i> 添加标签</el-button>
 
    </div>
     <div class="secrecyBottem">
@@ -109,8 +234,8 @@
 
 <div class="hr"></div>
 
-    {{mapSearch}}
-    经度：{{lat}} 纬度：{{lng}}
+    <!-- {{mapSearch}} -->
+    经度：{{lng}} 纬度：{{lat}} 
 
 <div class="secrecyBox">
     <div class="secrecyLeft">
@@ -140,7 +265,12 @@
 <div class="hr"></div>
 
 
-
+<el-form-item label="个人说明">
+      <el-input type="textarea"
+      :autosize="{ minRows: 2, maxRows: 4}" 
+      placeholder="请输入个人说明" v-model="ruleForm.textarea">
+      </el-input>
+ </el-form-item>
 
 
 
@@ -173,15 +303,30 @@ userInfo:{},
   dynamicTags: ['财政', '摄影', '实时数据','大数据'],
         inputVisible: false,
         inputValue: '',
-
-
+        
 
          checked: true,
           checked1: false,
+          checked2: false,
+          checked3: false,
+           checked4: false,
+            checked5: false,
+
+  imageUrl: '',
+
       mapSearch: "",
       lat: 0,
       lng: 0,
-      ruleForm: {},
+      ruleForm: {
+        nickname:'',
+        email:'',
+        jobTitle:'',  
+        team:'单位A',
+        section:'',
+        textarea:'',
+         sex: '男',
+        
+      },
       rules: {}
     };
   },
@@ -376,7 +521,24 @@ userInfo:{},
       }
     },
 
+ handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+       beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+         const isPNG = file.type === 'image/png';
+          const isGIF = file.type === 'image/gif';
+          const isBMP = file.type === 'image/bmp';
+        const isLt2M = file.size / 1024 / 1024 < 2;
 
+        if (!isJPG && !isGIF && !isPNG && !isBMP) {
+          this.$message.error('上传头像图片只能是 JPG/png/gif/bmp 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return (isJPG || isPNG || isGIF || isBMP) && isLt2M;
+      },
 
       
     submitForm(formName) {
@@ -405,10 +567,15 @@ userInfo:{},
     },
 
   },
+  computed: {
+ 
+  },
   mounted() {
     this.$emit("next", 2);
     this.map();
-    this.userInfo = getStorage('userInfo')
+    this.userInfo = getStorage('userInfo');
+    this.ruleForm.nickname = getStorage('userInfo').name;
+    this.imageUrl = getStorage('userInfo').mainPic;
     // console.log(getStorage('userInfo'))
   },
   watch: {
@@ -429,18 +596,53 @@ userInfo:{},
 .el-tag + .el-tag {
     margin-left: 10px;
   }
-  .button-new-tag {
-    margin-left: 10px;
-    height: 32px;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
+
   .input-new-tag {
-    width: 90px;
+    width: 100px;
     margin-left: 10px;
     vertical-align: bottom;
   }
+
+
+
+
+
+/* .AvatImgBox .el-upload{
+  width: 100px;
+  height: 100px;
+  background: #000;
+  
+}
+
+AvatImgBox .avatar-uploader-icon{
+  width: 100px;
+  height: 100px;
+}
+
+
+   .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  } */
 </style>
 
 

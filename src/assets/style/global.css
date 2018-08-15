@@ -581,7 +581,7 @@ overflow: hidden;
     /* background: #000; */
     /* height: 40px; */
     overflow: hidden;
-    margin-bottom: 22px;
+    /* margin-bottom: 22px; */
 
 }
 .secrecyLeft{
@@ -607,13 +607,14 @@ overflow: hidden;
     padding: 20px;
     box-sizing: border-box;
     overflow: hidden;
+    margin-bottom:22px; 
 }
 .proUserAvatarBox{
     height: 100%;
     /* background: #000; */
     float: left;
     width: 20%;
-    min-width: 150px;
+    /* min-width: 150px; */
     border-right:1px dashed #97b9d5; 
     box-sizing: border-box;
 }
@@ -626,6 +627,9 @@ overflow: hidden;
     position: relative;
     cursor: pointer;
 }
+
+
+
 .AvatImgBox:hover .editAvatar{
     height: 100px;
     line-height: 100px;
@@ -639,7 +643,7 @@ overflow: hidden;
     font-size: 14px;
     font-weight: bold;
     background: rgba(0,0,0,.5);
-    transition: .6s;
+    transition: .4s;
     cursor: pointer;
     /* border-radius:50%;  */
     bottom: 0;
@@ -647,6 +651,9 @@ overflow: hidden;
 }
 .AvatImgBox img{
     width:100%;
+    /* margin: 0 auto; */
+    max-width: 100px;
+    min-width: 100px;
 }
 .proUserName{
     text-align: center;
@@ -661,3 +668,27 @@ overflow: hidden;
     /* background: #000; */
     height:100%;
 }
+
+.button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .secrecyBottem .el-button{
+      color: #fd6e20;
+      border: 1px solid #fd6e20;
+      margin-left:10px; 
+
+  }
+/* .button-new-tag {
+    background: #000;
+    border: 1px solid #fd6e20;
+    color: #fd6e20;
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  } */
