@@ -14,12 +14,15 @@ import './assets/style/tools.css';
 // import GHeader from './components/Header.vue'
 // import GFooter from './components/Footer.vue'
 
- import {mapState} from 'vuex'
+ import {mapState,mapGetters} from 'vuex'
 export default {
 
   name: 'App',
   computed: {
-     ...mapState(['isLoding'])
+    //  ...mapState(['isLoding']),
+      ...mapGetters([
+ 'isLoding',
+ ]),
   },
   components: {
   

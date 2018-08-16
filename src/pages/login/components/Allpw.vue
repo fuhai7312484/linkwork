@@ -140,9 +140,6 @@ export default {
           this.loading = true;
       this.$refs[formName].validate(valid => {
         if (valid) {
-           
-        
-         
             let loginObj = {
               mobile: this.ruleForm2.username+'',
               password: this.ruleForm2.pass,
@@ -183,7 +180,7 @@ export default {
                           _that.setUserInfo(data)
                             //  console.log(date)
                           _that.open2('登录成功！');
-                          console.log(data)
+                          // console.log(data)
                           setTimeout(function(){
                              router.push("/home");
                               _that.loading = false;

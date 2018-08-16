@@ -10,8 +10,6 @@
 
 <div class="proUserInfoBox">
     <div class="proUserAvatarBox">
-
-
 <el-upload
   class="AvatImgBox"
   action="https://jsonplaceholder.typicode.com/posts/"
@@ -24,27 +22,12 @@
             </div>
   <!-- <i class="el-icon-edit ">编辑</i> -->
 </el-upload>
-
-
-
-
-
-
         <!-- <div class="AvatImgBox">
-
-
-
             <div class="editAvatar">
-
                <i class="el-icon-edit"></i> 编辑
             </div>
             <img :src="userInfo.mainPic"/>
-           
-
         </div> -->
-
-
-
         <p class="proUserName">
             {{userInfo.name}}
         </p>
@@ -292,53 +275,48 @@ size="small"
     </div>
 </template>
 <script>
-  import router from "../../../router";
-  import {getStorage} from '../../../assets/lib/myStorage.js'
+import router from "../../../router";
+import { getStorage } from "../../../assets/lib/myStorage.js";
 export default {
   name: "Step3",
   data() {
     return {
-userInfo:{},
+      userInfo: {},
+      dynamicTags: ["财政", "摄影", "实时数据", "大数据"],
+      inputVisible: false,
+      inputValue: "",
 
-  dynamicTags: ['财政', '摄影', '实时数据','大数据'],
-        inputVisible: false,
-        inputValue: '',
-        
+      checked: true,
+      checked1: false,
+      checked2: false,
+      checked3: false,
+      checked4: false,
+      checked5: false,
 
-         checked: true,
-          checked1: false,
-          checked2: false,
-          checked3: false,
-           checked4: false,
-            checked5: false,
-
-  imageUrl: '',
+      imageUrl: "",
 
       mapSearch: "",
       lat: 0,
       lng: 0,
       ruleForm: {
-        nickname:'',
-        email:'',
-        jobTitle:'',  
-        team:'单位A',
-        section:'',
-        textarea:'',
-         sex: '男',
-        
+        nickname: "",
+        email: "",
+        jobTitle: "",
+        team: "单位A",
+        section: "",
+        textarea: "",
+        sex: "男"
       },
       rules: {}
     };
   },
   methods: {
-
-         open4(msg) {
-        this.$message({
-          message: msg,
-          type: "error"
-        });
-      },
-
+    open4(msg) {
+      this.$message({
+        message: msg,
+        type: "error"
+      });
+    },
 
     handNext() {
       this.$emit("next");
@@ -348,37 +326,42 @@ userInfo:{},
       if (ev.target.value.length >= 6) this.scaleVisible = true;
     },
 
-//添加或者删除标签
-      handleClose(tag) {
-        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
-      },
+    //添加或者删除标签
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    },
 
-      showInput() {
+    showInput() {
       //  console.log(this.dynamicTags.length)
-      if(this.dynamicTags.length>=6){
-       this.open4('技能标签最多只可填写6个')
-        // console.log('大于6个了')
-      }else{
+      if (this.dynamicTags.length >= 9) {
+        this.open4("技能标签最多只可填写9个");
+        // console.log('大于9个了')
+      } else {
         this.inputVisible = true;
+       
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
+          
         });
       }
-      
-      
-      },
+    },
 
-      handleInputConfirm() {
-        let inputValue = this.inputValue;
-        if (inputValue) {
-          this.dynamicTags.push(inputValue);
+    handleInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        if(inputValue.length>=10){
+          this.open4("技能标签最多10字符");
+        }else{
+        this.dynamicTags.push(inputValue);
         }
-        this.inputVisible = false;
-        this.inputValue = '';
-      },
-//百度地图API
+       
+      }
+      this.inputVisible = false;
+      this.inputValue = "";
+    },
+    //百度地图API
     map() {
-      console.log(this.mapSearch);
+      // console.log(this.mapSearch);
       let _that = this;
 
       function G(id) {
@@ -397,9 +380,8 @@ userInfo:{},
       map.enableScrollWheelZoom(); // 启用滚轮放大缩小
       map.addControl(new BMap.NavigationControl()); // 启用放大缩小 尺
 
-    
-
-      var ac = new BMap.Autocomplete({ //建立一个自动完成的对象
+      var ac = new BMap.Autocomplete({
+        //建立一个自动完成的对象
         input: "suggestId",
         location: map
       });
@@ -538,30 +520,29 @@ userInfo:{},
       }
     },
 
- handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-       beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-         const isPNG = file.type === 'image/png';
-          const isGIF = file.type === 'image/gif';
-          const isBMP = file.type === 'image/bmp';
-        const isLt2M = file.size / 1024 / 1024 < 2;
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+      const isGIF = file.type === "image/gif";
+      const isBMP = file.type === "image/bmp";
+      const isLt2M = file.size / 1024 / 1024 < 2;
 
-        if (!isJPG && !isGIF && !isPNG && !isBMP) {
-          this.$message.error('上传头像图片只能是 JPG/png/gif/bmp 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return (isJPG || isPNG || isGIF || isBMP) && isLt2M;
-      },
+      if (!isJPG && !isGIF && !isPNG && !isBMP) {
+        this.$message.error("上传头像图片只能是 JPG/png/gif/bmp 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return (isJPG || isPNG || isGIF || isBMP) && isLt2M;
+    },
 
-      
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-        //   console.log(this.$refs.uploada.uploadFiles);
+          //   console.log(this.$refs.uploada.uploadFiles);
           // console.log(this.$refs)
 
           // let fileList = this.ruleForm.fileList;
@@ -581,18 +562,15 @@ userInfo:{},
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-
+    }
   },
-  computed: {
- 
-  },
+  computed: {},
   mounted() {
     this.$emit("next", 2);
     this.map();
-    this.userInfo = getStorage('userInfo');
-    this.ruleForm.nickname = getStorage('userInfo').name;
-    this.imageUrl = getStorage('userInfo').mainPic;
+    this.userInfo = getStorage("userInfo");
+    this.ruleForm.nickname = getStorage("userInfo").name;
+    this.imageUrl = getStorage("userInfo").mainPic;
     // console.log(getStorage('userInfo'))
   },
   watch: {
@@ -608,21 +586,16 @@ userInfo:{},
   overflow: hidden;
 }
 
-
 /* .el-tag{margin-top:5px; margin-bottom:5px; } */
 .el-tag + .el-tag {
-    margin-left: 10px;
-  }
+  margin-left: 10px;
+}
 
-  .input-new-tag {
-    width: 100px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
-
-
-
-
+.input-new-tag {
+  width: 100px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
 
 /* .AvatImgBox .el-upload{
   width: 100px;

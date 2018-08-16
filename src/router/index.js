@@ -110,10 +110,10 @@ router.beforeEach(function (to, from, next) {
 // 路由跳转后的钩子
 router.afterEach(function (to) {
   // console.log(store.state.isLoding)
-  store.commit('showLoading',false)
+  // store.commit('showLoading',false)
 
-  // setTimeout(function(){
-  //   store.commit('showLoading',false)
-  // },1000)
+  setTimeout(function(){
+    store.commit('showLoading',false)
+  },1000)
  
 })

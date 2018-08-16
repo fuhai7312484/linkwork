@@ -1,5 +1,6 @@
 import axios from "axios";
 //post接口请求公共调用
+
 export function getPostInfo(url, obj) {
   let ipUrl = "http://39.107.254.60:8081/";
   var qs = require("qs");
@@ -86,9 +87,9 @@ export function getDealKey(arr) {
 export function PhoneReg(str) {
   var re = /^1\d{10}$/;
   if (re.test(str)) {
-   return true;
+    return true;
   } else {
-   return false;
+    return false;
   }
 }
 //处理手机号显示
@@ -119,37 +120,51 @@ export function getToTime(timeStamp, str) {
   return Y + M + D + h + m + s;
 }
 //获取当前时间的时间戳和过去3个月的时间戳
-export function getTimestamp(){
-  let startTime = new Date();
-  let timeStampArr = [Date.parse(startTime)];
-  let endTime = startTime.setMonth(startTime.getMonth()+3);
-  // let endTime = startTime.setTime(startTime.getTime() + 3600 * 1000 * 24 * 90);
-  timeStampArr.push(endTime);
+export function getTimestamp() {
+  let date = new Date();
+  var seperator1 = "-";
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  var strDate = date.getDate();
+  if (month >= 1 && month <= 9) {
+      month = "0" + month;
+  }
+  if (strDate >= 0 && strDate <= 9) {
+      strDate = "0" + strDate;
+  }
+  var currentdate = year + seperator1 + month + seperator1 + strDate;
+  var newData = year + seperator1 + (month*1+3) + seperator1 + strDate
+  let timeStampArr = [currentdate,newData];
+
+  // let startTime = new Date();
+  // let timeStampArr = [Date.parse(startTime)];
+  // let endTime = startTime.setMonth(startTime.getMonth() + 3);
+  // // let endTime = startTime.setTime(startTime.getTime() + 3600 * 1000 * 24 * 90);
+  // timeStampArr.push(endTime);
   return timeStampArr;
 }
-export function character(index){
+export function character(index) {
   //  for(var i=0;i<25;i++){
-    // console.log(index)
-    index>=25?index=0:index;
-       return String.fromCharCode((65+index))
-              
-              // }
-    }
+  // console.log(index)
+  index >= 25 ? (index = 0) : index;
+  return String.fromCharCode(65 + index);
 
-export function autodivheight(){ //函数：获取尺寸
+  // }
+}
+
+export function autodivheight() {
+  //函数：获取尺寸
   //获取浏览器窗口高度
-  var winHeight=0;
-  if (window.innerHeight)
-      winHeight = window.innerHeight;
-  else if ((document.body) && (document.body.clientHeight))
-      winHeight = document.body.clientHeight;
+  var winHeight = 0;
+  if (window.innerHeight) winHeight = window.innerHeight;
+  else if (document.body && document.body.clientHeight)
+    winHeight = document.body.clientHeight;
   //通过深入Document内部对body进行检测，获取浏览器窗口高度
   if (document.documentElement && document.documentElement.clientHeight)
-      winHeight = document.documentElement.clientHeight;
-      return winHeight;
+    winHeight = document.documentElement.clientHeight;
+  return winHeight;
   //DIV高度为浏览器窗口的高度
   //document.getElementById("test").style.height= winHeight +"px";
   //DIV高度为浏览器窗口高度的一半
   // document.getElementById(el).style.height= winHeight/2 +"px";
 }
-

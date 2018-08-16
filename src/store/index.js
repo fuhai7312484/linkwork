@@ -18,6 +18,8 @@
 import Vue from "vue";
 import vuex from "vuex";
 import testStore from "./testStore.js";
+import {getPostInfo} from "../assets/lib/myStorage"
+
 Vue.use(vuex);
 
 export default new vuex.Store({
@@ -27,9 +29,20 @@ export default new vuex.Store({
     userInfo: localStorage.userInfo,
     sWHeight: "590px",
     isLoding: false,
-    proTitle:localStorage.proTitle?localStorage.proTitle:'示例项目'
+    proTitle:localStorage.proTitle?localStorage.proTitle:'示例项目',
+    fiaworkfiow:[],
+
+    
   },
+ getters: {
+    // 请求数据时加载状态
+    isLoding: state => state.isLoding
+   },
   mutations: {
+   
+    getWorkCount(state,data){
+      state.fiaworkfiow = data;
+  },
     showLoading(state,data){
         state.isLoding = data    
     },
@@ -57,6 +70,18 @@ export default new vuex.Store({
   actions: {
     updateState({ commit }) {
       commit("updateState", "new");
+    },
+
+    showLoading({commit},data){
+      commit("showLoading", data);
+  
+  },
+    
+    async getWorkCount({state,commit},params){
+      let url = params.url;
+      let ret = await getPostInfo(url,params.objs);
+      commit('getWorkCount',ret.data.data)
+      return ret;
     }
   },
   modules: {

@@ -2,6 +2,8 @@
 <el-row>
     <g-header></g-header>
         <left-menu></left-menu>
+       <!-- 11111111 {{fiaworkfiow}}<br/> -->
+       {{goods}}
         <el-col :span="5"><div class="grid-content bg-purple-light"></div></el-col>
         <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
 <right-menu></right-menu>
@@ -15,15 +17,40 @@ import LeftMenu from "@/components/LeftMenu";
 import RightMenu from "@/components/RightMenu";
 import GHeader from '@/components/Header.vue';
 import GFooter from '@/components/Footer.vue'
+  import { getPostInfo,commonApi } from "../../assets/lib/myStorage.js";
+import {mapState,mapActions,mapMutations} from 'vuex';
 
 export default {
     name:"Home",
+    data(){
+      return {
+        goods:[null],
+      }
+
+    },
+    computed:{
+ ...mapState(['fiaworkfiow']),
+ },
+ methods: {
+  //  ...mapMutations(['getWorkCount']),
+   ...mapActions(['getWorkCount'])
+
+ },
     components:{
         LeftMenu,
         GHeader,
         GFooter,
         RightMenu,
 
+    },
+      //  async created() {
+      // let params =  {url:'yq_api/user/login',objs:{mobile:'13051376806',password:'123456',type:'1'}}
+      // await this.getWorkCount(params);
+      // this.goods = this.fiaworkfiow;
+    // },
+
+    mounted() {
+     
     },
  
 }

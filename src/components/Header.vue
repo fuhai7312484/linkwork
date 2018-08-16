@@ -207,6 +207,7 @@ export default {
     },
       mounted(){
       this.userData = getStorage('userInfo');
+   
       let _that=this;
 
        document.addEventListener('click',function(ev){
