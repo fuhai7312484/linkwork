@@ -692,3 +692,8 @@ overflow: hidden;
     padding-top: 0;
     padding-bottom: 0;
   } */
+
+  .el-pagination{
+    text-align: center;
+    margin: 40px 0;
+  }

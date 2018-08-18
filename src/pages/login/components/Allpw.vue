@@ -7,7 +7,7 @@
     <el-input class="iconfont" prefix-icon="icon-dianhua" v-model.number="ruleForm2.username" placeholder="请输入手机号"></el-input>
     </el-form-item>
   <el-form-item prop="pass">
-    <el-input class="iconfont" prefix-icon="icon-suo"  type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="请输入密码"></el-input>
+    <el-input class="iconfont" prefix-icon="icon-suo" type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="请输入密码"></el-input>
   </el-form-item> 
         <el-form-item> 
       <el-button :type="buttonType?'primary':'info'" :disabled="!buttonType" :loading="loading" class="signInBtn" @click="submitForm('ruleForm2')">{{loading?'登录中...':'提交'}}</el-button> 

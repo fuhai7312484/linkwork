@@ -51,7 +51,7 @@
 
 
       <el-form-item label="项目全称">
-        <el-input v-model="ruleForm.FullName" placeholder="请输入项目全称"></el-input>
+        <el-input v-model="ruleForm.FullName" @blur="FullBlur($event)" placeholder="请输入项目全称"></el-input>
       </el-form-item>
 
       <el-form-item label="项目简称" prop="SimpleName">
@@ -207,7 +207,6 @@ export default {
       scaleVisible: false,
       costVisible: false,
       addVisible: false,
-
       pickerOptions2: {
         shortcuts: [
           {
@@ -295,7 +294,9 @@ export default {
     SimpleBlur(ev){
       this.ruleForm.FullName?this.ruleForm.FullName: this.ruleForm.FullName=this.ruleForm.SimpleName
     },
-
+FullBlur(ev){
+this.ruleForm.FullName?this.ruleForm.FullName: this.ruleForm.FullName=this.ruleForm.SimpleName
+},
     open4(msg) {
       this.$message({
         message: msg,

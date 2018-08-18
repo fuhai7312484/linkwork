@@ -31,8 +31,7 @@ export default new vuex.Store({
     isLoding: false,
     proTitle:localStorage.proTitle?localStorage.proTitle:'示例项目',
     fiaworkfiow:[],
-
-    
+    ProList:[],
   },
  getters: {
     // 请求数据时加载状态
@@ -43,6 +42,9 @@ export default new vuex.Store({
     getWorkCount(state,data){
       state.fiaworkfiow = data;
   },
+  getProList(state,data){
+    state.ProList = data;
+},
     showLoading(state,data){
         state.isLoding = data    
     },
@@ -80,7 +82,15 @@ export default new vuex.Store({
     async getWorkCount({state,commit},params){
       let url = params.url;
       let ret = await getPostInfo(url,params.objs);
+    
       commit('getWorkCount',ret.data.data)
+      return ret;
+    },
+    async getProList({state,commit},params){
+      let url = params.url;
+      let ret = await getPostInfo(url,params.objs);
+   
+      commit('getProList',ret.data.data)
       return ret;
     }
   },

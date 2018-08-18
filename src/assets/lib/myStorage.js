@@ -4,6 +4,7 @@ import axios from "axios";
 export function getPostInfo(url, obj) {
   let ipUrl = "http://39.107.254.60:8081/";
   var qs = require("qs");
+//  console.log(showFullScreenLoading()) 
   return axios.post(ipUrl + url, qs.stringify(obj));
 }
 
@@ -167,4 +168,10 @@ export function autodivheight() {
   //document.getElementById("test").style.height= winHeight +"px";
   //DIV高度为浏览器窗口高度的一半
   // document.getElementById(el).style.height= winHeight/2 +"px";
+}
+
+export function setKeyIndex(arr){
+  arr.forEach((e,index) => {
+    e.key = index;
+  });
 }

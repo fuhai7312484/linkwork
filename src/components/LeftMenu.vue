@@ -11,30 +11,32 @@
 </span>
 
     </router-link>
+  <router-link tag="li" class="leftMenuList" to="/a" >
+<span class="iconfont LeftIcon">&#xe658;</span>
+<span class="LeftMenuTitle">
+消息
+</span>
+    </router-link>
+
 
     <router-link tag="li" class="leftMenuList" to="/project" >
 <span class="iconfont LeftIcon">&#xe658;</span>
 <span class="LeftMenuTitle">
-项目总览
+管理
 </span>
 
     </router-link>
 <router-link tag="li" class="leftMenuList" to="/cc" >
 <span class="iconfont LeftIcon">&#xe657;</span>
 <span class="LeftMenuTitle">
-业务·审批
+日程日志
 </span>
     </router-link>
-     <router-link tag="li" class="leftMenuList" to="/a" >
-<span class="iconfont LeftIcon">&#xe658;</span>
-<span class="LeftMenuTitle">
-项聊
-</span>
-    </router-link>
+   
      <router-link tag="li" class="leftMenuList" to="/b" >
 <span class="iconfont LeftIcon">&#xe61c;</span>
 <span class="LeftMenuTitle">
-成员
+通讯录
 </span>
     </router-link>
    

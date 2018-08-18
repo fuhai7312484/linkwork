@@ -1,278 +1,193 @@
 <template>
-   <div>
-       <div class="stepH1Title">
-     <h1>我在项目中的个人信息</h1>
+  <div>
+    <div class="stepH1Title">
+      <h1>我在项目中的个人信息</h1>
 
     </div>
- <!-- {{userInfo}}--- {{ruleForm.sex}} -->
- <!-- {{ruleForm.nickname}} -->
-<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+    <!-- {{userInfo}}--- {{ruleForm.sex}} -->
+    <!-- {{ruleForm.nickname}} -->
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+      <div class="proUserInfoBox">
 
-<div class="proUserInfoBox">
-    <div class="proUserAvatarBox">
-<el-upload
-  class="AvatImgBox"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :show-file-list="false"
-  :on-success="handleAvatarSuccess"
-  :before-upload="beforeAvatarUpload">
-  <img :src="imageUrl" class="avatar">
-   <div class="editAvatar">
-               <i class="el-icon-edit"></i> 编辑
-            </div>
-  <!-- <i class="el-icon-edit ">编辑</i> -->
-</el-upload>
-        <!-- <div class="AvatImgBox">
+
+
+
+        <div class="proUserAvatarBox">
+          <el-upload class="AvatImgBox" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img :src="ruleForm.AvatImageUrl" class="avatar">
             <div class="editAvatar">
-               <i class="el-icon-edit"></i> 编辑
+              <i class="el-icon-edit"></i> 编辑
             </div>
-            <img :src="userInfo.mainPic"/>
-        </div> -->
-        <p class="proUserName">
+          </el-upload>
+          <p class="proUserName">
             {{userInfo.name}}
-        </p>
-
-
-    </div>
-
-
-    <div class="proUserInfoInputs">
-
-
-<div class="secrecyBox marginBot">
-    <div class="secrecyLeft">
-
-<el-form-item label="账号">
-        <el-input v-model="userInfo.mobile" :disabled="true" placeholder="请输入用户名"></el-input>
-      </el-form-item>
-
-    </div>
-
-  
-      <div class="secrecyRight"><el-checkbox v-model="checked3">保密</el-checkbox></div>
-
-
-</div>
-
-
-<div class="secrecyBox marginBot">
-    <div class="secrecyLeft">
- 
-<el-form-item label="昵称">
-        <el-input v-model="ruleForm.nickname" placeholder="请输入昵称"></el-input>
-      </el-form-item>
-
-    </div>
-
-  
-     
-
-
-</div>
+          </p>
+        </div>
 
 
 
-
-<div class="secrecyBox marginBot">
-    <div class="secrecyLeft">
-
-<el-form-item label="性别">
-       <el-radio v-model="ruleForm.sex" label="男">男</el-radio>
-  <el-radio v-model="ruleForm.sex" label="女">女</el-radio>
-      </el-form-item>
-
-    </div>
-
-  
-      <div class="secrecyRight"><el-checkbox v-model="checked4">保密</el-checkbox></div>
-
-
-</div>
-
-
-    </div>
-
-
-</div>
+        <div class="proUserInfoInputs">
 
 
 
-
-<div class="secrecyBox">
-    <div class="secrecyLeft">
-
-<el-form-item label="联系方式">
-        <el-input v-model="userInfo.mobile" placeholder="请输入联系方式"></el-input>
-      </el-form-item>
-
-    </div>
-
-  
-      <div class="secrecyRight"><el-checkbox v-model="checked5">保密</el-checkbox></div>
+          <div class="secrecyBox marginBot">
+            <div class="secrecyLeft">
+              <el-form-item label="账号">
+                <el-input v-model="ruleForm.UserMobile" :disabled="true" placeholder="请输入账号"></el-input>
+              </el-form-item>
+            </div>
+            <div class="secrecyRight">
+              <el-checkbox v-model="ruleForm.UserSecret">保密</el-checkbox>
+            </div>
+          </div>
 
 
-</div>
+
+          <div class="secrecyBox marginBot">
+            <div class="secrecyLeft">
+              <el-form-item label="昵称">
+                <el-input v-model="ruleForm.nickname" @blur="nicknameBlur($event)" placeholder="请输入昵称"></el-input>
+              </el-form-item>
+            </div>
+          </div>
 
 
-<div class="secrecyBox">
-    <div class="secrecyLeft">
- 
-<el-form-item label="邮箱">
-        <el-input v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
-      </el-form-item>
+          <div class="secrecyBox marginBot">
+            <div class="secrecyLeft">
+              <el-form-item label="性别">
+                <el-radio v-model="ruleForm.sex" label="男">男</el-radio>
+                <el-radio v-model="ruleForm.sex" label="女">女</el-radio>
+              </el-form-item>
+            </div>
+            <div class="secrecyRight">
+              <el-checkbox v-model="ruleForm.sexSecret">保密</el-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    </div>
-
-  
-      <div class="secrecyRight"><el-checkbox v-model="checked5">保密</el-checkbox></div>
 
 
-</div>
+      <div class="secrecyBox">
+        <div class="secrecyLeft">
+          <el-form-item label="联系方式" prop="mobile">
+            <el-input v-model="ruleForm.mobile" placeholder="请输入联系方式"></el-input>
+          </el-form-item>
+        </div>
+        <div class="secrecyRight">
+          <el-checkbox v-model="ruleForm.mobileSecret">保密</el-checkbox>
+        </div>
+      </div>
 
 
-  <el-form-item label="职称">
+
+      <div class="secrecyBox">
+        <div class="secrecyLeft">
+          <el-form-item label="邮箱">
+            <el-input v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
+          </el-form-item>
+        </div>
+        <div class="secrecyRight">
+          <el-checkbox v-model="ruleForm.emailSecret">保密</el-checkbox>
+        </div>
+      </div>
+
+
+      <el-form-item label="职称">
         <el-input v-model="ruleForm.jobTitle" placeholder="请输入职称"></el-input>
       </el-form-item>
 
+ <!-- 
 
       <div class="hr"></div>
-
-
-  <el-form-item label="单位(团队或者组织)"  class="speLabel">
+      <el-form-item label="单位(团队或者组织)" class="speLabel">
         <el-input v-model="ruleForm.team" placeholder="请输入职称"></el-input>
       </el-form-item>
 
-  <el-form-item label="部门">
+
+
+     <el-form-item label="部门">
         <el-input v-model="ruleForm.section" placeholder="请输入部门"></el-input>
       </el-form-item>
 
 
-<div class="secrecyBox">
-    <div class="secrecyLeft">
- 
-<el-form-item label="角色转换">
-        <el-input v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
-      </el-form-item>
 
-    </div>
+      <div class="secrecyBox">
+        <div class="secrecyLeft">
+          <el-form-item label="角色转换">
+            <el-input v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
+          </el-form-item>
+        </div>
+        <div class="secrecyRight">
+          <el-checkbox v-model="checked5">保密</el-checkbox>
+        </div>
+      </div> -->
 
-  
-      <div class="secrecyRight"><el-checkbox v-model="checked5">保密</el-checkbox></div>
 
-
-</div>
-
-<div class="hr"></div>
-
-<div class="secrecyBox">
-    <div class="secrecyTop">
+      <div class="hr"></div>
+      <div class="secrecyBox">
+        <div class="secrecyTop">
           <div class="secrecyLeft">
-      <h2>技能标签（擅长点、爱好、推销亮点）</h2>
-      </div>
-   <div class="secrecyRight">
-
-<el-checkbox v-model="checked1">保密</el-checkbox>
-
-   </div>
-   </div>
-   <div class="secrecyBottem">
-<el-tag
-  :key="tag"
-  v-for="tag in dynamicTags"
-  closable
-  :disable-transitions="false"
-  @close="handleClose(tag)">
-  {{tag}}
-</el-tag>
-<el-input
-  class="input-new-tag"
-  v-if="inputVisible"
-  v-model="inputValue"
-  ref="saveTagInput"
-  size="small"
-  @keyup.enter.native="handleInputConfirm"
-  @blur="handleInputConfirm"
->
-</el-input>
-<el-button v-else class="button-new-tag" 
-size="small" 
-@click="showInput"
-><i class="el-icon-plus"></i> 添加标签</el-button>
-
-   </div>
-    <div class="secrecyBottem">
-        <h4 style="color:#fda446">
+            <h2>技能标签（擅长点、爱好、推销亮点）</h2>
+          </div>
+          <div class="secrecyRight">
+            <el-checkbox v-model="ruleForm.tagSecret">保密</el-checkbox>
+          </div>
+        </div>
+        <div class="secrecyBottem">
+          <el-tag :key="tag" v-for="tag in ruleForm.dynamicTags" closable :disable-transitions="false" @close="handleClose(tag)">
+            {{tag}}
+          </el-tag>
+          <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm">
+          </el-input>
+          <el-button v-else class="button-new-tag" size="small" @click="showInput">
+            <i class="el-icon-plus"></i> 添加标签</el-button>
+        </div>
+        <div class="secrecyBottem">
+          <h4 style="color:#fda446">
             您提供的信息越详细准确，越方便他人检索到您，与您建立更好的合作关系。 例如：“电气工程师”“建筑师”。
-        </h4>
+          </h4>
+        </div>
+      </div>
 
-    </div>
+      <div class="hr"></div>
+      <!-- {{ruleForm.mapSearch}} -->
 
-
-</div>
-
-
-
-
+      经度：{{ruleForm.lng}}纬度：{{ruleForm.lat}}
 
 
-<div class="hr"></div>
+      <div class="secrecyBox">
+        <div class="secrecyLeft">
+          <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+          <el-form-item label="个人常用地址">
+            <el-input v-model="ruleForm.mapSearch" @focus="mapSearchFocus($event)" id="suggestId" placeholder="请输入详细地址或拖拽地址坐标点选地址"></el-input>
+          </el-form-item>
+        </div>
+        <div class="secrecyRight">
+          <el-checkbox v-model="ruleForm.mapAddSecret">保密</el-checkbox>
+        </div>
+      </div>
 
-    <!-- {{mapSearch}} -->
-    经度：{{lng}}纬度：{{lat}} 
 
-<div class="secrecyBox">
-    <div class="secrecyLeft">
- <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
- <el-form-item label="个人常用地址">
-        <el-input 
-        v-model="mapSearch" 
-        @focus="mapSearchFocus($event)" 
-        id="suggestId" 
-        placeholder="请输入详细地址或拖拽地址坐标点选地址"
-        ></el-input>
+
+      <div id="allmap" ref="allmap"></div>
+      <div id="r-result" ref="r-result"></div>
+      <div class="hr"></div>
+      
+      <el-form-item label="个人说明">
+        <el-input type="textarea" :autosize="{ minRows: 10, maxRows: 14}" placeholder="请输入个人说明" v-model="ruleForm.textarea">
+        </el-input>
       </el-form-item>
 
+    </el-form>
+    <div class="stepBtnStyle">
+      <el-button tag="el-button" @click="submitForm('ruleForm')" type="primary">
+        编辑完成，继续编辑个人信息
+      </el-button>
     </div>
-
-  
-      <div class="secrecyRight"><el-checkbox v-model="checked">保密</el-checkbox></div>
-
-
-</div>
-	 
-     
-
-        <div id="allmap" ref="allmap"></div>
-        <div id="r-result" ref="r-result"></div>
-
-<div class="hr"></div>
-
-
-<el-form-item label="个人说明">
-      <el-input type="textarea"
-      :autosize="{ minRows: 10, maxRows: 14}" 
-      placeholder="请输入个人说明" v-model="ruleForm.textarea">
-      </el-input>
- </el-form-item>
-
-
-
-
-        </el-form> 
-
-<!-- <el-button tag="el-button" @click="handNext" style="margin-top: 12px;">
-编辑完成，下一步
-</el-button> -->
-
-
-   <div class="stepBtnStyle">
-<el-button tag="el-button" @click="submitForm('ruleForm')" type="primary">
-编辑完成，继续编辑个人信息
-</el-button>
-</div>
-
-
-    </div>
+  </div>
 </template>
 <script>
 import router from "../../../router";
@@ -282,35 +197,46 @@ export default {
   data() {
     return {
       userInfo: {},
-      dynamicTags: ["财政", "摄影", "实时数据", "大数据"],
       inputVisible: false,
       inputValue: "",
-
-      checked: true,
-      checked1: false,
-      checked2: false,
-      checked3: false,
-      checked4: false,
       checked5: false,
-
-      imageUrl: "",
-
-      mapSearch: "",
-      lat: 0,
-      lng: 0,
       ruleForm: {
+        AvatImageUrl: "",
+        AvatImgName:'',
+        UserMobile: "",
+        UserSecret: false,
         nickname: "",
+        sex: "男",
+        sexSecret: false,
+        mobile: "",
+        mobileSecret: false,
         email: "",
+        emailSecret: false,
         jobTitle: "",
         team: "单位A",
         section: "",
+        tagSecret: false,
+        dynamicTags: ["财政", "摄影", "实时数据", "大数据"],
+        mapAddSecret: true,
+        mapSearch: "",
+        lat: 0,
+        lng: 0,
         textarea: "",
-        sex: "男"
+
       },
-      rules: {}
+   rules: {
+        mobile: [
+          { required: true, message: "请输入正确格式的联系方式", trigger: "blur" },
+          { min: 0, max: 11, message: "联系方式为11位的手机号", trigger: "blur" },
+        ]
+      }
+   
     };
   },
   methods: {
+    nicknameBlur(ev){
+     this.ruleForm.nickname?this.ruleForm.nickname:this.ruleForm.nickname = this.userInfo.name;
+    },
     open4(msg) {
       this.$message({
         message: msg,
@@ -328,20 +254,22 @@ export default {
 
     //添加或者删除标签
     handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      this.ruleForm.dynamicTags.splice(
+        this.ruleForm.dynamicTags.indexOf(tag),
+        1
+      );
     },
 
     showInput() {
-      //  console.log(this.dynamicTags.length)
-      if (this.dynamicTags.length >= 9) {
+      //  console.log(this.ruleForm.dynamicTags.length)
+      if (this.ruleForm.dynamicTags.length >= 9) {
         this.open4("技能标签最多只可填写9个");
         // console.log('大于9个了')
       } else {
         this.inputVisible = true;
-       
+
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
-          
         });
       }
     },
@@ -349,19 +277,18 @@ export default {
     handleInputConfirm() {
       let inputValue = this.inputValue;
       if (inputValue) {
-        if(inputValue.length>=10){
+        if (inputValue.length >= 10) {
           this.open4("技能标签最多10字符");
-        }else{
-        this.dynamicTags.push(inputValue);
+        } else {
+          this.ruleForm.dynamicTags.push(inputValue);
         }
-       
       }
       this.inputVisible = false;
       this.inputValue = "";
     },
     //百度地图API
     map() {
-      // console.log(this.mapSearch);
+      // console.log(this.ruleForm.mapSearch);
       let _that = this;
 
       function G(id) {
@@ -396,8 +323,8 @@ export default {
           getAddress(r.point);
           map.addOverlay(ac); //把点添加到地图上
           map.panTo(r.point);
-          _that.lat = r.point.lat;
-          _that.lng = r.point.lng;
+          _that.ruleForm.lat = r.point.lat;
+          _that.ruleForm.lng = r.point.lng;
           // console.log(r.point)
         } else {
           alert("failed" + this.getStatus());
@@ -453,7 +380,7 @@ export default {
           _value.district +
           _value.street +
           _value.business;
-        _that.mapSearch = myValue;
+        _that.ruleForm.mapSearch = myValue;
 
         G("searchResultPanel").innerHTML =
           "onconfirm<br />index = " +
@@ -469,8 +396,8 @@ export default {
         function myFun() {
           var pp = local.getResults().getPoi(0).point; //获取第一个智能搜索的结果
           map.centerAndZoom(pp, 18);
-          _that.lat = pp.lat;
-          _that.lng = pp.lng;
+          _that.ruleForm.lat = pp.lat;
+          _that.ruleForm.lng = pp.lng;
           //   console.log(pp.lat,pp.lng)
           let marker = new BMap.Marker(pp);
 
@@ -498,9 +425,9 @@ export default {
             addComp.district +
             addComp.street +
             addComp.streetNumber; //获取地址
-          _that.mapSearch = address;
-          _that.lat = e.point.lat;
-          _that.lng = e.point.lng;
+          _that.ruleForm.mapSearch = address;
+          _that.ruleForm.lat = e.point.lat;
+          _that.ruleForm.lng = e.point.lng;
         });
       }
       //获取地址信息，设置地址label
@@ -515,15 +442,18 @@ export default {
             addComp.district +
             addComp.street +
             addComp.streetNumber; //获取地址
-          _that.mapSearch = address;
+          _that.ruleForm.mapSearch = address;
         });
       }
     },
 
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      // console.log(URL.createObjectURL(file.raw))
+ 
+      this.ruleForm.AvatImageUrl = URL.createObjectURL(file.raw);
+      this.ruleForm.AvatImgName = file.name;
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload(file) {  
       const isJPG = file.type === "image/jpeg";
       const isPNG = file.type === "image/png";
       const isGIF = file.type === "image/gif";
@@ -542,6 +472,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log(this.ruleForm);
           //   console.log(this.$refs.uploada.uploadFiles);
           // console.log(this.$refs)
 
@@ -552,8 +483,8 @@ export default {
           // console.log(this.$refs.upload)
 
           // alert('您填写的内容是：' + this.ruleForm.name);
-          router.push("/project/step_3");
-          this.$emit("next", 3);
+          // router.push("/project/step_3");
+          // this.$emit("next", 3);
         } else {
           console.log("error submit!!");
           return false;
@@ -568,14 +499,18 @@ export default {
   mounted() {
     this.$emit("next", 2);
     this.map();
-    this.userInfo = getStorage("userInfo");
+    this.ruleForm.UserMobile = this.ruleForm.mobile = getStorage(
+      "userInfo"
+    ).mobile;
     this.ruleForm.nickname = getStorage("userInfo").name;
-    this.imageUrl = getStorage("userInfo").mainPic;
+
+    this.userInfo = getStorage("userInfo");
+    this.ruleForm.AvatImageUrl = getStorage("userInfo").mainPic;
     // console.log(getStorage('userInfo'))
   },
   watch: {
     mapSearch() {
-      this.mapSearch = this.mapSearch;
+      this.ruleForm.mapSearch = this.ruleForm.mapSearch;
     }
   }
 };
@@ -587,6 +522,7 @@ export default {
 }
 
 /* .el-tag{margin-top:5px; margin-bottom:5px; } */
+
 .el-tag + .el-tag {
   margin-left: 10px;
 }
@@ -634,5 +570,3 @@ AvatImgBox .avatar-uploader-icon{
     display: block;
   } */
 </style>
-
-

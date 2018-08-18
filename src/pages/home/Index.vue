@@ -3,9 +3,13 @@
     <g-header></g-header>
         <left-menu></left-menu>
        <!-- 11111111 {{fiaworkfiow}}<br/> -->
-       {{goods}}
+     
         <el-col :span="5"><div class="grid-content bg-purple-light"></div></el-col>
-        <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
+        <el-col :span="16"><div class="grid-content bg-purple">
+          
+            {{ProList}}
+          
+          </div></el-col>
 <right-menu></right-menu>
   <g-footer></g-footer>
 </el-row>
@@ -29,7 +33,7 @@ export default {
 
     },
     computed:{
- ...mapState(['fiaworkfiow']),
+ ...mapState(['fiaworkfiow','ProList']),
  },
  methods: {
   //  ...mapMutations(['getWorkCount']),
@@ -43,10 +47,10 @@ export default {
         RightMenu,
 
     },
-      //  async created() {
-      // let params =  {url:'yq_api/user/login',objs:{mobile:'13051376806',password:'123456',type:'1'}}
-      // await this.getWorkCount(params);
-      // this.goods = this.fiaworkfiow;
+    //    async created() {
+    //   let params =  {url:'yq_api/user/login',objs:{mobile:'13051376806',password:'123456',type:'1'}}
+    //   await this.getWorkCount(params);
+    //   this.goods = this.fiaworkfiow;
     // },
 
     mounted() {

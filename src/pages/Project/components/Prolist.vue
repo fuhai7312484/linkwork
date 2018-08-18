@@ -30,7 +30,7 @@
           <li v-for="(item,index) in noteInfo" :key="index">
             <span class="ItemDec" :style="{backgroundColor:item.style.color}"></span>
             <span class="ItemDecText">
-              {{item.content}}--
+         {{item.content}}--
               <span :style="item.style">{{item.colorName}}</span>
             </span>
           </li>
@@ -58,14 +58,16 @@
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="创建时间"> 创建时间</el-dropdown-item>
-                    <el-dropdown-item command="未读信息">未读信息</el-dropdown-item>
-                     <el-dropdown-item command="使用频率数"> 使用频率数</el-dropdown-item>
-                    <el-dropdown-item command="创建人完成度">创建人完成度</el-dropdown-item>
-                     <el-dropdown-item command="个人完成度"> 个人完成度</el-dropdown-item>
-                    <el-dropdown-item command="参与人数">参与人数</el-dropdown-item>
-                     <el-dropdown-item command="已完结"> 已完结</el-dropdown-item>
-                    <el-dropdown-item command="删除并退出的">删除并退出的</el-dropdown-item>
+                    <el-dropdown-item command="0"> 创建时间</el-dropdown-item>
+                    <el-dropdown-item command="1">未读信息</el-dropdown-item>
+                     <el-dropdown-item command="7"> 使用频率数</el-dropdown-item>
+                    <el-dropdown-item command="3">创建人完成度</el-dropdown-item>
+                     <el-dropdown-item command="4"> 个人完成度</el-dropdown-item>
+                    <el-dropdown-item command="2">参与人数</el-dropdown-item>
+                     <el-dropdown-item command="5"> 已完结</el-dropdown-item>
+                    <el-dropdown-item command="8">删除并退出的</el-dropdown-item>
+                     <!-- <el-dropdown-item command="9">按项目简称</el-dropdown-item> -->
+                      <el-dropdown-item command="10">全部项目</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
 
@@ -78,12 +80,15 @@
           </div>
 
         </div>
-        <ul>
-          <li class="porList" v-for="(item, index) in tableData" :key="index" >
+
+        <!-- {{tableData}} -->
+        <ul  v-loading="loading">
+
+          <li class="porList" v-for="(item, index) in tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" >
             <div class="porListNameBox">
               <el-col :span="16" class="porListTitle">
-                 <h2 :style="setTaskState(item.taskState)" @click="handChangproTitle(item.name,('/detail/'+ index))">
-                  {{indexMethod(index)}}.{{item.name}}
+                 <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" @click="handChangproTitle(item.shortName,('/detail/'+ index))">
+              {{indexMethod(item.key)}}.{{item.shortName}}
                 </h2>
                 <!-- <h2 :style="setTaskState(item.taskState)" @click="handChangproTitle(item.name)">
                   {{indexMethod(index)}}.{{item.name}}
@@ -91,10 +96,10 @@
               </el-col>
 
               <el-col :span="3" class="RingType">
-                <el-progress type="circle" :width="39" :percentage="item.progress"></el-progress>
+                <el-progress type="circle" :width="39" :percentage="item.timeDuty===null?item.timeDuty=0:(item.timeDuty*1)"></el-progress>
               </el-col>
               <el-col :span="3" class="RingType">
-                <el-progress type="circle" color="#e9cf33" :width="39" :percentage="item.task"></el-progress>
+                <el-progress type="circle" color="#e9cf33" :width="39" :percentage="item.duty"></el-progress>
               </el-col>
               <el-col :span="2" class="porListTitle">
 
@@ -114,165 +119,129 @@
             </div>
             <div class="porDatesBox">
               <el-col :span="10">
-                创建时间:{{item.createDate}}
+                创建时间: {{TimePro(item.createTime,'-')}}
+                
+                 <!-- {{getToTime(item.createTime)}} -->
+            
               </el-col>
-              <el-col :span="10">加入时间:{{item.addInDate}}</el-col>
-              <el-col :span="4"> 参与人数:{{item.num}}</el-col>
+              <el-col :span="10">加入时间:{{TimePro(item.joinTime,'-')}}</el-col>
+              <el-col :span="4"> 参与人数:{{item.peopleNum}}</el-col>
             </div>
           </li>
+
+
+          <el-pagination
+  background
+  layout="prev, pager, next"
+  :page-size="pagesize"
+  :total="total"
+   @current-change="current_change"
+  >
+</el-pagination>
         </ul>
+        
+
+
+        <!-- <el-pagination
+  background
+  layout="prev, pager, next"
+  :total="1000">
+</el-pagination> -->
+
         <div class="clear"></div>
       </div>
     </div>
   </div>
 </template>
 <script>
-  import { autodivheight } from "../../../assets/lib/myStorage.js";
-  import { mapState,mapMutations } from "vuex";
-  export default {
-    name: "ProList",
-    data() {
-      return {
-        searchInput: '',
-        noteInfo: [
-          {
-            prefix: "·",
-            content: "被邀请加入项目字体颜色",
-            colorName: "黄色",
-            style: { color: "#edc800", fontWeight: "bold" }
-          },
-          {
-            prefix: "·",
-            content: "自己创建的项目字体颜色",
-            colorName: "蓝色",
-            style: { color: "#3db2ea", fontWeight: "bold" }
-          },
-          {
-            prefix: "·",
-            content: "被邀请参与的项目字体颜色",
-            colorName: "黑色",
-            style: { color: "#181818", fontWeight: "bold" }
-          },
-          {
-            prefix: "·",
-            content: "您已归档的项目字体颜色",
-            colorName: "深灰",
-            style: { color: "#676767", fontWeight: "bold" }
-          },
-          {
-            prefix: "·",
-            content: "您已退出并删除的项目字体颜色",
-            colorName: "浅灰",
-            style: {
-              color: "#a9a9a9",
-              textDecoration: "line-through",
-              fontWeight: "bold"
-            }
+import {
+  autodivheight,
+  getPostInfo,
+  getStorage,
+  getToTime,
+  setKeyIndex
+} from "../../../assets/lib/myStorage.js";
+import { mapState, mapMutations } from "vuex";
+export default {
+  name: "ProList",
+  data() {
+    return {
+               total:0,//默认数据总数
+                pagesize:6,//每页的数据条数
+                currentPage:1,//默认开始页面
+
+      loading: true,
+      searchInput: "",
+        timer: null,
+      noteInfo: [
+        {
+          prefix: "·",
+          content: "被邀请加入项目字体颜色",
+          colorName: "黄色",
+          style: { color: "#edc800", fontWeight: "bold" }
+        },
+        {
+          prefix: "·",
+          content: "自己创建的项目字体颜色",
+          colorName: "蓝色",
+          style: { color: "#3db2ea", fontWeight: "bold" }
+        },
+        {
+          prefix: "·",
+          content: "被邀请参与的项目字体颜色",
+          colorName: "黑色",
+          style: { color: "#181818", fontWeight: "bold" }
+        },
+        {
+          prefix: "·",
+          content: "您已归档的项目字体颜色",
+          colorName: "深灰",
+          style: { color: "#676767", fontWeight: "bold" }
+        },
+        {
+          prefix: "·",
+          content: "您已退出并删除的项目字体颜色",
+          colorName: "浅灰",
+          style: {
+            color: "#a9a9a9",
+            textDecoration: "line-through",
+            fontWeight: "bold"
           }
-        ],
+        }
+      ],
+      searchArr:[],
+      tableData: []
+    };
+  },
+  computed: {
+    ...mapState({
+      sWHeight: state => state.sWHeight
+    }),
+  },
+  methods: {
+        current_change(currentPage){
+       
+                        this.currentPage = currentPage;
 
-        tableData: [
-          {
-            name: "链工作APP项目",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 36,
-            task: 12,
-            num: 12,
-            taskState: 1,
-          },
-          {
-            name: "链工作开发与测试项目阶段一的开发",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 90,
-            task: 51,
-            num: 7,
-            taskState: 2,
-          },
-          {
-            name: "链工作开发与测试项目阶段一的开发",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 17,
-            task: 1,
-            num: 7,
-            taskState: 3,
-          },
-          {
-            name: "链工作开发与测试项目阶段一的开发",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 58,
-            task: 99,
-            num: 7,
-            taskState: 4,
-          },
-          {
-            name: "链工作开发与测试项目阶段一的开发",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 28,
-            task: 37,
-            num: 7,
-            taskState: 5,
-          },
-             {
-            name: "链工作开发与测试项目阶段一的开发",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 90,
-            task: 51,
-            num: 7,
-            taskState: 2,
-          },
-          {
-            name: "链工作开发与测试项目阶段一的开发",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 17,
-            task: 1,
-            num: 7,
-            taskState: 3,
-          },
-          {
-            name: "链工作开发与测试项目阶段一的开发",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 58,
-            task: 99,
-            num: 7,
-            taskState: 4,
-          },
-          {
-            name: "链工作开发与测试项目阶段一的开发",
-            createDate: "2016-05-03",
-            addInDate: "2018-04-12",
-            progress: 28,
-            task: 37,
-            num: 7,
-            taskState: 5,
-          },
+                        // console.log(this.tableData.slice((this.currentPage-1)*this.pagesize,this.currentPage*this.pagesize))
+              },
 
-        ]
-      };
+    ...mapMutations(["proTitleChang", "showLoading"]),
+    //  craetChangproTitle(title){
+    //  this.proTitleChang(title)
+    //  this.$router.push('/project/createpro')
+    // },
+    TimePro(time, nic) {
+      if (!time) {
+        return "0000" + nic + "00" + nic + "00" + " " + "00:00:00";
+      } else {
+        return getToTime(time, nic);
+      }
     },
-    computed: {
-      ...mapState({
-        sWHeight: state => state.sWHeight
-      })
-    },
-    methods: {
-      ...mapMutations(['proTitleChang','showLoading']),
-      //  craetChangproTitle(title){
-      //  this.proTitleChang(title)
-      //  this.$router.push('/project/createpro')
-      // },
-
-      handChangproTitle(title,url){
-        this.showLoading(true)
-         this.proTitleChang(title)
-       this.$router.push(url)
+    handChangproTitle(title, url) {
+      this.showLoading(true);
+      this.proTitleChang(title);
+      this.$router.push(url);
 
       //   setTimeout(() => {
       //       this.proTitleChang(title)
@@ -282,41 +251,122 @@
 
       //  this.proTitleChang(title)
       //  this.$router.push(url)
-      },
-      indexMethod(index) {
-        return (index * 1) + 1;
-      },
-      handleCommand(command) {
-        console.log(command)
-        // this.$message('click on item ' + command);
-      },
-      setTaskState(state) {
-        switch (state) {
-          case 1:
-            return { color: "#edc800" }
+    },
+    indexMethod(index) {
+      return index * 1 + 1;
+    },
+
+    handleCommand(command) {
+           this.loading = true;
+            let obj = {
+              page: "1",
+              size: "1",
+              userId: getStorage("userInfo").id,
+              type: command
+            };
+             getPostInfo("yq_api/project/listByCondition", obj).then(res=>{
+               let data = res.data
+               if(data.code===200){
+                 data = data.data;
+                 setKeyIndex(data)
+                this.searchArr = this.tableData = data;
+                // console.log(this.tableData)
+                this.total = data.length
+                this.loading = false;
+               }
+             
+             })
+             .catch(err=>{
+              console.log(err)
+            });
+    },
+    setTaskState(isMyProject, status, uStatus) {
+      if (isMyProject !=null && isMyProject === "Y") {
+       
+        if (status === "0") {
+          switch (uStatus) {
+            case "0":
+              return { color: "#3db2ea" };
+              break;
+            case "1":
+              return { color: "#676767" };
+              break;
+            case "2":
+              return {
+                color: "#a9a9a9",
+                textDecoration: "line-through"
+              };
+              break;
+          }
+        } else if (status === "4") {
+          return {
+            color: "red"
+          };
+        }
+      } else {
+        switch (uStatus) {
+          case "0":
+            return { color: "#181818" };
             break;
-          case 2:
-            return { color: "#3db2ea" }
+          case "1":
+            return { color: "#676767" };
             break;
-          case 3:
-            return { color: "#181818" }
-            break;
-          case 4:
-            return { color: "#676767" }
-            break;
-          case 5:
+          case "2":
             return {
               color: "#a9a9a9",
-              textDecoration: "line-through",
-            }
+              textDecoration: "line-through"
+            };
             break;
         }
-        // console.log(state)
-
-      },
+      }
 
     }
-  };
+  },
+  created () {
+    this.handleCommand('10')
+
+  },
+
+    watch: {
+    searchInput() {
+    
+      if (this.timer) {
+        clearTimeout(this.timer);
+      }
+      this.timer = setTimeout(() => {
+         
+
+        let result = [];
+      
+         this.searchArr.forEach(e => {
+            if (
+              e.shortName.indexOf(this.searchInput) > -1
+            ) {
+              result.push(e);
+            }
+          });
+
+          setKeyIndex(result)
+            this.total = result.length
+            this.currentPage = 1;
+        
+        result.length?this.tableData = result:this.tableData = [{shortName:'查询不到您输入的项目！！',
+        key:'-1',
+        isMyProject:null,
+        timeDuty:0,
+        duty:0,
+        createTime:null,
+        joinTime:null,
+        peopleNum:'0',
+
+        }];
+     
+      }, 100);
+    },
+      deep: true
+  }
+ 
+};
 </script>
 <style>
 

@@ -100,20 +100,23 @@ export default new Router({
   ]
 });
 // 路由跳转前的钩子
-router.beforeEach(function (to, from, next) {
-  // console.log(store.state.isLoding)
-  // console.log(to)
-  store.commit('showLoading',true)
-  next()
-})
+// router.beforeEach(function (to, from, next) {
+//   // console.log(store.state.isLoding)
+//   // console.log(to)
 
-// 路由跳转后的钩子
-router.afterEach(function (to) {
-  // console.log(store.state.isLoding)
-  // store.commit('showLoading',false)
+//   if(to.path !='/login' && to.path !='/resetpw' && to.path !='/register' ){
+//     store.commit('showLoading',true)
+//   }
+//   next()
+// })
 
-  setTimeout(function(){
-    store.commit('showLoading',false)
-  },1000)
+// // 路由跳转后的钩子
+// router.afterEach(function (to) {
+//   // console.log(store.state.isLoding)
+//   // store.commit('showLoading',false)
+
+//   setTimeout(function(){
+//     store.commit('showLoading',false)
+//   },1000)
  
-})
+// })
