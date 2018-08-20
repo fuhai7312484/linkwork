@@ -8,6 +8,7 @@ import Register from '../pages/login/components/register'
 import InformAtc from '../pages/login/components/Information'
 import ProList from '../pages/Project/components/ProList.vue'
 import PorIndex from '../pages/Project/index.vue'
+import DiaryIndex from '../pages/Diary/index.vue'
 import CreatePro from '../pages/Project/components/Createpro.vue'
 import Step1 from '../pages/Project/components/Step1.vue'
 import Step2 from '../pages/Project/components/Step2.vue'
@@ -36,6 +37,13 @@ export default new Router({
       },
       component: Home
     },
+    //日程日志路由
+    {
+      path: "/diary",
+      name: "DiaryIndex",
+      component: DiaryIndex
+    },
+    //项目列表创建项目步骤等路由
     {
       path: "/project",
       name: "PorIndex",
@@ -75,6 +83,7 @@ export default new Router({
         },
       ]
     },
+    //登录、注册、找回密码路由
     {
       path: "/login",
       name: "LoginIndex",

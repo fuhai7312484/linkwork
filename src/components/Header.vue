@@ -20,19 +20,9 @@
         width="280">
       </el-table-column>
     </el-table>
-
-
  <router-link tag="div" to="/project/createpro" class="transitionCretdBtn">
         <span class="iconfont addproIcon">&#xe659;</span>创建项目</router-link>
-             
-            
- 
-             
               </div>
-
-              
-    
-               
         </div>
       </el-collapse-transition>
     </div>
@@ -40,12 +30,7 @@
    <span class="iconfont headPorList" ref="headPorList" slot="reference" @click="show3 = !show3" >&#xe658;</span>
                <h2> {{proTitle}}</h2>
         </div>
-
-
-
 <div class="headRightBox">
-
-   
  <el-popover
     placement="right"
     width="400"

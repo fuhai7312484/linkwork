@@ -397,6 +397,7 @@ overflow: hidden;
 .searchInput{
     /* border: 1px solid #3d6284; */
     border-radius:4px; 
+  
 }
 .searchInput .el-input__inner{
      /* border: 0px solid #3d6284; */

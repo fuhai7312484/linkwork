@@ -41,7 +41,7 @@
       <div class="content" 
       :style="{maxHeight:sWHeight}"
       >
-        {{searchInput}}
+      
         <div class="searchBox">
           <div class="search">
 
@@ -82,13 +82,22 @@
         </div>
 
         <!-- {{tableData}} -->
-        <ul  v-loading="loading">
+        <ul v-if="showProUl">
+          <li>
+        <h2 :style="{color:'#ccc',textAlign:'center',paddingTop:'50px'}">无查询数据，去 <router-link to="/project/createpro" tag="span" :style="{color:'#3db2ea',cursor:'pointer'}"><i class="iconfont">&#xe659;</i> 创建自己的项目</router-link></h2>
 
+          </li>
+        
+
+        </ul>
+        <ul v-if="!showProUl" v-loading="loading"
+         element-loading-text="拼命加载中"
+         >
           <li class="porList" v-for="(item, index) in tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" >
             <div class="porListNameBox">
               <el-col :span="16" class="porListTitle">
                  <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" @click="handChangproTitle(item.shortName,('/detail/'+ index))">
-              {{indexMethod(item.key)}}.{{item.shortName}}
+         {{indexMethod(item.key)}}.{{item.shortName}}
                 </h2>
                 <!-- <h2 :style="setTaskState(item.taskState)" @click="handChangproTitle(item.name)">
                   {{indexMethod(index)}}.{{item.name}}
@@ -128,19 +137,16 @@
               <el-col :span="4"> 参与人数:{{item.peopleNum}}</el-col>
             </div>
           </li>
-
-
           <el-pagination
   background
   layout="prev, pager, next"
   :page-size="pagesize"
+  :current-page="currentPage"
   :total="total"
    @current-change="current_change"
   >
 </el-pagination>
         </ul>
-        
-
 
         <!-- <el-pagination
   background
@@ -159,20 +165,21 @@ import {
   getPostInfo,
   getStorage,
   getToTime,
-  setKeyIndex
+  setKeyIndex,
+  statusColor
 } from "../../../assets/lib/myStorage.js";
 import { mapState, mapMutations } from "vuex";
 export default {
   name: "ProList",
   data() {
     return {
-               total:0,//默认数据总数
-                pagesize:6,//每页的数据条数
-                currentPage:1,//默认开始页面
-
+      total: 0, //默认数据总数
+      pagesize: 6, //每页的数据条数
+      currentPage: 1, //默认开始页面
+      showProUl:false,
       loading: true,
       searchInput: "",
-        timer: null,
+      timer: null,
       noteInfo: [
         {
           prefix: "·",
@@ -209,22 +216,22 @@ export default {
           }
         }
       ],
-      searchArr:[],
+      searchArr: [],
       tableData: []
     };
   },
   computed: {
     ...mapState({
       sWHeight: state => state.sWHeight
-    }),
+    })
   },
   methods: {
-        current_change(currentPage){
-       
-                        this.currentPage = currentPage;
+    current_change(currentPage) {
+      this.currentPage = currentPage;
+    
 
-                        // console.log(this.tableData.slice((this.currentPage-1)*this.pagesize,this.currentPage*this.pagesize))
-              },
+      // console.log(this.tableData.slice((this.currentPage-1)*this.pagesize,this.currentPage*this.pagesize))
+    },
 
     ...mapMutations(["proTitleChang", "showLoading"]),
     //  craetChangproTitle(title){
@@ -257,117 +264,77 @@ export default {
     },
 
     handleCommand(command) {
-           this.loading = true;
-            let obj = {
-              page: "1",
-              size: "1",
-              userId: getStorage("userInfo").id,
-              type: command
-            };
-             getPostInfo("yq_api/project/listByCondition", obj).then(res=>{
-               let data = res.data
-               if(data.code===200){
-                 data = data.data;
-                 setKeyIndex(data)
-                this.searchArr = this.tableData = data;
-                // console.log(this.tableData)
-                this.total = data.length
-                this.loading = false;
-               }
-             
-             })
-             .catch(err=>{
-              console.log(err)
-            });
+      this.loading = true;
+      let obj = {
+        page: "1",
+        size: "999",
+        userId: getStorage("userInfo").id,
+        // type:'0'
+        type: command
+      };
+      getPostInfo("yq_api/project/listByCondition", obj)
+        .then(res => {
+          let data = res.data;
+          if (data.code === 200) {
+            data = data.data;
+      
+            setKeyIndex(data);
+            this.searchArr = this.tableData = data;
+            // console.log(this.tableData)
+            
+            this.total = data.length;
+            this.currentPage = 1;
+            // console.log(this.currentPage)
+            this.loading = false;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     setTaskState(isMyProject, status, uStatus) {
-      if (isMyProject !=null && isMyProject === "Y") {
-       
-        if (status === "0") {
-          switch (uStatus) {
-            case "0":
-              return { color: "#3db2ea" };
-              break;
-            case "1":
-              return { color: "#676767" };
-              break;
-            case "2":
-              return {
-                color: "#a9a9a9",
-                textDecoration: "line-through"
-              };
-              break;
-          }
-        } else if (status === "4") {
-          return {
-            color: "red"
-          };
-        }
-      } else {
-        switch (uStatus) {
-          case "0":
-            return { color: "#181818" };
-            break;
-          case "1":
-            return { color: "#676767" };
-            break;
-          case "2":
-            return {
-              color: "#a9a9a9",
-              textDecoration: "line-through"
-            };
-            break;
-        }
-      }
-
+     return statusColor(isMyProject, status, uStatus)
     }
   },
-  created () {
-    this.handleCommand('10')
+  created() {
+    this.handleCommand("10");
 
+    // console.log(statusColor('Y','0','0')) 
   },
 
-    watch: {
+  watch: {
     searchInput() {
-    
       if (this.timer) {
         clearTimeout(this.timer);
       }
       this.timer = setTimeout(() => {
-         
-
         let result = [];
-      
-         this.searchArr.forEach(e => {
-            if (
-              e.shortName.indexOf(this.searchInput) > -1
-            ) {
-              result.push(e);
-            }
-          });
 
-          setKeyIndex(result)
-            this.total = result.length
-            this.currentPage = 1;
-        
-        result.length?this.tableData = result:this.tableData = [{shortName:'查询不到您输入的项目！！',
-        key:'-1',
-        isMyProject:null,
-        timeDuty:0,
-        duty:0,
-        createTime:null,
-        joinTime:null,
-        peopleNum:'0',
+        this.searchArr.forEach(e => {
+          if (e.shortName.indexOf(this.searchInput) > -1) {
+            result.push(e);
+          }
+        });
 
-        }];
-     
+        setKeyIndex(result);
+        this.total = result.length;
+        this.currentPage = 1;
+        if(result.length){
+           this.showProUl = false
+          this.tableData = result;
+         
+        }else{
+
+          this.showProUl = true;
+
+        }
+
+    
       }, 100);
     },
-      deep: true
+    deep: true
   }
- 
 };
 </script>
 <style>
-
 </style>

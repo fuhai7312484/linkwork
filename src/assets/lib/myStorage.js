@@ -175,3 +175,46 @@ export function setKeyIndex(arr){
     e.key = index;
   });
 }
+
+export function statusColor(isMyProject, status, uStatus){
+  // console.log(isMyProject, status, uStatus)
+
+   if (isMyProject != null && isMyProject === "Y") {
+    if (status === "0") {
+      switch (uStatus) {
+        case "0":
+          return { color: "#3db2ea" };
+          break;
+        case "1":
+          return { color: "#676767" };
+          break;
+        case "2":
+          return {
+            color: "#a9a9a9",
+            textDecoration: "line-through"
+          };
+          break;
+      }
+    } else if (status === "4") {
+      return {
+        color: "red"
+      };
+    }
+  } else {
+    switch (uStatus) {
+      case "0":
+        return { color: "#181818" };
+        break;
+      case "1":
+        return { color: "#676767", fontWeight: "bold" };
+        break;
+      case "2":
+        return {
+          color: "#a9a9a9",
+          textDecoration: "line-through"
+        };
+        break;
+    }
+  }
+
+}
