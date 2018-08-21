@@ -18,7 +18,7 @@
 import Vue from "vue";
 import vuex from "vuex";
 import testStore from "./testStore.js";
-import {getPostInfo} from "../assets/lib/myStorage"
+import {getPostInfo,setStorage,getStorage} from "../assets/lib/myStorage"
 
 Vue.use(vuex);
 
@@ -29,7 +29,8 @@ export default new vuex.Store({
     userInfo: localStorage.userInfo,
     sWHeight: "590px",
     isLoding: false,
-    proTitle:localStorage.proTitle?localStorage.proTitle:'示例项目',
+    // proTitle:localStorage.proTitle?localStorage.proTitle:'示例项目',
+    proTitle:{},
     fiaworkfiow:[],
     ProList:[],
   },
@@ -64,9 +65,10 @@ export default new vuex.Store({
     getScrllH(state, data) {
       state.sWHeight = data;
     },
-    proTitleChang(state, data){
-        state.proTitle = data;
-        localStorage.proTitle = data;
+    proTitleChang(state){
+        // state.proTitle = data;
+        state.proTitle = getStorage('proInfo')
+        // localStorage.proTitle = data;
     },
   },
   actions: {

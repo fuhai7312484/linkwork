@@ -28,7 +28,7 @@
     </div>
   </div>
    <span class="iconfont headPorList" ref="headPorList" slot="reference" @click="show3 = !show3" >&#xe658;</span>
-               <h2> {{proTitle}}</h2>
+               <h2> {{proInfo.protitle}}</h2>
         </div>
 <div class="headRightBox">
  <el-popover
@@ -96,27 +96,36 @@ import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   name: "GHeader",
   computed: {
-    ...mapState(["proTitle", "ProList"])
+    ...mapState(["proTitle", "ProList"]),
+   
   },
   data() {
     return {
       userData: {},
       show3: false,
-      gridData: []
+      gridData: [],
+      proInfo:{},
     };
   },
   methods: {
-    ...mapMutations(["changeLogin"]),
+    ...mapMutations(["changeLogin","proTitleChang"]),
     ...mapActions(["getProList"]),
+  
     signOut() {
-      //    stoRemove('userName');
-      stClear();
+         stoRemove('userName');
+      // stClear();
       this.changeLogin(0);
       router.push("/login");
     }
   },
   mounted() {
     this.userData = getStorage("userInfo");
+    this.proTitleChang()
+    this.proInfo = this.$store.state.proTitle;
+    // console.log(this.$store.state.proTitle,getStorage('proInfo'))
+  // console.log(this.$store.state.proTitle)
+  // console.log(proTitle)
+  
 
     let _that = this;
 

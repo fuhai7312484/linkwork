@@ -96,7 +96,7 @@
           <li class="porList" v-for="(item, index) in tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" >
             <div class="porListNameBox">
               <el-col :span="16" class="porListTitle">
-                 <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" @click="handChangproTitle(item.shortName,('/detail/'+ index))">
+                <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" @click="handChangproTitle(item.shortName,item.projectId,('/'))">
          {{indexMethod(item.key)}}.{{item.shortName}}
                 </h2>
                 <!-- <h2 :style="setTaskState(item.taskState)" @click="handChangproTitle(item.name)">
@@ -137,15 +137,15 @@
               <el-col :span="4"> 参与人数:{{item.peopleNum}}</el-col>
             </div>
           </li>
-          <el-pagination
-  background
-  layout="prev, pager, next"
-  :page-size="pagesize"
-  :current-page="currentPage"
-  :total="total"
-   @current-change="current_change"
-  >
-</el-pagination>
+                    <el-pagination
+                  background
+                  layout="prev, pager, next"
+                  :page-size="pagesize"
+                  :current-page="currentPage"
+                  :total="total"
+                  @current-change="current_change"
+                >
+                  </el-pagination>
         </ul>
 
         <!-- <el-pagination
@@ -166,7 +166,8 @@ import {
   getStorage,
   getToTime,
   setKeyIndex,
-  statusColor
+  statusColor,
+  setStorage
 } from "../../../assets/lib/myStorage.js";
 import { mapState, mapMutations } from "vuex";
 export default {
@@ -245,9 +246,13 @@ export default {
         return getToTime(time, nic);
       }
     },
-    handChangproTitle(title, url) {
+    handChangproTitle(title,proId,url) {
       this.showLoading(true);
-      this.proTitleChang(title);
+      // let obj = {protitle:title,proId:proId}
+
+      setStorage('proInfo',{protitle:title,proId:proId})
+     
+      // this.proTitleChang({protitle:title,proId:proId});
       this.$router.push(url);
 
       //   setTimeout(() => {
@@ -289,6 +294,7 @@ export default {
           }
         })
         .catch(err => {
+          console.log(11111)
           console.log(err);
         });
     },
