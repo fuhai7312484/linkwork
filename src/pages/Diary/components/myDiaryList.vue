@@ -24,17 +24,6 @@
 {{locats.name}}
            </span>
 
-<!-- {{itme.locationList[0].name}} -->
-
-
-           
-          
-             <!-- {{itme.resourceList}} -->
- <!-- {{myDiaryList}} -->
-        <!-- 我的日志列表 -->
-
-        <!-- {{itme}} -->
-
          </li>
 
 
@@ -43,7 +32,8 @@
     </div>
 </template>
 <script>
-  import {getPostInfo } from "../../../assets/lib/myStorage.js";
+  import {getPostInfo,getStorage} from "../../../assets/lib/myStorage.js";
+   import { mapState } from "vuex";
 export default {
     name:'MyDiary',
     data(){
@@ -52,20 +42,28 @@ export default {
             myDiaryList:[],
         }
     },
+     
+    computed: {
+      ...mapState(
+        ['sWHeight','proTitle','userInfo']
+        )
+    },
         mounted() {
+            
     this.loading = true;
       let obj = {
         page:'1',
         size:'999',
-        userId:'2C9136AE655B671001655B75312F0008',
-        projectId:'2C9136AE655B671001655BAD8104003E',
+        userId:getStorage("userInfo").id,
+        projectId:this.proTitle.proId,
 
       }
       getPostInfo('yq_api/projectDiary/searchMyDariyList',obj)
       .then(res=>{
+        //   console.log(obj)
         this.myDiaryList =res.data.data;
-      
-        console.log(this.myDiaryList)
+        // console.log(res.data.data)
+        // console.log(this.myDiaryList)
         this.loading = false;
         // console.log(res.data.data)
       })

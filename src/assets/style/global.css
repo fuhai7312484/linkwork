@@ -764,3 +764,41 @@ overflow: hidden;
   .editDiaryBtns li:hover div{
       color: #fff;
   }
+  .editDiaryBtns li div.fontlarge{
+    font-size:30px;
+  }
+  .DiaryTabs li{
+      font-size: 16px;
+      color: #000;
+      font-weight: bold;
+      font-family: "微软雅黑"
+
+  }
+  .DiaryTabs .icon-dian:before{
+      font-size: 22px;
+      color:#b5b5b5;
+      vertical-align: middle;
+
+  }
+  .DiaryTabs .active{
+      color: #2fbad3;
+  }
+  .DiaryTabs .active:before { content: "\e6a9"; 
+    color: #2fbad3; vertical-align: middle; }
+    .editDiaryShow .iconfont{
+        font-size: 25px;
+    }
+    .editDiaryShow  .maxFont{
+        font-size:30px; 
+    }
+.editDiaryType{
+     color: #009dff;
+     font-size: 25px;
+     height: 45px;
+     line-height: 45px;
+     margin: 5px 0; 
+     border-bottom:1px solid #e1e1e1;
+}
+.editTxt textarea{
+     background: #f4f4f4;
+}

@@ -5,14 +5,14 @@
     <div class="leftMenu" :style="{height:modHeight}">
       <ul class="leftMenuListBox">
           <router-link tag="li" class="leftMenuList" to="/home" >
-<span class="iconfont LeftIcon">&#xe658;</span>
+<span class="iconfont LeftIcon">&#xe77e;</span>
 <span class="LeftMenuTitle">
 首页
 </span>
 
     </router-link>
   <router-link tag="li" class="leftMenuList" to="/a" >
-<span class="iconfont LeftIcon">&#xe658;</span>
+<span class="iconfont LeftIcon">&#xe626;</span>
 <span class="LeftMenuTitle">
 消息
 </span>
@@ -20,21 +20,21 @@
 
 
     <router-link tag="li" class="leftMenuList" to="/project" >
-<span class="iconfont LeftIcon">&#xe658;</span>
+<span class="iconfont LeftIcon">&#xe640;</span>
 <span class="LeftMenuTitle">
 管理
 </span>
 
     </router-link>
 <router-link tag="li" class="leftMenuList" to="/diary" >
-<span class="iconfont LeftIcon">&#xe657;</span>
+<span class="iconfont LeftIcon">&#xe636;</span>
 <span class="LeftMenuTitle">
 日程日志
 </span>
     </router-link>
    
      <router-link tag="li" class="leftMenuList" to="/b" >
-<span class="iconfont LeftIcon">&#xe61c;</span>
+<span class="iconfont LeftIcon">&#xe62b;</span>
 <span class="LeftMenuTitle">
 通讯录
 </span>

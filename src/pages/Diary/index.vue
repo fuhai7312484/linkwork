@@ -7,9 +7,11 @@
       <div class="proTitleBox">
 
 <ul class="DiaryTabs">
-      <li class="DiaryLiTab" v-for="(item,index) in tabsParam"
+      <li class="DiaryLiTab iconfont icon-dian" v-for="(item,index) in tabsParam"
             @click="toggleTabs(index)"
-            :class="{active:index===nowIndex}" :key="index">{{item}}
+            :class="{active:index===nowIndex}" :key="index">
+            
+            {{item}}
       </li>
  </ul>
 
@@ -22,6 +24,8 @@
  <div class="content" 
       :style="{maxHeight:sWHeight}"
       >
+
+
 <div v-if="nowIndex===0">日程日志</div>
   <edit-diary v-if="nowIndex===1"></edit-diary>
   <my-diary v-if="nowIndex===2"></my-diary>
@@ -56,55 +60,47 @@
 
 </template>
 <script>
-  import LeftMenu from "@/components/LeftMenu";
-  import RightMenu from "@/components/RightMenu";
-  import GHeader from '@/components/Header.vue'
-  import GFooter from '@/components/Footer.vue'
-  import MyDiary from './components/myDiaryList.vue'
-  import EditDiary from './components/EditDiary.vue'
-  import { autodivheight,getPostInfo } from "../../assets/lib/myStorage.js";
-  import { mapState } from "vuex";
-  export default {
-    name: "DiaryIndex",
-    data() {
-      return {
-        tabsParam:['日程计划','编辑日志','我的日志','他人日志'],
-          activeName: 'third',
-           nowIndex:1,
-                isShow:false,
-   
-      }
-    },
-    components: {
-      LeftMenu,
-      RightMenu,
-      GHeader,
-      GFooter,
-      MyDiary,
-      EditDiary,
-    },
- 
-    computed: {
-      ...mapState(
-        ['sWHeight','proTitle','userInfo']
-        )
-    },
-    methods: {
-  handleClick(tab, event) {
-        // console.log(tab, event);
-      },
-        //切换tab项
-             toggleTabs(index){
-                 this.nowIndex = index;
-                //  $(window).resize();
-            },
+import LeftMenu from "@/components/LeftMenu";
+import RightMenu from "@/components/RightMenu";
+import GHeader from "@/components/Header.vue";
+import GFooter from "@/components/Footer.vue";
+import MyDiary from "./components/myDiaryList.vue";
+import EditDiary from "./components/EditDiary.vue";
+import { autodivheight, getPostInfo } from "../../assets/lib/myStorage.js";
+import { mapState } from "vuex";
+export default {
+  name: "DiaryIndex",
+  data() {
+    return {
+      tabsParam: ["日程计划", "编辑日志", "我的日志", "他人日志"],
+      activeName: "third",
+      nowIndex: 1,
+      isShow: false
+    };
+  },
+  components: {
+    LeftMenu,
+    RightMenu,
+    GHeader,
+    GFooter,
+    MyDiary,
+    EditDiary
+  },
 
-
+  computed: {
+    ...mapState(["sWHeight", "proTitle", "userInfo"])
+  },
+  methods: {
+    handleClick(tab, event) {
+      // console.log(tab, event);
     },
-
-
-  };
+    //切换tab项
+    toggleTabs(index) {
+      this.nowIndex = index;
+      //  $(window).resize();
+    }
+  }
+};
 </script>
 <style>
- 
 </style>
