@@ -339,6 +339,7 @@ overflow: hidden;
 /* -------------------内容区样式------------------------- */
 .contentBox{
     color: #333;
+  
     /* text-align: center; */
     flex-basis: auto;
     -webkit-box-sizing: border-box;
@@ -356,7 +357,12 @@ overflow: hidden;
     margin-bottom:200px; 
     overflow-y:auto;
     min-width:400px; 
+    
 
+}
+.content_dairy{
+    padding:0;
+    background: #f5f5f8;
 }
 
 
@@ -381,6 +387,7 @@ overflow: hidden;
 .clear{
     width: 100%;
     height: 100px;
+    background: #fff;
   
 }
 .searchBox{
@@ -802,3 +809,188 @@ overflow: hidden;
 .editTxt textarea{
      background: #f4f4f4;
 }
+
+/* -----------我的日志列表----------------------- */
+
+.myDiaryInfoCountBox{
+    width: 100%;
+   
+    text-align: left;
+    line-height: 30px;
+    color: red;
+    font-size: 12px;
+    padding: 15px 30px;
+    /* width: 100%; */
+    box-sizing: border-box;
+    background: #fff;
+}
+.diaryListUlBox li.resourceList{
+    background: #fff;
+    margin-bottom:10px; 
+}
+.diaryListTop{
+    height: 55px;
+   
+    overflow: hidden;
+}
+.diary-left-pic{
+ 
+    width: 70%;
+    overflow: hidden;
+   
+
+}
+.diary-pic img{
+    width: 50px; height: 50px;
+    border-radius:4px; 
+}
+.diary-title-Box{
+margin-left:10px; 
+}
+.diary-username{
+    color: #009cff;
+    font-size: 16px;
+    
+}
+.diary-title-input{
+    color: #9c9c9c;
+}
+
+
+.diary-right-icons{
+ 
+    width: 30%;
+    text-align: right
+    
+}
+.diary-title-input .iconfont{
+    vertical-align: middle;
+    font-size: 20px;
+}
+.diaryTime{
+    color: #b0b0b0;
+    font-size: 12px;
+}
+.diaryIcons span{
+    margin: 0 5px;
+    color: #a4a4a4;
+    font-size: 14px;
+}
+.diaryIcons span.font16{
+    font-size:16px; 
+}
+.diaryText{
+    font-size: 14px;
+    color: #353535;
+    font-family: '微软雅黑';
+    line-height: 22px;
+    margin: 10px 0;
+    padding: 0 10px;
+    text-indent: 2em;
+
+}
+.flexibleUlBox{
+    margin-bottom: 20px;
+    
+}
+.resourceImgList{
+    margin:10px 0 0 0; 
+}
+.resourceImg{
+    width: 100%;
+    height: 125px;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    
+}
+.resourceImgvdieoMak{
+    position: absolute;
+    width: 56px;
+    height: 54px;
+    border-radius: 50%;
+    text-align: center;
+    top: 30px;
+    left: 50%;
+    margin-left:-27px; 
+    line-height: 56px;
+    background: #fff;
+    
+  
+   
+    
+}
+.resourceImgvdieoMak i.iconfont{
+    font-size: 56px;
+    cursor: pointer;
+   
+
+}
+.resourceImg img{
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+
+}
+/* .flexibleUlBox li{
+    float: left;
+    width: 30%;
+    height: 60px;
+    background: red;
+
+} */
+
+.resourceImgList .imagesInfo{
+    color: #3c3c3c;
+    font-size: 12px;
+    line-height: 16px;
+    width: 100%;
+    height: 35px;
+    overflow: hidden;
+    padding: 10px 0;
+}
+.resourceImgList .bg-purple{
+    background: #fff;
+}
+.InfoOperating{
+   
+    text-align: right;
+    font-family: '微软雅黑'
+   
+}
+.InfoOperating span{
+    color: #3e3e3e;
+    font-size: 12px;
+    margin:0 10px; 
+}
+.InfoOperating i.iconfont{
+    font-size:16px; 
+    vertical-align: top;
+    font-weight: bold;
+}
+.InfoOperating i.iconfont18{
+font-size: 18px;
+}
+.annexListBox .annexList {
+    margin-bottom:10px; 
+  }
+  .isCurrentMap{
+      width: 44px;
+      display: inline-block;
+      height: 44px;
+      margin-right: 10px;
+      text-align: center;
+      line-height: 44px;
+     
+     
+  }
+  .annexList .iconfont{
+      vertical-align: middle;
+    font-size:30px;
+  }
+  .isCurrentMap{
+      background-size:100% 100%; 
+  }
+  .titleInput input{
+      height: 30px;
+  }

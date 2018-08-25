@@ -14,10 +14,6 @@
 
 
       <div class="editDiaryContent">
-        <div v-for="(dList,index) in resourceList" :key="index">
-<img :src="dList.content"/>
-          
-        </div>
 {{resourceList}}
 
         <div class="editDiaryShow">
@@ -354,42 +350,34 @@
             "." +
           fileType;
 
-          console.log(res)
-          if(res.code===200){
-res.data[0].name = nameStr
-        res.data[0].type = getFileType(fileType)
-        console.log(res)
-
-
-         //     // console.log(getFileType(fileType))
+          
+          
+      //     // console.log(getFileType(fileType))
       
-        
+        res.data[0].name = nameStr
+        res.data[0].type = getFileType(fileType)
+
 
 
       //   //  this.showVideo = true;
       //   // this.ruleForm.videoList = res.data;
       //   //   console.log(this.ruleForm.videoList)
 
-      //  if(res.data[0].type==='img'){
-      //     this.showImg = true;
-      //    this.ruleForm.imgList.push(...res.data);
-      //  }else if(res.data[0].type==='mv'){
-      //    console.log(res.data[0].type)
-      //     this.showVideo = true;
-      //    this.ruleForm.videoList.push(...res.data);
-      //     console.log(this.ruleForm.videoList)
-      //  }else if(res.data[0].type==='file'){
-      //     this.showfile = true;
-      //     this.ruleForm.annexList.push(...res.data);
-      //  }
+       if(res.data[0].type==='img'){
+          this.showImg = true;
+         this.ruleForm.imgList.push(...res.data);
+       }else if(res.data[0].type==='mv'){
+         console.log(res.data[0].type)
+          this.showVideo = true;
+         this.ruleForm.videoList.push(...res.data);
+          console.log(this.ruleForm.videoList)
+       }else if(res.data[0].type==='file'){
+          this.showfile = true;
+          this.ruleForm.annexList.push(...res.data);
+       }
        
-       this.resourceList.push(...res.data)
-       
-
-          }
-          
      
-      
+        this.resourceList.push(...res.data)
 
 
 

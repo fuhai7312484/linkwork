@@ -9,7 +9,8 @@
 
       <el-form-item label="项目图片">
         <el-upload 
-        ref="uploadimgs" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" accept="image/jpeg,image/gif,image/png,image/bmp,video/mp4"
+        ref="uploadimgs" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card"
+         accept="image/jpeg,image/gif,image/png,image/bmp,video/mp4"
           :limit="9" multiple :on-exceed="handLimitChange" :on-preview="handlePictureCardPreview" :on-success="successUpload"
           :on-remove="handleRemove" :file-list="ruleForm.fileList">
           <i class="el-icon-plus"></i>

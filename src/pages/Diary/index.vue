@@ -21,7 +21,7 @@
       </div>
     </div>
       <div class="contentBox">
- <div class="content" 
+ <div class="content" :class="nowIndex===2?'content_dairy':''"
       :style="{maxHeight:sWHeight}"
       >
 

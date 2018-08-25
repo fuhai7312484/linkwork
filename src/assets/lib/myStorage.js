@@ -120,6 +120,22 @@ export function getToTime(timeStamp, str) {
   let s = toDou(date.getSeconds());
   return Y + M + D + h + m + s;
 }
+//获取当前时间
+export function getNewDataTime() {
+  
+  function toDou(n) {
+    return n < 10 ? "0" + n : "" + n;
+  }
+ 
+  var date = new Date(); 
+  let Y = date.getFullYear()
+  let M = toDou(date.getMonth() + 1)
+  let D = toDou(date.getDate()) 
+  let h = toDou(date.getHours()) 
+  let m = toDou(date.getMinutes()) 
+  let s = toDou(date.getSeconds());
+  return Y + M + D + h + m + s;
+}
 //获取当前时间的时间戳和过去3个月的时间戳
 export function getTimestamp() {
   let date = new Date();
@@ -174,6 +190,51 @@ export function setKeyIndex(arr){
   arr.forEach((e,index) => {
     e.key = index;
   });
+}
+
+
+export function getFileType(str){
+  // let imageType = "jpg" || "png" || "gif" || "bmp";
+  // let videoType = "mp4";
+  if(str=='jpg' || str=='png'){
+    return 'img';
+  }else if(str=='mp4'){
+    return 'mv';
+  }else if(str=='pdf' || str=='xls' || str=='zip'){
+
+    return 'file'
+
+  }
+
+
+  
+  // switch(str){
+  //   case "jpg" || "png" || "gif" || "bmp":
+  //   return 'img';
+  //   break;
+  //   case videoType:
+  //   return 'mv'
+  //   break;
+  // }
+
+  
+}
+export function setFileTyleImge(FileName){
+  let fileType = FileName.split(".")[1]
+
+  switch(fileType){
+    case 'pdf':
+    return '../../../assets/images/PDF.png';
+    break;
+    case 'txt':
+    return '../../../assets/images/PDF.png';
+    break;
+  }
+
+
+  console.log(fileType)
+
+
 }
 
 export function statusColor(isMyProject, status, uStatus){

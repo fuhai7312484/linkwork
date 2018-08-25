@@ -94,10 +94,13 @@
          element-loading-text="拼命加载中"
          >
           <li class="porList" v-for="(item, index) in tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" >
+           
             <div class="porListNameBox">
               <el-col :span="16" class="porListTitle">
-                <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" @click="handChangproTitle(item.shortName,item.projectId,('/'))">
+                <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" @click="handChangproTitle({protitle:item.shortName,proId:item.projectId,orgName:item.orgName},('/'))">
          {{indexMethod(item.key)}}.{{item.shortName}}
+
+         
                 </h2>
                 <!-- <h2 :style="setTaskState(item.taskState)" @click="handChangproTitle(item.name)">
                   {{indexMethod(index)}}.{{item.name}}
@@ -246,13 +249,13 @@ export default {
         return getToTime(time, nic);
       }
     },
-    handChangproTitle(title,proId,url) {
+    handChangproTitle(obj,url) {
       this.showLoading(true);
       // let obj = {protitle:title,proId:proId}
 
-      setStorage('proInfo',{protitle:title,proId:proId})
+      setStorage('proInfo',obj)
      
-      // this.proTitleChang({protitle:title,proId:proId});
+      // this.proTitleChang(obj);
       this.$router.push(url);
 
       //   setTimeout(() => {
