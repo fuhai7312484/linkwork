@@ -866,6 +866,9 @@ margin-left:10px;
 .diary-title-input .iconfont{
     vertical-align: middle;
     font-size: 20px;
+    cursor: pointer;
+    margin-top:3px; 
+    margin-right:5px; 
 }
 .diaryTime{
     color: #b0b0b0;
@@ -981,8 +984,24 @@ font-size: 18px;
       margin-right: 10px;
       text-align: center;
       line-height: 44px;
+  
      
      
+  }
+ .annexList .el-card__body{
+      overflow: hidden;
+      padding: 5px;
+  }
+  .annexTypeImg{ width: 20%;
+height: 44px;}
+  .annexTypeImg img{
+      width: 44px;
+      height: 44px;
+      vertical-align: middle;
+  }
+  .annexTitle{
+      width: 75%;
+      margin-left:2%; 
   }
   .annexList .iconfont{
       vertical-align: middle;
@@ -993,4 +1012,19 @@ font-size: 18px;
   }
   .titleInput input{
       height: 30px;
+  }
+
+  .DiaryMsg{
+       text-align: center;
+       color: #ccc;
+       font-size: 16px;
+       font-family: '微软雅黑';
+       margin-top:40px; 
+  }
+  .DiaryMsg span{
+      color: #2fbad3;
+      cursor: pointer;
+  }
+  .clickBox{
+      cursor: pointer;
   }

@@ -4,7 +4,6 @@ import axios from "axios";
 export function getPostInfo(url, obj) {
   let ipUrl = "http://39.107.254.60:8081/";
   var qs = require("qs");
-//  console.log(showFullScreenLoading()) 
   return axios.post(ipUrl + url, qs.stringify(obj));
 }
 
@@ -120,6 +119,37 @@ export function getToTime(timeStamp, str) {
   let s = toDou(date.getSeconds());
   return Y + M + D + h + m + s;
 }
+
+
+
+// 时间统一函数
+export function transDate(time) {
+  // var $time =document.getElementById("share-time");
+ 
+  var date = time;
+
+  var tt = new Date(parseInt(date));
+  var days = parseInt((new Date().getTime() - date) / 86400000);
+  var today = new Date().getDate();
+  var year = tt.getFullYear();
+  var mouth = tt.getMonth() + 1;
+  var day = tt.getDate();
+  var time = tt.getHours() < 10 ? "0" + tt.getHours() : tt.getHours();
+  var min = tt.getMinutes() < 10 ? "0" + tt.getMinutes() : tt.getMinutes();
+  var result, offset;
+　　　　　　　offset = Math.abs(today - day);
+　　　　if (days < 2&&offset<2) {
+　　　　　　　if (offset === 0) {
+      result = "今天" + time + ":" + min;
+    } else if (offset === 1) {
+      result = "昨天" + time + ":" + min;
+    } 
+  } else {
+    result = year + "-" + mouth + "-" + day + " " + time + ":" + min;
+  }
+  return result;
+}
+
 //获取当前时间
 export function getNewDataTime() {
   
@@ -221,14 +251,54 @@ export function getFileType(str){
 }
 export function setFileTyleImge(FileName){
   let fileType = FileName.split(".")[1]
-
   switch(fileType){
     case 'pdf':
-    return '../../../assets/images/PDF.png';
+    // return 'pdf'
+    return require('../../assets/images/PDF.png');
+    break;
+    case 'xls':
+    case 'xlsx':
+    return require('../../assets/images/EXCEL.png');
+    break;
+    case 'ppt':
+    case 'pptx':
+    return require('../../assets/images/PPT.png');
+    break;
+    case 'doc':
+    case 'docx':
+    return require('../../assets/images/word.png');
     break;
     case 'txt':
-    return '../../../assets/images/PDF.png';
+    return require('../../assets/images/TXT.png');
     break;
+    case 'psd':
+    return require('../../assets/images/PS.png');
+    break;
+    case 'dwt':
+    case 'dwg':
+    return require('../../assets/images/CAD.png');
+    break;
+    case 'html':
+    return require('../../assets/images/HTML.png');
+    break;
+    case 'zip':
+    case 'rar':
+    case '7z':
+    case 'jar':
+    case 'iso':
+    return require('../../assets/images/ZIP.png');
+    break;
+    case 'mp3':
+    return require('../../assets/images/mp3.png');
+    break;
+    case 'mp4':
+    return require('../../assets/images/mp4.png');
+    break;
+    case 'max':
+    return require('../../assets/images/MAX.png');
+    break;
+    default:
+    return require('../../assets/images/Other.png');
   }
 
 

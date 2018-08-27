@@ -21,15 +21,17 @@
       </div>
     </div>
       <div class="contentBox">
- <div class="content" :class="nowIndex===2?'content_dairy':''"
+ <div class="content" :class="nowIndex===2 || nowIndex===3?'content_dairy':''"
       :style="{maxHeight:sWHeight}"
       >
 
 
 <div v-if="nowIndex===0">日程日志</div>
   <edit-diary v-if="nowIndex===1"></edit-diary>
-  <my-diary v-if="nowIndex===2"></my-diary>
-  <div v-if="nowIndex===3">他人日志</div>    
+  <my-diary @toggleTabs="toggleTabs" v-if="nowIndex===2"></my-diary>
+  <ta-diary v-if="nowIndex===3">
+    
+      </ta-diary>    
 
 
 
@@ -65,6 +67,7 @@ import RightMenu from "@/components/RightMenu";
 import GHeader from "@/components/Header.vue";
 import GFooter from "@/components/Footer.vue";
 import MyDiary from "./components/myDiaryList.vue";
+import TaDiary from "./components/TaDiaryList.vue";
 import EditDiary from "./components/EditDiary.vue";
 import { autodivheight, getPostInfo } from "../../assets/lib/myStorage.js";
 import { mapState } from "vuex";
@@ -84,7 +87,8 @@ export default {
     GHeader,
     GFooter,
     MyDiary,
-    EditDiary
+    EditDiary,
+    TaDiary
   },
 
   computed: {
