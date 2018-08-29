@@ -1,8 +1,10 @@
 <template>
+  <div class="content content_dairy"
+      :style="{maxHeight:sWHeight}"
+      >
+
     <div v-loading="loading"
          element-loading-text="拼命加载中">
-        
-
 <div class="myDiaryInfoCountBox" v-if="myDiaryList.length !=0">
      <el-alert
     :title="myDiaryList?'我共有'+ myDiaryList.length+'条日志':'你还没有发布过日志'"
@@ -37,7 +39,7 @@
             </div>
             <div class="diary-title-input">
                <span class="iconfont fl" @click="handTitleChange(index)">&#xe71f;</span> 
-                     <span class="fl" v-if="activeIndex!==index" @click="handTitleChange(index)">
+                     <span class="addTitleBox fl" v-if="activeIndex!==index" @click="handTitleChange(index)">
                   {{itme.title?itme.title:'添加标题'}} 
                    </span>
                     <span class="fl">
@@ -55,6 +57,9 @@
             </div>
         </div>
     </div>
+
+
+
     <div class="diary-right-icons fr">
         <div class="diaryTime">
            {{changeTime(itme.createTime)}}
@@ -69,8 +74,10 @@
     </div>
 </div>
 
+<!-- {{itme.diaryId}} -->
 
-<div class="clickDetailBox" @click="myDiaryDetail">
+    <router-link tag="div" class="TaDiaryDetail" :to="{path:'/diary/MyDiary/'+itme.diaryId,query: {diaryId:itme.diaryId}}">
+
 <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
@@ -80,6 +87,7 @@
 <span v-show="lengthShow">
     {{itme.imageList.length>3?itme.imageList.length=3:itme.imageList.length}}
 </span>
+
 <el-row :gutter="20" class="flexibleUlBox" v-if="itme.imageList.length">
   <el-col class="resourceImgList" :span="8" v-for="(images,k) in itme.imageList" :key="k"><div class="grid-content bg-purple">
      <div class="resourceImg">
@@ -90,6 +98,10 @@
      </div>
       </div></el-col>
 </el-row>
+
+
+
+
 <el-row :gutter="20" class="flexibleUlBox" v-else-if="itme.videoList.length">
   <el-col class="resourceImgList" :span="8" v-for="(video,j) in itme.videoList" :key="j"><div class="grid-content bg-purple">
      <div class="resourceImg">
@@ -104,6 +116,10 @@
      </div>
       </div></el-col>
 </el-row>
+
+
+
+
 <el-row :gutter="12" class="annexListBox" v-else-if="itme.accessoryList.length" >
   <el-col :span="12" class="annexList" v-for="(acces,j) in itme.accessoryList" :key="j">
     <el-card shadow="always">
@@ -116,6 +132,8 @@
     </el-card>
   </el-col>
 </el-row>
+
+
 <el-row :gutter="12" class="annexListBox" v-else-if="itme.locationList.length" >
   <el-col :span="24" class="annexList" v-for="(locat,j) in itme.locationList" :key="j">
     <el-card shadow="always">
@@ -135,10 +153,14 @@
        <span><i class="iconfont">&#xe603;</i>  {{itme.projectDiaryLikeCount?itme.projectDiaryLikeCount:'0'}}</span>
         <span><i class="iconfont">&#xe779;</i> {{itme.projectDiaryCommentCount?itme.projectDiaryCommentCount:'0'}}</span>
 </div>
-</div>
+</router-link>
 </li>
 </ul>
+
     </div>
+
+    <div class="clear"></div>
+  </div>
 </template>
 <script>
   import {getPostInfo,getStorage,getToTime,setFileTyleImge,transDate} from "../../../assets/lib/myStorage.js";

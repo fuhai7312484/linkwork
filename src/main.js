@@ -10,12 +10,15 @@ import {getStorage} from './assets/lib/myStorage'
 
 import store from './store'
 
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
+
 
 // import store from './store'
 
 import vuex from 'vuex'
 Vue.use(vuex);
-
+Vue.use(iView);
 
 Vue.use(ElementUI);
 

@@ -5,55 +5,64 @@
 
     <div class="remarkBox" :style="{height:sWHeight}">
       <div class="proTitleBox">
+           <ul class="DiaryTabs">
 
-<ul class="DiaryTabs">
-      <li class="DiaryLiTab iconfont icon-dian" v-for="(item,index) in tabsParam"
-            @click="toggleTabs(index)"
-            :class="{active:index===nowIndex}" :key="index">
+            <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/e">
+                  日程计划
+                
+          </router-link>
+
+           <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/EditDiary">
+                  编辑日志
+                
+          </router-link>
+            <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/MyDiary">
+                  我的日志
+                
+          </router-link>
+
+           <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/TaDiary">
+                  他的日志
+                
+          </router-link>
+
             
-            {{item}}
-      </li>
- </ul>
-
- 
-
-  
+            </ul> 
       </div>
     </div>
+    
+
+    <!-- <div class="remarkBox" :style="{height:sWHeight}">
+      <div class="proTitleBox">
+           <ul class="DiaryTabs">
+            <li class="DiaryLiTab iconfont icon-dian" v-for="(item,index) in tabsParam"
+                  @click="toggleTabs(index)"
+                  :class="{active:index===nowIndex}" :key="index">
+                  
+                  {{item}}
+            </li>
+            </ul> 
+      </div>
+    </div> -->
+
       <div class="contentBox">
- <div class="content" :class="nowIndex===2 || nowIndex===3?'content_dairy':''"
+        <!-- <div class="content" :class="nowIndex===2 || nowIndex===3?'content_dairy':''"
       :style="{maxHeight:sWHeight}"
-      >
+      > -->
+         <router-view></router-view>
 
+      
 
+<!--          
 <div v-if="nowIndex===0">日程日志</div>
   <edit-diary v-if="nowIndex===1"></edit-diary>
   <my-diary @toggleTabs="toggleTabs" v-if="nowIndex===2"></my-diary>
   <ta-diary v-if="nowIndex===3">
     
-      </ta-diary>    
+      </ta-diary>     -->
 
-
-
-
-     
-<!-- <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
-  <el-tab-pane name="first">
-    <span slot="label"><i class="el-icon-date"></i>日程计划</span>
-    日程计划
-  </el-tab-pane>
-  <el-tab-pane label="编辑日志" name="second">{{proTitle}}{{userInfo}}</el-tab-pane>
-  <el-tab-pane label="我的日志" name="third">
-    <my-diary>
-
-    </my-diary>
-   
-    </el-tab-pane>
-  <el-tab-pane label="他人日志" name="fourth">他人日志</el-tab-pane>
-</el-tabs> -->
-
-<div class="clear"></div>
- </div>
+<!-- <div class="clear"></div> -->
+ <!-- </div> -->
       </div>
 
     <right-menu></right-menu>

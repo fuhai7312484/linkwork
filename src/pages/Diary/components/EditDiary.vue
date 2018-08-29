@@ -1,4 +1,9 @@
 <template>
+
+<div class="content"
+      :style="{maxHeight:sWHeight}"
+      >
+
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
     <div class="editDiaryBox">
       <div class="editDiaryTop">
@@ -194,10 +199,12 @@
 
       </ul>
 
-
+    
 
     </div>
   </el-form>
+  <div class="clear"></div>
+  </div>
 </template>
 <script>
   import {
@@ -233,7 +240,7 @@
       };
     },
     computed: {
-      ...mapState(["proTitle", "userInfo"])
+      ...mapState(["sWHeight","proTitle", "userInfo"])
     },
     methods: {
       open4(msg) {

@@ -1,7 +1,9 @@
 <template>
+<div class="content content_dairy"
+      :style="{maxHeight:sWHeight}"
+      >
     <div v-loading="loading"
          element-loading-text="拼命加载中">
-
 <div class="myDiaryInfoCountBox" v-if="TaDiaryList.length != 0">
 
     <el-alert
@@ -65,7 +67,8 @@
     </div>
    
 </div>
-
+  <router-link tag="div" class="TaDiaryDetail" :to=" {path:'/diary/TaDiary/'+(index+1),query: {diaryId:itme.diaryId}}">
+  {{itme.diaryId}}
 <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
@@ -158,11 +161,6 @@
 </el-row>
 
 
-
-
-
-
-
 <div class="InfoOperating">
    <span>可见人：{{itme.lookUserList.length}}</span> 
      <span> | </span>
@@ -170,13 +168,16 @@
        <span><i class="iconfont">&#xe603;</i>  {{itme.projectDiaryLikeCount?itme.projectDiaryLikeCount:'0'}}</span>
         <span><i class="iconfont">&#xe779;</i> {{itme.projectDiaryCommentCount?itme.projectDiaryCommentCount:'0'}}</span>
 </div>
-
+</router-link>
 
 </li>
 
 </ul>
 
     </div>
+
+      <div class="clear"></div>
+  </div>
 </template>
 <script>
   import {getPostInfo,getStorage,getToTime,setFileTyleImge,transDate} from "../../../assets/lib/myStorage.js";
@@ -199,8 +200,6 @@ export default {
       ...mapState(
         ['sWHeight','proTitle','userInfo']
         ),
-      
-
     },
     methods: {
               open2(msg) {
@@ -243,6 +242,7 @@ export default {
       .then(res=>{
         //   console.log(res.data.data)
         this.TaDiaryList = res.data.data==null?res.data.data=[]:res.data.data;
+        console.log(this.TaDiaryList)
         this.loading = false;
       })
     },

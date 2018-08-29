@@ -9,6 +9,21 @@ import InformAtc from '../pages/login/components/Information'
 import ProList from '../pages/Project/components/ProList.vue'
 import PorIndex from '../pages/Project/index.vue'
 import DiaryIndex from '../pages/Diary/index.vue'
+import DiaryPublic from '../pages/Diary/components/DiaryPublic.vue'
+import EditDiary from '../pages/Diary/components/EditDiary.vue'
+
+import mytext from '../pages/Diary/components/mytext'
+
+
+import MydiaryIndex from '../pages/Diary/components/MyDiaryIndex.vue'
+import MyDiary from '../pages/Diary/components/myDiaryList.vue'
+// import MyDetail from '../pages/Diary/Mydetail/MyDetail.vue'
+
+import TadiaryIndex from '../pages/Diary/components/TaDiaryIndex.vue'
+import TaDiary from '../pages/Diary/components/TaDiaryList.vue'
+import TaDetail from '../pages/Diary/Tadetail/Detail.vue'
+
+
 import CreatePro from '../pages/Project/components/Createpro.vue'
 import Step1 from '../pages/Project/components/Step1.vue'
 import Step2 from '../pages/Project/components/Step2.vue'
@@ -41,8 +56,61 @@ export default new Router({
     {
       path: "/diary",
       name: "DiaryIndex",
-      component: DiaryIndex
+      redirect: '/diary/EditDiary',
+      meta: {
+        requireAuth: true 
+      },
+      component: DiaryIndex,
+      children:[
+            {
+              path:"/diary/EditDiary",
+              name:"EditDiary",
+              component:EditDiary,
+        
+            },
+            {
+              path:"/diary/MyDiary",
+              name:"MydiaryIndex",
+              component:MydiaryIndex,
+              redirect: '/diary/MyDiary',
+              children:[
+                {
+                  path:"/diary/MyDiary",
+                  name:"MyDiary",
+                  component:MyDiary, 
+                },
+                {
+                  path:"/diary/MyDiary/:id",
+                  name:"mytext",
+                  component:mytext,
+                },
+              ]
+        
+            },
+            {
+              path:"/diary/TaDiary",
+              name:"TadiaryIndex",
+              component:TadiaryIndex,
+              redirect: '/diary/TaDiary',
+              children:[
+                {
+                  path:"/diary/TaDiary",
+                  name:"TaDiary",
+                  component:TaDiary,
+                },
+                {
+                  path:"/diary/TaDiary/:id",
+                  name:"TaDetail",
+                  component:TaDetail,
+                },
+              ]
+        
+            },
+       
+      ]
     },
+  
+
     //项目列表创建项目步骤等路由
     {
       path: "/project",

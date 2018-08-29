@@ -2,6 +2,13 @@
 <el-row>
     <g-header></g-header>
         <left-menu></left-menu>
+
+
+
+
+
+
+
        <!-- 11111111 {{fiaworkfiow}}<br/> -->
       <!-- {{ProList}} -->
         <el-col :span="5"><div class="grid-content bg-purple-light"></div></el-col>
@@ -29,6 +36,7 @@ export default {
     data(){
       return {
         goods:[null],
+      
       }
 
     },
