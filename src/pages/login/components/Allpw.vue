@@ -156,10 +156,9 @@ export default {
              
                           _that.ruleForm2.pass = "";
                         }else if(res.data.code === 200){
-                         
-                         
-                          // console.log(res.data.data)
+                          
                          let data = res.data.data
+                         console.log(data)
                          if(data.data){
                             _that.open4('登录成功！但还未完善个人信息');
                           setTimeout(function(){

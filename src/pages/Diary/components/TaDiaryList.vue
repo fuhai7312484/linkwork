@@ -6,7 +6,7 @@
                 <el-alert :title="TaDiaryList?'Ta共有'+TaDiaryList.length+'条日志,未读消息有'+ diaryCount+'条':'你的好友暂时还没有发布过日志'" type="success">
                 </el-alert>
 
-                {{TaDiaryList?'Ta共有'+TaDiaryList.length +'条日志,未读消息有'+ diaryCount+'条':'你的好友暂时还没有发布过日志'}}
+              
 
             </div>
 

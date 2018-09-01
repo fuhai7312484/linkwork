@@ -8,6 +8,7 @@
     element-loading-background="rgba(0,0,0, .8)"> -->
     
     <router-view></router-view>
+      
    <!-- </div> -->
    
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="stepH1Title">
-      <h1>公司信息填写</h1>
+      <h1>单位信息填写</h1>
 
     </div>
 
@@ -12,18 +12,19 @@
       <el-form-item label="标题属性">
         <el-input v-model="ruleForm.titleAttr" placeholder="请输入标题属性"></el-input>
       </el-form-item>
+       <el-form-item label="单位简称" prop="UnitName">
+        <el-input v-model="ruleForm.UnitName" placeholder="请输入公司简称（必填）"></el-input>
+      </el-form-item>
       <el-form-item label="单位全称">
         <el-input v-model="ruleForm.companyName" placeholder="请输入公司全称"></el-input>
       </el-form-item>
-      <el-form-item label="单位简称" prop="UnitName">
-        <el-input v-model="ruleForm.UnitName" placeholder="请输入公司简称（必填）"></el-input>
-      </el-form-item>
+     
 
       <el-form-item label="单位在项目中的定位" class="speLabel">
-        <el-select v-model="ruleForm.UnitPosit" :multiple="false" filterable allow-create default-first-option :style="{width:'300px'}"
+        <el-select v-model="ruleForm.UnitPosit" :multiple="false" filterable allow-create default-first-option :style="{width:'200px'}"
           placeholder="选择单位在项目中的定位/或自己创建">
           <div class="speLabelUlBox">
-            <el-option v-for="item in UnitPositList" :key="item.value" :label="item.label" :value="item.value" class="speLabelLists">
+            <el-option v-for="item in UnitPositList" :key="item.value" :label="item.label" :value="item.value" class="speLabelLists" >
             </el-option>
           </div>
         </el-select> (选填)
@@ -49,14 +50,14 @@
       </div>
 
       <el-form-item prop="department" label="标题属性">
-        <el-input v-model="ruleForm.department" placeholder="部门"></el-input>
+        <el-input v-model="ruleForm.department" placeholder="部门" :style="{width:'200px'}"></el-input>
       </el-form-item>
 
       <el-form-item v-for="(domain, index) in ruleForm.domains" :label="'部门'" :key="domain.key" :prop="'domains.' + index + '.value'"
         :rules="{
       required: true, message: '部门不能为空', trigger: 'blur'
     }">
-        <el-input v-model="domain.value" :style="{width:'60%'}"></el-input>
+        <el-input v-model="domain.value" :style="{width:'200px'}"></el-input>
         <i class="el-icon-delete removeBtn" @click.prevent="removeDomain(domain)"></i>
         <!-- <el-button >删除</el-button> -->
       </el-form-item>

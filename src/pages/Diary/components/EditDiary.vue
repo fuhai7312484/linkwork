@@ -57,18 +57,20 @@
 
 
 
+<el-progress v-if="videoFlag == true" type="circle" :percentage="videoUploadPercent" style="margin-top:30px;"></el-progress>
+
 
         <div class="editDiaryShow" v-show="showVideo">
           <div class="editDiaryType maxFont iconfont">
             &#xe604;
           </div>
 
+
+
            <ul>
             <li v-for="(videos,index) in ruleForm.videoList" :key="index">
             <!-- {{videos}} {{videos.size}} -->
               <img :src="videos.content" :style="{width:'100px'}" @click="LargeImage(videos.url)" /> {{videos.name}} 
-
-
 
             </li>
 
@@ -127,13 +129,28 @@
           <div class="editDiaryType maxFont iconfont">
             &#xe732;
           </div>
-            <ul>
+
+<el-row :gutter="12" class="annexListBox" >
+  <el-col :span="24" class="annexList" v-for="(acces,j) in ruleForm.annexList" :key="j">
+    <el-card shadow="always">
+     <div class="annexTypeImg fl" :style="{width:'8%'}">
+        <img :src="fileTypeImgChange(acces.name)"/>
+          </div>
+         <div class="annexTitle fl">
+         {{acces.name}}  {{acces.size}} 
+     </div>
+    </el-card>
+  </el-col>
+</el-row>
+
+            <!-- <ul>
             <li v-for="(itme,index) in ruleForm.annexList" :key="index">
-              <img :src="itme.content" :style="{width:'100px'}" /> {{itme.name}} 这里是附件
+              <img :src="itme.content" :style="{width:'100px'}" /> {{itme.name}}
+
 
             </li>
 
-          </ul>
+          </ul> -->
           <!-- <ul>
             <li>
               这里是附件
@@ -171,16 +188,20 @@
 <!-- action="http://39.107.254.60:8081/yq_api/image/upload" -->
 
         <el-upload ref="upload2" class="upload-demo" action="http://39.107.254.60:8081/yq_api/image/upload"
-           :data="{userId}" :on-preview="handlePreview"
+
+        :show-file-list="false"
+         :on-success="handleVideoSuccess" 
+         :before-upload="beforeUploadVideo" 
+         :on-progress="uploadVideoProcess"
+           :data="{userId}" 
+           
              accept="video/mp4"
             :on-remove="handleRemove"
-             :on-success="imageSuccess"
-             :before-upload="videoBeforeUpload"
              :file-list="ruleForm.videoList"
             :haeders="upHeaders" 
             :auto-upload="true"
              multiple 
-             :show-file-list="false"
+           
               list-type="picture">
             <!-- <el-button class="iconfont" size="small" type="primary" ref="imgUpload">&#xe601;</el-button> -->
 
@@ -234,7 +255,8 @@
     getPostInfo,
     getStorage,
     getNewDataTime,
-    getFileType
+    getFileType,
+    setFileTyleImge
   } from "../../../assets/lib/myStorage.js";
   import BaiduMap from '../../../components/BaiduMap.vue'
   import { mapState } from "vuex";
@@ -249,6 +271,8 @@
         showImg: false,
         showVideo:false,
         showfile:false,
+        videoFlag:false,
+        videoUploadPercent:0,
         userId: "",
         upHeaders: {
           "Conten-Type": "multipart/form-data; boundary=fuckReaquestHeader"
@@ -278,12 +302,30 @@
         this.$message.error(msg);
       },
 
+   fileTypeImgChange(fileName){
+                    return  setFileTyleImge(fileName)
 
+        },
 baiduMapFromChild(data){
   this.locationVisible = false;
-  this.ruleForm.locationList.push(data)
+  let locatName = this.proTitle.protitle +
+            "-" +
+            (this.proTitle.orgName === null ? "" : this.proTitle.orgName + "-") +
+            getStorage("userInfo").name +
+            "-" +
+            getNewDataTime() 
+            console.log(locatName)
+  console.log(data)
+  let obj={
+    name:data.name +' ' + locatName,
+    size:data.size,
+    type:data.type,
+  }
+  // console.log(obj)
+  this.ruleForm.locationList.push(obj)
+  this.resourceList.push(obj)
+  console.log(obj)
   
-console.log(data)
 
 },
 
@@ -310,6 +352,66 @@ console.log(data)
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
+
+      beforeUploadVideo(file) {
+    const isLt10M = file.size / 1024 / 1024  < 10;
+    if (['video/mp4', 'video/ogg', 'video/flv','video/avi','video/wmv','video/rmvb'].indexOf(file.type) == -1) {
+        this.$message.error('请上传正确的视频格式');
+        return false;
+    }
+    if (!isLt10M) {
+        this.$message.error('上传视频大小不能超过10MB哦!');
+        return false;
+    }
+},
+uploadVideoProcess(event, file, fileList){
+    this.videoFlag = true;
+    console.log(this.videoUploadPercent)
+    let val = (event.loaded / event.total * 100).toFixed(0);
+    this.videoUploadPercent = val*1;
+    // if(this.videoUploadPercent==100){
+    //   this.videoFlag = false;
+    // }
+    
+
+      console.log(this.videoUploadPercent)
+
+    
+},
+handleVideoSuccess(res, file, imgList){
+  console.log(res.data[0])
+   let fileType = file.name.split(".")[1];
+        let videoName =
+            this.proTitle.protitle +
+            "-" +
+            (this.proTitle.orgName === null ? "" : this.proTitle.orgName + "-") +
+            getStorage("userInfo").name +
+            "-" +
+            getNewDataTime() +
+            "." +
+          fileType;
+
+          console.log(res.data[0].content)
+
+  // let obj={
+  //   size:res.data[0].size,
+  //   name:videoName,
+  //   type:'mv',
+  //   content:res.data[0].content,
+  //   url:res.data[0].url,
+
+  // }
+  
+  // console.log(obj)
+
+  //  this.resourceList.push(obj)
+   
+  //  this.ruleForm.videoList =res.data;
+  
+
+  // console.log(res, file, imgList)
+
+},
 
       handleBeforeUpload(file) {
         // console.log(file.type,file.size)
@@ -395,9 +497,6 @@ console.log(data)
       },
 
       imageSuccess(res, file, imgList) {
-
-       
-
         let fileType = file.name.split(".")[1];
         let nameStr =
             this.proTitle.protitle +
@@ -408,69 +507,37 @@ console.log(data)
             getNewDataTime() +
             "." +
           fileType;
-
           console.log(res)
           if(res.code===200){
-res.data[0].name = nameStr
+        res.data[0].name = nameStr
         res.data[0].type = getFileType(fileType)
         console.log(res)
-
-
          //     // console.log(getFileType(fileType))
-      
-        
-
-
         //  this.showVideo = true;
         // this.ruleForm.videoList = res.data;
         //   console.log(this.ruleForm.videoList)
 
-       if(res.data[0].type==='img'){
-          this.showImg = true;
-         this.ruleForm.imgList.push(...res.data);
-       }else if(res.data[0].type==='mv'){
-         console.log(res.data[0].type)
-          this.showVideo = true;
-         this.ruleForm.videoList.push(...res.data);
-          console.log(this.ruleForm.videoList)
-       }else if(res.data[0].type==='file'){
-          this.showfile = true;
-          this.ruleForm.annexList.push(...res.data);
-       }
+
+
+
+      //  if(res.data[0].type==='img'){
+      //     this.showImg = true;
+      //    this.ruleForm.imgList.push(...res.data);
+      //  }else if(res.data[0].type==='mv'){
+      //   //  console.log(res.data[0].type)
+      //     this.showVideo = true;
+      //    this.ruleForm.videoList.push(...res.data);
+      //     // console.log(this.ruleForm.videoList)
+      //  }else if(res.data[0].type==='file'){
+      //     this.showfile = true;
+      //     this.ruleForm.annexList.push(...res.data);
+      //  }
        
        this.resourceList.push(...res.data)
-       
-
-          }
-          
-     
+       console.log(this.resourceList)
       
+          }
 
-
-
-
-
-        // for (let i = 0; i < imgList.length; i++) {
-        //   let fileType = imgList[i].name.split(".")[1];
-        // console.log(getFileType(fileType))
-        //   let nameStr =
-        //     this.proTitle.protitle +
-        //     "-" +
-        //     (this.proTitle.orgName === null ? "" : this.proTitle.orgName + "-") +
-        //     getStorage("userInfo").name +
-        //     "-" +
-        //     getNewDataTime() +
-        //     "." +
-        //   fileType;
-        //   imgList[i].name = nameStr;
-        //   imgList[i].type = getFileType(fileType);
-        //   imgList[i].url = imgList[i].response.data[0].url;
-        //   imgList[i].size = imgList[i].response.data[0].size;
-        //   getFileType(fileType)==='mv'? imgList[i].content =imgList[i].response.data[0].content:'';
-        // }
-        // this.ruleForm.imgList = imgList;
-        // this.resourceList = [...imgList];
-        // this.resourceList.push(...imgList)
       },
 
       handText() {

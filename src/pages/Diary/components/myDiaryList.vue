@@ -11,7 +11,6 @@
     type="success">
   </el-alert>
 
-  {{myDiaryList?'我共有'+myDiaryList.length+'条日志':'你的好友暂时还没有发布过日志'}}
 
 </div>
 

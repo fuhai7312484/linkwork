@@ -86,7 +86,10 @@
                             </el-col>
                         </el-row>
                         <el-dialog :visible.sync="dialogVisible">
-                            <img width="100%" :src="dialogImageUrl" alt="">
+                            
+                          <img-swiper :imagesUrl="detailList.imageList">
+                          
+                          </img-swiper>
                         </el-dialog>
                     </div>
 
@@ -279,6 +282,7 @@
     } from "../../../assets/lib/myStorage.js";
     import { mapState } from "vuex";
     import { videoPlayer } from "vue-video-player";
+import ImgSwiper from '../../../components/ImgSwiper.vue'
     export default {
         name: "mytext",
         data() {
@@ -343,7 +347,8 @@
             }
         },
         components: {
-            videoPlayer
+            videoPlayer,
+              ImgSwiper
         },
         methods: {
             onPlayerPlay(player) {

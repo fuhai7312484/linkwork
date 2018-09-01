@@ -71,6 +71,7 @@
                             <el-col class="resourceImgList" :span="8" v-for="(images,k) in detailList.imageList" :key="k">
                                 <div class="grid-content bg-purple">
                                     <div class="resourceImg">
+                                        <!-- {{images}} -->
                                         <img :src="images.url" @click="LargeImage(images.url)" />
                                     </div>
                                     <div class="imagesInfo">
@@ -80,7 +81,14 @@
                             </el-col>
                         </el-row>
                         <el-dialog :visible.sync="dialogVisible">
-                            <img width="100%" :src="dialogImageUrl" alt="">
+
+                          
+                          <img-swiper :imagesUrl="detailList.imageList">
+                          
+                          </img-swiper>
+                         
+
+                            <!-- <img width="100%" :src="dialogImageUrl" alt=""> -->
                         </el-dialog>
                     </div>
 
@@ -123,7 +131,7 @@
                         <el-dialog :visible.sync="videoVisible">
                             <!-- <img width="100%" :src="dialogImageUrl" alt=""> -->
 
-                             <video-player  class="video-player vjs-custom-skin"
+                             <video-player class="video-player vjs-custom-skin"
                      ref="videoPlayer"
                      :playsinline="true"
                      :options="playerOptions"
@@ -326,6 +334,7 @@
     } from "../../../assets/lib/myStorage.js";
     import { mapState } from "vuex";
     import { videoPlayer } from 'vue-video-player';
+    import ImgSwiper from '../../../components/ImgSwiper.vue'
     export default {
         name: "TaDetail",
         data() {
@@ -385,7 +394,8 @@
             };
         },
          components: {
-            videoPlayer
+            videoPlayer,
+            ImgSwiper
         },
         computed: {
             ...mapState(["sWHeight", "proTitle", "userInfo"]),
@@ -648,5 +658,8 @@
    line-height: 2em;
    border-radius: 1em;
 }
-
+img {
+   width: 100%;
+   height: 100%;
+}
 </style>

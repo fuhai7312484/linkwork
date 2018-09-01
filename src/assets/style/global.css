@@ -188,17 +188,16 @@ overflow: hidden;
     overflow: hidden;
     width: 20px;
     height: 20px;
-    font-size: 18px;
+    font-size: 20px;
     text-align: center;
     line-height: 42px;
     vertical-align: middle;
     margin:0 5px 0 15px; 
 }
-.leftMenuList .LeftMenuTitle{
 
-}
 .leftMenuList .LeftMenuTitle{
     font-weight:bold; 
+    font-size: 15px;
 }
 
   .mainPicBox{
@@ -630,7 +629,7 @@ overflow: hidden;
 .AvatImgBox{
     width: 100px;
     height: 100px;
-    border-radius:50%; 
+    border-radius:6px; 
     overflow: hidden;
     margin: 0 auto;
     position: relative;
@@ -1240,3 +1239,31 @@ height: 44px;}
       width: 12px;
      
   }
+
+  .arrowLeft , .arrowRight{
+      position: absolute;
+      top: 40%;
+      width: 50px;
+      height: 100px;
+      cursor: pointer;
+      line-height: 100px;
+      text-align: center;
+      font-size: 50px;
+      background: rgba(0,0,0,.3);
+      color:#fff;
+
+  }
+.arrowLeft{
+    
+    left: 20px;
+}
+.arrowRight{
+    right: 20px;
+
+}
+.arrowLeft:hover{
+    background: rgba(0,0,0,.7);
+}
+.arrowRight:hover{
+    background: rgba(0,0,0,.7);
+}

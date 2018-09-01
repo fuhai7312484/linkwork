@@ -51,12 +51,14 @@
 
 
 
-      <el-form-item label="项目全称">
-        <el-input v-model="ruleForm.FullName" @blur="FullBlur($event)" placeholder="请输入项目全称"></el-input>
-      </el-form-item>
+     
 
       <el-form-item label="项目简称" prop="SimpleName">
         <el-input v-model="ruleForm.SimpleName" @blur="SimpleBlur($event)"  placeholder="请输入项目简称(必填)"></el-input>
+      </el-form-item>
+
+       <el-form-item label="项目全称">
+        <el-input v-model="ruleForm.FullName" @blur="FullBlur($event)" placeholder="请输入项目全称"></el-input>
       </el-form-item>
 
       <el-form-item label="当前人力">

@@ -161,7 +161,7 @@
       <div class="secrecyBox">
         <div class="secrecyLeft">
           <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
-          <el-form-item label="个人常用地址">
+          <el-form-item label="工作常用地址">
             <el-input v-model="ruleForm.mapSearch" @focus="mapSearchFocus($event)" id="suggestId" placeholder="请输入详细地址或拖拽地址坐标点选地址"></el-input>
           </el-form-item>
         </div>
