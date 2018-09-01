@@ -104,3 +104,11 @@ body{
 .pad20{
     padding: 15px 30px;
 }
+.mar5{
+    margin-bottom:5px; 
+}
+.mar5:hover{
+    background: #f6f6f6;
+}
+
+/* 播放器样式*/

@@ -905,10 +905,13 @@ margin-left:10px;
 }
 .resourceImg{
     width: 100%;
+    max-width: 300px;
     height: 125px;
     overflow: hidden;
     text-align: center;
     position: relative;
+    background: #f6f6f6;
+    border-radius:4px; 
     
 }
 .resourceImgvdieoMak{
@@ -935,7 +938,8 @@ margin-left:10px;
 }
 .resourceImg img{
     height: 100%;
-    width: 100%;
+    width: auto;
+    /* width: 100%; */
     cursor: pointer;
 
 }
@@ -1093,6 +1097,18 @@ height: 44px;}
     text-overflow:ellipsis;
     white-space:nowrap
   }
+
+ .openUp{
+     height:30px;
+     background: #fff;
+     line-height: 30px;
+     text-align: center;
+     cursor: pointer;
+ }
+    .openUp:hover{
+    background: #f6f6f6;
+    }
+    
   .noComment{
        text-align: center;
        font-size: 16px;
@@ -1101,4 +1117,126 @@ height: 44px;}
   .commentDescBtn{
       text-align: right;
       margin: 5px 0;
+  }
+  .lookitem .el-badge__content{
+      font-size: 6px;
+  }
+  .lookUserBox .ivu-badge-count{
+     
+      right:-8px;
+      top: 0px;
+      min-width: 12px;
+      height: 12px;
+      width: 12px;
+      line-height: 12px;
+      overflow: hidden;
+      text-align: center;
+  }
+  .lookUserBox .ivu-badge-count{
+    font-size: 1px;
+  }
+  /* .lookUserBox sub{
+      font-size: 12px;
+  } */
+  .demo-badge-alone{
+      background: #7ed321 !important;
+  
+  }
+
+
+  .lookUserText{
+      position: relative;
+      -webkit-text-size-adjust: none;
+      
+  }
+  .lookUserText i.lookUserSub{
+    
+    /* transform: scale(0.833333); */
+  
+      font-size: 6px;
+  }
+  .lookUserSubBox{
+    position: absolute;
+    top: -8px;
+    right:-10px;
+    border-radius:50%; 
+    line-height: 12px;
+    width: 12px;
+    height: 12px;
+    font-size: 6px;
+    display: block;
+    overflow: hidden;
+    text-align: right;
+  }
+  .lookUserSubBox i.lookUserSub{
+    /* transform: scale(0.833333); */
+    -webkit-transform-origin-x: 0;
+    -webkit-transform: scale(0.70);
+    display: inline-block;
+      font-style: normal;
+      margin-left:2px;
+      font-size: 12px;
+      color: #fff;
+      line-height: 12px;
+      text-align: right;
+  }
+  .lookUserlog{
+    width: 52px;
+    height: 17px;
+    border: 1px solid #009cff;
+    padding:2px 10px;
+    border-radius:10px; 
+    text-align: center;
+    -webkit-transform-origin-x: 0;
+    -webkit-transform: scale(0.10);
+    transform:scale(0.10);
+     font-size: 12px;
+     color: #21aafe;
+     background: #dbf4fe;
+  }
+  .likeUserlog{
+    width: 52px;
+    height: 17px;
+    border: 1px solid #fe7200;
+    padding:2px 10px;
+    border-radius:10px; 
+    text-align: center;
+    -webkit-transform-origin-x: 0;
+    -webkit-transform: scale(0.10);
+    transform:scale(0.10);
+     font-size: 12px;
+     color: #fe7200;
+     background: #fff5ed;
+
+  }
+  .commentUserlog{
+
+    width: 52px;
+    height: 17px;
+    border: 1px solid #009944;
+    padding:2px 10px;
+    border-radius:10px; 
+    text-align: center;
+    -webkit-transform-origin-x: 0;
+    -webkit-transform: scale(0.10);
+    transform:scale(0.10);
+     font-size: 12px;
+     color: #009944;
+     background: #ecfef9;
+
+  }
+  .replyType{
+      color: #009cff;
+  }
+  .CommentList{
+      cursor: pointer;
+      padding-top:5px; 
+  }
+  .CommentList:hover{
+      background: #f6f6f6;
+  }
+  .diary-pic .el-badge__content.is-dot{
+      height: 12px;
+      width: 12px;
+     
   }

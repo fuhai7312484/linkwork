@@ -13,6 +13,12 @@ import store from './store'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 
+//视频播放器公用组件
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+
+import VideoPlayer from 'vue-video-player'
+Vue.use(VideoPlayer);
 
 // import store from './store'
 

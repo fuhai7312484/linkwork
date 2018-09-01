@@ -23,7 +23,7 @@
 <img :src="dList.content"/>
           
         </div>
-{{resourceList}}
+<!-- {{resourceList}} -->
 
         <div class="editDiaryShow">
           <div class="editDiaryType iconfont">
@@ -86,19 +86,42 @@
 
 
 
-        <div class="editDiaryShow">
+        <div class="editDiaryShow" v-if="ruleForm.locationList.length!=0">
           <div class="editDiaryType maxFont iconfont">
             &#xe633;
           </div>
-          <ul>
-            <li>
-              这里是位置
+
+              <el-row :gutter="12" class="annexListBox">
+                            <el-col :span="24" class="annexList" v-for="(locat,index) in ruleForm.locationList" :key="index">
+                                <el-card shadow="always">
+                                    <span class="isCurrentMap iconfont">
+                                        {{locat.isCurrentMap==='Y'?'&#xe6e7;':'&#xe633;'}}
+                                    </span>
+                                    <span>
+                                       实时地址-{{locat.name}}
+                                    </span>
+                                </el-card>
+                            </el-col>
+                        </el-row>
+
+
+          <!-- <ul>
+            <li v-for="(locat,index) in ruleForm.locationList" :key="index">
+
+         {{locat}}
+
+
+              
 
             </li>
 
-          </ul>
-        </div>
+          </ul> -->
+          
 
+        </div>
+<el-dialog :visible.sync="locationVisible">
+           <baidu-map @baiduMapFromChild="baiduMapFromChild"></baidu-map>
+          </el-dialog>
 
         <div class="editDiaryShow" v-if="showfile">
           <div class="editDiaryType maxFont iconfont">
@@ -169,7 +192,7 @@
           <!-- <div class="iconfont fontlarge">&#xe624;</div> -->
           视频
         </li>
-        <li>
+        <li @click="Largelocation">
 
           <div class="iconfont fontlarge">&#xe633;</div>
           位置
@@ -213,6 +236,7 @@
     getNewDataTime,
     getFileType
   } from "../../../assets/lib/myStorage.js";
+  import BaiduMap from '../../../components/BaiduMap.vue'
   import { mapState } from "vuex";
   import axios from "axios";
   export default {
@@ -221,6 +245,7 @@
       return {
         dialogImageUrl: "",
         dialogVisible: false,
+        locationVisible:false,
         showImg: false,
         showVideo:false,
         showfile:false,
@@ -234,10 +259,16 @@
           imgList: [],
            videoList: [],
            annexList:[],
+           locationList:[],
+
          
         },
         rules: {}
       };
+    },
+    components:{
+      BaiduMap,
+
     },
     computed: {
       ...mapState(["sWHeight","proTitle", "userInfo"])
@@ -246,6 +277,17 @@
       open4(msg) {
         this.$message.error(msg);
       },
+
+
+baiduMapFromChild(data){
+  this.locationVisible = false;
+  this.ruleForm.locationList.push(data)
+  
+console.log(data)
+
+},
+
+
       handImgUploadChange(ev) {
         //  console.log(this.$refs);
         //   console.log(ev.target)
@@ -257,6 +299,12 @@
         this.dialogImageUrl = imagesUrl;
         this.dialogVisible = true;
       },
+
+       Largelocation() {
+     
+        this.locationVisible = true;
+      },
+
 
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
@@ -373,22 +421,22 @@ res.data[0].name = nameStr
         
 
 
-      //   //  this.showVideo = true;
-      //   // this.ruleForm.videoList = res.data;
-      //   //   console.log(this.ruleForm.videoList)
+        //  this.showVideo = true;
+        // this.ruleForm.videoList = res.data;
+        //   console.log(this.ruleForm.videoList)
 
-      //  if(res.data[0].type==='img'){
-      //     this.showImg = true;
-      //    this.ruleForm.imgList.push(...res.data);
-      //  }else if(res.data[0].type==='mv'){
-      //    console.log(res.data[0].type)
-      //     this.showVideo = true;
-      //    this.ruleForm.videoList.push(...res.data);
-      //     console.log(this.ruleForm.videoList)
-      //  }else if(res.data[0].type==='file'){
-      //     this.showfile = true;
-      //     this.ruleForm.annexList.push(...res.data);
-      //  }
+       if(res.data[0].type==='img'){
+          this.showImg = true;
+         this.ruleForm.imgList.push(...res.data);
+       }else if(res.data[0].type==='mv'){
+         console.log(res.data[0].type)
+          this.showVideo = true;
+         this.ruleForm.videoList.push(...res.data);
+          console.log(this.ruleForm.videoList)
+       }else if(res.data[0].type==='file'){
+          this.showfile = true;
+          this.ruleForm.annexList.push(...res.data);
+       }
        
        this.resourceList.push(...res.data)
        

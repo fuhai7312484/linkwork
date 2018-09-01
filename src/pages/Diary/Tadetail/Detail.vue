@@ -88,15 +88,31 @@
 
 
 
+
+
+
+
+
+       
+
+
+
+
+
                     <div class="editDiaryShow fontH15" v-if="videoLength!=0">
                         <div class="editDiaryType maxFont iconfont">
                             &#xe604;
                         </div>
                         <el-row :gutter="20" class="flexibleUlBox">
                             <el-col class="resourceImgList" :span="8" v-for="(video,k) in detailList.videoList" :key="k">
+                               
+                               <!-- {{video}} -->
                                 <div class="grid-content bg-purple">
                                     <div class="resourceImg">
-                                        <img :src="video.content" @click="LargeImage(video.content)" />
+                                         <div class="resourceImgvdieoMak">
+                                         <i class="iconfont" @click="Largevideo(video.url)">&#xe605;</i>
+                                         </div>
+                                        <img :src="video.content" @click="Largevideo(video.url)" />
                                     </div>
                                     <div class="imagesInfo">
                                         {{video.name}}
@@ -104,10 +120,21 @@
                                 </div>
                             </el-col>
                         </el-row>
-                        <el-dialog :visible.sync="dialogVisible">
-                            <img width="100%" :src="dialogImageUrl" alt="">
+                        <el-dialog :visible.sync="videoVisible">
+                            <!-- <img width="100%" :src="dialogImageUrl" alt=""> -->
+
+                             <video-player  class="video-player vjs-custom-skin"
+                     ref="videoPlayer"
+                     :playsinline="true"
+                     :options="playerOptions"
+                     @play="onPlayerPlay($event)"
+                     @pause="onPlayerPause($event)"
+      >
+                         </video-player>
+
                         </el-dialog>
                     </div>
+
 
 
                     <div class="editDiaryShow fontH15" v-if="acceLength !=0">
@@ -162,9 +189,8 @@
                         <span>
                             <i class="iconfont iconfont18">&#xe682; </i> {{detailList.lookCount?detailList.lookCount:'0'}}</span>
                         <span @click="LikeCountChange" class="LikediaryBtn">
-
-                            <!-- :style="{coolor:isLike?'#000':'red'}" -->
                             <i class="iconfont" :style="{color:isLike?'#00':'red'}">&#xe603; </i> {{detailList.projectDiaryLikeCount?detailList.projectDiaryLikeCount:'0'}}</span>
+
                         <span>
                             <i class="iconfont">&#xe779;</i> {{detailList.projectDiaryCommentCount?detailList.projectDiaryCommentCount:'0'}}</span>
                     </div>
@@ -183,6 +209,9 @@
                 </li>
 
             </ul>
+
+
+
             <div class="allCrntent">
                 <div class="allCrntentTitleBox pad20">
                     <div class="detailTitle fl">评论</div>
@@ -192,8 +221,9 @@
                         暂无评论
                     </div>
                     <ul v-if="CommentListLength!=0">
-                        <li v-for="(comment,index) in detailList.projectDiaryCommentList" :key="index">
+                        <li v-for="(comment,index) in detailList.projectDiaryCommentList" class="CommentList" :key="index" @click="changComment(comment.commentFromUserId,comment.commentFromUserName)">
                             <!-- {{comment}} -->
+                            <!-- {{comment.commentFromUserName}} -->
                             <div class="diary-pic fl">
                                 <img :src="comment.commentFromUserUrl" />
                             </div>
@@ -203,7 +233,9 @@
                                 </div>
                                 <div class="diary-title-input">
                                     <span class="addTitleBox fl">
-                                        {{comment.content}}
+                                        <span v-if="comment.commentType==='reply'">
+                                            回复： <span class="replyType">{{comment.commentToUserName}}</span> :
+                                        </span> {{comment.content}}
                                     </span>
                                 </div>
                             </div>
@@ -212,7 +244,7 @@
                     <div>
                         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
-                            <el-input type="textarea" v-model="ruleForm.commentDesc" placeholder="给Ta的日志评论"></el-input>
+                            <el-input type="textarea" v-model="ruleForm.commentDesc" :placeholder="DescValue"></el-input>
                             <div class="commentDescBtn">
                                 <el-button type="primary" size="small" @click="submitForm('ruleForm')">评论</el-button>
                             </div>
@@ -223,36 +255,62 @@
 
 
 
- <div class="allCrntent">
- <div class="allCrntentTitleBox pad20">
+            <div class="allCrntent">
+                <div class="allCrntentTitleBox pad20">
                     <div class="detailTitle fl">可见人</div>
                     <div class="fr">
                         添加可见人
                     </div>
                 </div>
 
-                 <div class="allCrntentText pad20">
-                    <div class="noComment" v-if="CommentListLength==0">
+                <div class="allCrntentText pad20">
+                    <div class="noComment" v-if="lookUserListLength==0">
                         暂无可见人
                     </div>
-                    
-<el-row :gutter="20">
 
-  <el-col :span="8" v-for="(look,index) in detailList.lookUserList" :key="index">
-      <!-- {{look}} -->
-      {{look.orgName}}-{{look.departmentName}}-{{look.levelName}}-{{look.userName}}({{look.operationStatus==='look'?'已读':'未读'}})
+                    <el-row :gutter="20">
+                        <el-col :span="8" v-for="(look,index) in detailList.lookUserList" :key="index" class="lookUserBox">
+                            <span class="lookUserText">
+                                {{look.orgName}}-{{look.departmentName}}-{{look.levelName}}-{{look.userName}}
+                                <span class="lookUserSubBox" :style="{background:look.operationStatus==='look'?'#7ed321':'#d0021b'}">
+                                    <i class="lookUserSub">
+                                        {{look.operationStatus==='look'?'已':'未'}}
+                                    </i>
+                                </span>
+                            </span>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class="allCrntent">
+                <div class="allCrntentTitleBox pad20">
+                    <div class="detailTitle fl">留痕记录单</div>
+                </div>
+                <div class="allCrntentText pad20" :style="{height:MaxHShow?'100%':'300px'}">
+                    <div class="noComment" v-if="userLogLength==0">
+                        暂无留痕
+                    </div>
+                    <el-row v-for="(userLog,index) in detailList.userLogList" :key="index" class="mar5">
+                        <el-col :span="8">
+                            {{changeTime(userLog.time)}}
+                          
+                        </el-col>
+                        <el-col :span="8">
+                            {{userLog.orgName}}--{{userLog.userName}}
+                        </el-col>
+                        <el-col :span="8">
+                            <span :class="userLogClass(userLog.operationType)">
+                                {{getOperationType(userLog.operationType)}}
+                            </span>
+                        </el-col>
+                    </el-row>
+                </div>
+ <div class="openUp" @click="openUpH">
+                     <i :class="MaxHShow?'el-icon-arrow-up':'el-icon-arrow-down'"></i> {{MaxHShow?'点击隐藏':'点击展开'}}
+                    </div>
 
 
-  </el-col>
-
- 
-</el-row>
-
-
-                 </div>
-
- </div>
-
+            </div>
         </div>
 
         <div class="clear"></div>
@@ -267,36 +325,93 @@
         transDate
     } from "../../../assets/lib/myStorage.js";
     import { mapState } from "vuex";
+    import { videoPlayer } from 'vue-video-player';
     export default {
         name: "TaDetail",
         data() {
             return {
+        playerOptions: {
+        //        playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
+                autoplay: true, //如果true,浏览器准备好时开始回放。
+                muted: false, // 默认情况下将会消除任何音频。
+                loop: false, // 导致视频一结束就重新开始。
+                preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+                language: 'zh-CN',
+                aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+                sources: [{
+                type: "video/mp4",
+                src: "" //你的m3u8地址（必填）
+                }],
+                poster: "poster.jpg", //你的封面地址
+                width: document.documentElement.clientWidth,
+                notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        //        controlBar: {
+        //          timeDivider: true,
+        //          durationDisplay: true,
+        //          remainingTimeDisplay: false,
+        //          fullscreenToggle: true  //全屏按钮
+        //        }
+            },
+
+
                 loading: true,
                 detailList: {},
-
+                   MaxHShow:false,
                 dialogImageUrl: "",
                 dialogVisible: false,
+                videoVisible:false,
                 scoreValue: null,
                 isLike: true,
+                DescValue: "给Ta的日志评论",
+                commentType: "comment",
+                ToUserId: "",
+                ToUserName: "",
                 ruleForm: {
                     commentDesc: ""
                 },
 
                 rules: {},
 
-                TextListLength:0,
+                TextListLength: 0,
                 imgLength: 0,
                 videoLength: 0,
                 acceLength: 0,
                 locationLength: 0,
                 lookUserLength: 0,
-                CommentListLength: 0
+                CommentListLength: 0,
+                userLogLength: 0,
+                lookUserListLength: 0
             };
         },
+         components: {
+            videoPlayer
+        },
         computed: {
-            ...mapState(["sWHeight", "proTitle", "userInfo"])
+            ...mapState(["sWHeight", "proTitle", "userInfo"]),
+             player() {
+                return this.$refs.videoPlayer.player
+                }
         },
         methods: {
+
+
+
+    onPlayerPlay(player) {
+        //   alert("play");
+        },
+        onPlayerPause(player){
+        //   alert("pause");
+        },
+
+
+
+
+
+
+
+
+
             open2(msg) {
                 this.$message({
                     message: msg,
@@ -316,12 +431,19 @@
             },
 
             changeTime(time) {
-                return transDate(time);
+                return getToTime(time, "-");
             },
 
             fileTypeImgChange(fileName) {
                 return setFileTyleImge(fileName);
             },
+             Largevideo(videoUrl) {
+               
+                 this.playerOptions.sources[0].src = videoUrl;
+                this.videoVisible = true;
+            },
+
+            
             LargeImage(imagesUrl) {
                 this.dialogImageUrl = imagesUrl;
                 this.dialogVisible = true;
@@ -364,10 +486,93 @@
                     this.open3("当前不能参与评分！");
                 }
             },
+            getOperationType(typeStr) {
+                let HtmlStr = "";
+                switch (typeStr) {
+                    case "look":
+                        HtmlStr = `浏览过`;
+                        break;
+                    case "like":
+                        HtmlStr = `点赞过`;
+                        break;
+                    case "comment":
+                        HtmlStr = `评论过`;
+                        break;
+                }
+                return HtmlStr;
+            },
+            userLogClass(typeStr) {
+                let HtmlStr = "";
+                switch (typeStr) {
+                    case "look":
+                        HtmlStr = "lookUserlog";
+                        break;
+                    case "like":
+                        HtmlStr = "likeUserlog";
+                        break;
+                    case "comment":
+                        HtmlStr = "commentUserlog";
+                        break;
+                }
+                return HtmlStr;
+            },
+            changComment(ToUserId, ToUserName) {
+                this.DescValue = "@回复：" + ToUserName + "的评论";
+                this.commentType = "reply";
+                this.ToUserId = ToUserId;
+                this.ToUserName = ToUserName;
+                // console.log(ToUserId,ToUserName,this.ToUserId)
+            },
+
+             openUpH(){
+                    this.MaxHShow = !this.MaxHShow;
+                },
+
             submitForm(formName) {
+                let _that = this;
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        alert("submit!");
+                        // console.log(this.ruleForm.commentDesc)
+                        if (!this.ruleForm.commentDesc) {
+                            this.open4("请填写评论内容");
+                        } else {
+                            let obj = {
+                                projectId: this.proTitle.proId,
+                                commentFromUserId: getStorage("userInfo").id, //本会员的ID
+                                commentToUserId:
+                                    this.commentType === "reply"
+                                        ? this.ToUserId
+                                        : this.detailList.createPerson, //被评论员的ID
+                                projectDiaryId: this.detailList.diaryId,
+                                content: this.ruleForm.commentDesc,
+                                commentType: this.commentType,
+                                isTop: "0"
+                            };
+
+                            getPostInfo("yq_api/projectDiary/addProjectDiaryComment", obj).then(
+                                res => {
+                                    if (res.data.code === 200) {
+                                        this.open2(res.data.msg);
+                                        let commentObj = {
+                                            commentFromUserId: obj.commentFromUserId,
+                                            commentFromUserName: getStorage("userInfo").name,
+                                            commentFromUserUrl: getStorage("userInfo").mainPic,
+                                            commentType: this.commentType,
+                                            commentToUserName: this.ToUserName,
+                                            content: this.ruleForm.commentDesc
+                                        };
+                                        this.detailList.projectDiaryCommentList.push(commentObj);
+
+                                        (this.commentType = "comment"),
+                                            (this.DescValue = "给Ta的日志评论");
+                                        this.ruleForm.commentDesc = "";
+                                    }
+                                }
+                            );
+
+                            // console.log(obj)
+                            // alert("submit!");
+                        }
                     } else {
                         console.log("error submit!!");
                         return false;
@@ -388,11 +593,14 @@
                     this.acceLength = newValue.accessoryList.length;
                     this.locationLength = newValue.locationList.length;
                     this.lookUserLength = newValue.lookUserList.length;
+                    this.userLogLength = newValue.userLogList.length;
+                    this.lookUserListLength = newValue.lookUserList.length;
+
                     this.CommentListLength = newValue.projectDiaryCommentList
                         ? newValue.projectDiaryCommentList.length
                         : 0;
 
-                    console.log(newValue);
+                    // console.log(newValue);
                 },
                 deep: true
             }
@@ -425,5 +633,20 @@
 </script>
 <style>
 
+
+ .container {
+    background-color: #efefef;
+    min-height: 100%;
+  }
+
+.video-js .vjs-big-play-button{
+    /*
+     播放按钮换成圆形
+    */
+   height: 2em;
+   width: 2em;
+   line-height: 2em;
+   border-radius: 1em;
+}
 
 </style>

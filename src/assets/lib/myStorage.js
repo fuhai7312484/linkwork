@@ -120,8 +120,6 @@ export function getToTime(timeStamp, str) {
   return Y + M + D + h + m + s;
 }
 
-
-
 // 时间统一函数
 export function transDate(time) {
   // var $time =document.getElementById("share-time");

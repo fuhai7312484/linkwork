@@ -147,7 +147,7 @@
   </el-col>
 </el-row>
 <div class="InfoOperating">
-    <span>可见人：{{itme.lookUserList.length}}</span> 
+    <span>可见人：{{itme.lookUserList.length+1}}</span> 
      <span> | </span>
       <span><i class="iconfont iconfont18">&#xe682;</i> {{itme.lookCount?itme.lookCount:'0'}}</span>
        <span><i class="iconfont">&#xe603;</i>  {{itme.projectDiaryLikeCount?itme.projectDiaryLikeCount:'0'}}</span>
