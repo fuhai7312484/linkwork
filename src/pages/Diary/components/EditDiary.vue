@@ -19,10 +19,10 @@
 
 
       <div class="editDiaryContent">
-        <div v-for="(dList,index) in resourceList" :key="index">
+        <!-- <div v-for="(dList,index) in resourceList" :key="index">
 <img :src="dList.content"/>
           
-        </div>
+        </div> -->
 <!-- {{resourceList}} -->
 
         <div class="editDiaryShow">
@@ -55,23 +55,25 @@
           </el-dialog>
         </div>
 
-
-
-<el-progress v-if="videoFlag == true" type="circle" :percentage="videoUploadPercent" style="margin-top:30px;"></el-progress>
-
-
-        <div class="editDiaryShow" v-show="showVideo">
+ 
+        <div class="editDiaryShow" v-if="ruleForm.videoList.length!=0 || videoFlag==true">
           <div class="editDiaryType maxFont iconfont">
             &#xe604;
           </div>
 
 
-
            <ul>
             <li v-for="(videos,index) in ruleForm.videoList" :key="index">
+     
+            
             <!-- {{videos}} {{videos.size}} -->
-              <img :src="videos.content" :style="{width:'100px'}" @click="LargeImage(videos.url)" /> {{videos.name}} 
+         
+              <img v-if="videoFlag==false" :src="videos.content" :style="{width:'100px'}" @click="LargeImage(videos.url)" /> {{videos.name}} 
 
+            </li>
+
+            <li>
+      <el-progress class="videoPercentage" v-if="videoFlag==true" type="circle" :percentage="videoUploadPercent" style="margin-top:30px;"></el-progress>
             </li>
 
           </ul>
@@ -273,6 +275,7 @@
         showfile:false,
         videoFlag:false,
         videoUploadPercent:0,
+        vdImg:'',
         userId: "",
         upHeaders: {
           "Conten-Type": "multipart/form-data; boundary=fuckReaquestHeader"
@@ -316,6 +319,7 @@ baiduMapFromChild(data){
             getNewDataTime() 
             console.log(locatName)
   console.log(data)
+
   let obj={
     name:data.name +' ' + locatName,
     size:data.size,
@@ -354,33 +358,27 @@ baiduMapFromChild(data){
       },
 
       beforeUploadVideo(file) {
-    const isLt10M = file.size / 1024 / 1024  < 10;
+    const isLt10M = file.size / 1024 / 1024  < 50;
     if (['video/mp4', 'video/ogg', 'video/flv','video/avi','video/wmv','video/rmvb'].indexOf(file.type) == -1) {
         this.$message.error('请上传正确的视频格式');
         return false;
     }
     if (!isLt10M) {
-        this.$message.error('上传视频大小不能超过10MB哦!');
+        this.$message.error('上传视频大小不能超过50MB哦!');
         return false;
     }
 },
 uploadVideoProcess(event, file, fileList){
     this.videoFlag = true;
-    console.log(this.videoUploadPercent)
+  
     let val = (event.loaded / event.total * 100).toFixed(0);
     this.videoUploadPercent = val*1;
-    // if(this.videoUploadPercent==100){
-    //   this.videoFlag = false;
-    // }
-    
-
-      console.log(this.videoUploadPercent)
-
     
 },
 handleVideoSuccess(res, file, imgList){
-  console.log(res.data[0])
-   let fileType = file.name.split(".")[1];
+  console.log(res)
+  if(res.code===200){
+   let fileType = file.name.split(".")[file.name.split(".").length-1];
         let videoName =
             this.proTitle.protitle +
             "-" +
@@ -390,26 +388,42 @@ handleVideoSuccess(res, file, imgList){
             getNewDataTime() +
             "." +
           fileType;
+          console.log(fileType,videoName)
+          let _that = this;
+          setTimeout(function(){
 
-          console.log(res.data[0].content)
+ this.vdImg = res.data[0].content;
 
-  // let obj={
-  //   size:res.data[0].size,
-  //   name:videoName,
-  //   type:'mv',
-  //   content:res.data[0].content,
-  //   url:res.data[0].url,
+  //         console.log(res.data[0].content)
 
-  // }
+  let obj={
+    size:res.data[0].size,
+    name:videoName,
+    type:'mv',
+    content:res.data[0].content,
+    url:res.data[0].url,
+
+  }
   
-  // console.log(obj)
+  console.log(obj)
 
-  //  this.resourceList.push(obj)
+   _that.resourceList.push(obj)
    
-  //  this.ruleForm.videoList =res.data;
+   _that.ruleForm.videoList.push(obj);
+
+    if(_that.videoUploadPercent==100){
+      _that.videoFlag = false;
+    }
   
 
   // console.log(res, file, imgList)
+
+          },1000)
+
+         
+
+  }
+
 
 },
 
@@ -497,7 +511,7 @@ handleVideoSuccess(res, file, imgList){
       },
 
       imageSuccess(res, file, imgList) {
-        let fileType = file.name.split(".")[1];
+        let fileType = file.name.split(".")[file.name.split(".").length-1];
         let nameStr =
             this.proTitle.protitle +
             "-" +
@@ -511,7 +525,7 @@ handleVideoSuccess(res, file, imgList){
           if(res.code===200){
         res.data[0].name = nameStr
         res.data[0].type = getFileType(fileType)
-        console.log(res)
+     
          //     // console.log(getFileType(fileType))
         //  this.showVideo = true;
         // this.ruleForm.videoList = res.data;
@@ -618,6 +632,7 @@ handleVideoSuccess(res, file, imgList){
     watch: {
       fileList() {
         this.fileList.length ? (this.showImg = true) : (this.showImg = false);
+
         console.log(this.ruleForm.imgList.length);
       }
     }
