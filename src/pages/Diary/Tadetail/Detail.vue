@@ -1,10 +1,20 @@
 <template>
-    <div class="content content_dairy" :style="{maxHeight:sWHeight}">
+    <div class="content content_dairy" :style="{maxHeight:sWHeight}" ref="gotoback">
 
+  
+      
+ <BackTop :height="100" :bottom="200" class="goToback">
+        <div class="top">返回顶端</div>
+    </BackTop>
+
+    
         <div v-loading="loading" element-loading-text="拼命加载中">
 
+<span @click="backTop">
 
-
+</span>
+ <button type="button" class="back-top small" @click="backTop()" v-show="backTopShow">我要上天</button>
+      
 
             <ul class="diaryListUlBox">
                 <li class="resourceList pad20">
@@ -322,6 +332,9 @@
         </div>
 
         <div class="clear"></div>
+
+
+
     </div>
 </template>
 <script>
@@ -362,7 +375,7 @@
         //          fullscreenToggle: true  //全屏按钮
         //        }
             },
-
+ backTopShow:false,
 
                 loading: true,
                 detailList: {},
@@ -404,6 +417,29 @@
                 }
         },
         methods: {
+
+
+
+             backTop() {
+                  console.log(this.$refs.gotoback)
+                let back = setInterval(() => {
+                if(document.body.scrollTop||document.documentElement.scrollTop){
+                    document.body.scrollTop-=100;
+                    document.documentElement.scrollTop-=100;
+                }else {
+                    clearInterval(back)
+                }
+                });
+      },
+      handleScroll(){
+          console.log(this.$refs.gotoback.scrollTop)
+        if (document.documentElement.scrollTop + document.body.scrollTop > 100) {
+          this.backTopShow=true;
+        }
+        else {
+          this.backTopShow=false;
+        }
+      },
 
 
 
@@ -617,6 +653,9 @@
         },
 
         mounted() {
+
+             window.addEventListener('scroll', this.handleScroll)
+
             this.loading = true;
 
             let obj = {
@@ -662,4 +701,13 @@ img {
    width: 100%;
    height: 100%;
 }
+
+
+ .top{
+        padding: 10px;
+        background: rgba(0, 153, 229, .7);
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+    }
 </style>

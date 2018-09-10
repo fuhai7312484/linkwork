@@ -8,12 +8,8 @@
     <!-- {{ruleForm.nickname}} -->
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
       <div class="proUserInfoBox">
-
-
-
-
         <div class="proUserAvatarBox">
-          <el-upload class="AvatImgBox" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess"
+          <el-upload class="AvatImgBox" action="http://39.107.254.60:8081/yq_api/image/upload" :show-file-list="false" :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
             <img :src="ruleForm.AvatImageUrl" class="avatar">
             <div class="editAvatar">
@@ -24,13 +20,7 @@
             {{userInfo.name}}
           </p>
         </div>
-
-
-
         <div class="proUserInfoInputs">
-
-
-
           <div class="secrecyBox marginBot">
             <div class="secrecyLeft">
               <el-form-item label="账号">
@@ -41,9 +31,6 @@
               <el-checkbox v-model="ruleForm.UserSecret">保密</el-checkbox>
             </div>
           </div>
-
-
-
           <div class="secrecyBox marginBot">
             <div class="secrecyLeft">
               <el-form-item label="昵称">
@@ -51,13 +38,12 @@
               </el-form-item>
             </div>
           </div>
-
-
           <div class="secrecyBox marginBot">
             <div class="secrecyLeft">
               <el-form-item label="性别">
-                <el-radio v-model="ruleForm.sex" label="男">男</el-radio>
-                <el-radio v-model="ruleForm.sex" label="女">女</el-radio>
+                <el-radio v-model="ruleForm.sex" label="1">男</el-radio>
+                <el-radio v-model="ruleForm.sex" label="0">女</el-radio>
+              
               </el-form-item>
             </div>
             <div class="secrecyRight">
@@ -66,9 +52,6 @@
           </div>
         </div>
       </div>
-
-
-
       <div class="secrecyBox">
         <div class="secrecyLeft">
           <el-form-item label="联系方式" prop="mobile">
@@ -79,12 +62,10 @@
           <el-checkbox v-model="ruleForm.mobileSecret">保密</el-checkbox>
         </div>
       </div>
-
-
-
       <div class="secrecyBox">
         <div class="secrecyLeft">
-          <el-form-item label="邮箱">
+          <el-form-item label="邮箱" prop="email" 
+    >
             <el-input v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
           </el-form-item>
         </div>
@@ -92,39 +73,9 @@
           <el-checkbox v-model="ruleForm.emailSecret">保密</el-checkbox>
         </div>
       </div>
-
-
       <el-form-item label="职称">
         <el-input v-model="ruleForm.jobTitle" placeholder="请输入职称"></el-input>
       </el-form-item>
-
- <!-- 
-
-      <div class="hr"></div>
-      <el-form-item label="单位(团队或者组织)" class="speLabel">
-        <el-input v-model="ruleForm.team" placeholder="请输入职称"></el-input>
-      </el-form-item>
-
-
-
-     <el-form-item label="部门">
-        <el-input v-model="ruleForm.section" placeholder="请输入部门"></el-input>
-      </el-form-item>
-
-
-
-      <div class="secrecyBox">
-        <div class="secrecyLeft">
-          <el-form-item label="角色转换">
-            <el-input v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
-          </el-form-item>
-        </div>
-        <div class="secrecyRight">
-          <el-checkbox v-model="checked5">保密</el-checkbox>
-        </div>
-      </div> -->
-
-
       <div class="hr"></div>
       <div class="secrecyBox">
         <div class="secrecyTop">
@@ -136,8 +87,8 @@
           </div>
         </div>
         <div class="secrecyBottem">
-          <el-tag :key="tag" v-for="tag in ruleForm.dynamicTags" closable :disable-transitions="false" @close="handleClose(tag)">
-            {{tag}}
+          <el-tag :key="index" v-for="(tag,index) in ruleForm.dynamicTags" closable :disable-transitions="false" @close="handleClose(tag.name)">
+            {{tag.name}}
           </el-tag>
           <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm"
             @blur="handleInputConfirm">
@@ -155,7 +106,7 @@
       <div class="hr"></div>
       <!-- {{ruleForm.mapSearch}} -->
 
-      经度：{{ruleForm.lng}}纬度：{{ruleForm.lat}}
+      <!-- 经度：{{ruleForm.lng}}纬度：{{ruleForm.lat}} -->
 
 
       <div class="secrecyBox">
@@ -187,11 +138,17 @@
         编辑完成，继续编辑个人信息
       </el-button>
     </div>
+
   </div>
 </template>
 <script>
 import router from "../../../router";
-import { getStorage } from "../../../assets/lib/myStorage.js";
+import {
+  getStorage,
+  setStorage,
+  getPostInfo
+} from "../../../assets/lib/myStorage.js";
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "Step3",
   data() {
@@ -202,11 +159,11 @@ export default {
       checked5: false,
       ruleForm: {
         AvatImageUrl: "",
-        AvatImgName:'',
+        AvatImgName: "",
         UserMobile: "",
         UserSecret: false,
         nickname: "",
-        sex: "男",
+        sex: "1",
         sexSecret: false,
         mobile: "",
         mobileSecret: false,
@@ -216,26 +173,45 @@ export default {
         team: "单位A",
         section: "",
         tagSecret: false,
-        dynamicTags: ["财政", "摄影", "实时数据", "大数据"],
-        mapAddSecret: true,
+        dynamicTags: [],
+        mapAddSecret: false,
         mapSearch: "",
         lat: 0,
         lng: 0,
-        textarea: "",
-
+        textarea: ""
       },
-   rules: {
+      rules: {
+        email:[
+      { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur'] }
+        ],
         mobile: [
-          { required: true, message: "请输入正确格式的联系方式", trigger: "blur" },
-          { min: 0, max: 11, message: "联系方式为11位的手机号", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入正确格式的联系方式",
+            trigger: "blur"
+          },
+          {
+            min: 0,
+            max: 11,
+            message: "联系方式为11位的手机号",
+            trigger: "blur"
+          }
         ]
       }
-   
     };
   },
+  computed: {
+    ...mapState({
+      create1proId: state => state.create1proId,
+      create2orgId: state => state.create2orgId
+    })
+  },
   methods: {
-    nicknameBlur(ev){
-     this.ruleForm.nickname?this.ruleForm.nickname:this.ruleForm.nickname = this.userInfo.name;
+    ...mapMutations(["setcreate1proId", "setcreate2orgId"]),
+    nicknameBlur(ev) {
+      this.ruleForm.nickname
+        ? this.ruleForm.nickname
+        : (this.ruleForm.nickname = this.userInfo.name);
     },
     open4(msg) {
       this.$message({
@@ -243,6 +219,12 @@ export default {
         type: "error"
       });
     },
+       open2(msg) {
+        this.$message({
+          message: msg,
+          type: 'success'
+        });
+      },
 
     handNext() {
       this.$emit("next");
@@ -280,7 +262,7 @@ export default {
         if (inputValue.length >= 10) {
           this.open4("技能标签最多10字符");
         } else {
-          this.ruleForm.dynamicTags.push(inputValue);
+          this.ruleForm.dynamicTags.push({ name: inputValue });
         }
       }
       this.inputVisible = false;
@@ -449,11 +431,11 @@ export default {
 
     handleAvatarSuccess(res, file) {
       // console.log(URL.createObjectURL(file.raw))
- 
+
       this.ruleForm.AvatImageUrl = URL.createObjectURL(file.raw);
       this.ruleForm.AvatImgName = file.name;
     },
-    beforeAvatarUpload(file) {  
+    beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isPNG = file.type === "image/png";
       const isGIF = file.type === "image/gif";
@@ -469,22 +451,81 @@ export default {
       return (isJPG || isPNG || isGIF || isBMP) && isLt2M;
     },
 
+    handChangproTitle(obj, url) {
+      // let obj = {protitle:title,proId:proId}
+
+      setStorage("proInfo", obj);
+
+      // this.proTitleChang(obj);
+      this.$router.push(url);
+
+      //   setTimeout(() => {
+      //       this.proTitleChang(title)
+      //  this.$router.push(url)
+
+      //   }, 1000);
+
+      //  this.proTitleChang(title)
+      //  this.$router.push(url)
+    },
+
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.ruleForm);
-          //   console.log(this.$refs.uploada.uploadFiles);
-          // console.log(this.$refs)
-
-          // let fileList = this.ruleForm.fileList;
-          // console.log(this.ruleForm.fileList)
-          // console.log(valid)
-          //  this.$refs.upload.submit();
-          // console.log(this.$refs.upload)
-
-          // alert('您填写的内容是：' + this.ruleForm.name);
-          // router.push("/project/step_3");
-          // this.$emit("next", 3);
+        
+          let uploadInfo = {
+            userId: getStorage("userInfo").id,
+            projectId: this.$route.query.projectId,
+            orgId: this.$route.query.orgId,
+            accountSecrecy: this.ruleForm.UserSecret ? "Y" : "N",
+            account: this.ruleForm.UserMobile,
+            userName: this.ruleForm.nickname,
+            sex: this.ruleForm.sex * 1,
+            sexSecrecy: this.ruleForm.sexSecret ? "Y" : "N",
+            mobile: this.ruleForm.mobile,
+            mobileSecrecy: this.ruleForm.mobileSecret ? "Y" : "N",
+            email: this.ruleForm.email,
+            emailSecrecy: this.ruleForm.emailSecret ? "Y" : "N",
+            levelName: this.ruleForm.jobTitle,
+            topicSecrecy:this.ruleForm.tagSecret ? "Y" : "N",
+            positionDesc: this.ruleForm.mapSearch,
+            positionSecrecy: this.ruleForm.mapAddSecret ? "Y" : "N",
+            content: this.ruleForm.textarea,
+            positionBdLatitude: this.ruleForm.lat,
+            positionBdLongitude: this.ruleForm.lng,
+            mainPic: this.ruleForm.AvatImageUrl
+          };
+       
+          let topicList = [];
+          for (let i = 0; i < this.ruleForm.dynamicTags.length; i++) {
+            topicList.push({});
+            topicList[i].name = this.ruleForm.dynamicTags[i].name;
+          }
+          for (let i = 0; i < this.ruleForm.dynamicTags.length; i++) {
+            for (let key in topicList[i]) {
+              uploadInfo["topicList[" + i + "]." + key] = topicList[i][key];
+            }
+          }
+  //  console.log(uploadInfo);
+          getPostInfo("/yq_api/projectUserRef/addPeople", uploadInfo).then(
+            res => {
+              if (res.data.code === 200) {
+               this.open2('恭喜您！项目创建成功！')
+                this.handChangproTitle(
+                  {
+                    protitle: this.$route.query.shortName,
+                    proId: this.$route.query.projectId,
+                    orgName: null
+                  },
+                  "/"
+                );
+               
+                // router.push("/");
+                // this.$emit("next", 2);
+              }
+            }
+          );
+       
         } else {
           console.log("error submit!!");
           return false;
@@ -495,18 +536,23 @@ export default {
       this.$refs[formName].resetFields();
     }
   },
-  computed: {},
   mounted() {
+    if (!this.$route.query.projectId) {
+      this.open4("创建项目请先填写项目信息！");
+      router.push("/project/step_1");
+    }else{
+   // console.log(this.$route.query.projectId,this.$route.query.shortName,this.$route.query.orgId)
     this.$emit("next", 2);
     this.map();
     this.ruleForm.UserMobile = this.ruleForm.mobile = getStorage(
       "userInfo"
     ).mobile;
     this.ruleForm.nickname = getStorage("userInfo").name;
-
     this.userInfo = getStorage("userInfo");
     this.ruleForm.AvatImageUrl = getStorage("userInfo").mainPic;
-    // console.log(getStorage('userInfo'))
+
+    }
+ 
   },
   watch: {
     mapSearch() {

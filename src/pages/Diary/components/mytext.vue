@@ -39,17 +39,38 @@
                         </div>
 
 
+                   <!-- {{detailList.resourceList}} -->
+
                         <div class="diary-right-icons fr">
+
+                            <div class="DarftDelet fl">
+                            <!-- {{detailList.lookUserList.length}} -->
+
+                         
+                              <span :style="{color:isEdit?'#4c91e2':'#afafaf'}" @click="EditLog(detailList.diaryId,detailList.projectId)">
+                                    <i class="el-icon-edit" ></i>
+                                   {{lookUserLength===0?'编辑':'当日编辑'}}
+                                  
+                                </span> 
+
+                                <span @click="deleteDiary(detailList.diaryId)" :style="{color:isEdit?'#4c91e2':'#afafaf'}">
+                             <i class="el-icon-delete"></i>
+                            
+                             {{lookUserLength===0?'删除':'当日删除'}}
+                                       
+                            </span>
+                            </div>
+
                             <div class="diaryTime">
                                 {{changeTime(detailList.createTime)}}
                             </div>
                             <div class="diaryIcons">
-
-                                <span class="iconfont" :style="{color:detailList.resourceList?'#4c91e2':''}">&#xe615;</span>
-                                <span class="iconfont" :style="{color:detailList.imageList?'#4c91e2':''}">&#xe601;</span>
-                                <span class="iconfont font16" :style="{color:detailList.videoList?'#4c91e2':''}">&#xe604;</span>
-                                <span class="iconfont font16" :style="{color:detailList.locationList?'#4c91e2':''}">&#xe633;</span>
-                                <span class="iconfont font16">&#xe732;</span>
+                             
+                                <span class="iconfont" :style="{color:resouLength!=0?'#4c91e2':''}">&#xe615;</span>
+                                <span class="iconfont" :style="{color:imgLength!=0?'#4c91e2':''}">&#xe601;</span>
+                                <span class="iconfont font16" :style="{color:videoLength!=0?'#4c91e2':''}">&#xe604;</span>
+                                <span class="iconfont font16" :style="{color:locationLength!=0?'#4c91e2':''}">&#xe633;</span>
+                                <span class="iconfont font16" :style="{color:acceLength!=0?'#4c91e2':''}">&#xe732;</span>
                             </div>
                         </div>
 
@@ -175,7 +196,7 @@
                     <div class="detailTitle fl">统计</div>
 
                     <div class="InfoOperating fr">
-                        <span>可见人：{{lookUserLength}}</span>
+                        <span>可见人：{{lookUserLength+1}}</span>
                         <span> | </span>
                         <span><i class="iconfont iconfont18">&#xe682; </i> {{detailList.lookCount?detailList.lookCount:'0'}}</span>
                        
@@ -273,333 +294,428 @@
 
 </template>
 <script>
-    import {
-        getPostInfo,
-        getStorage,
-        getToTime,
-        setFileTyleImge,
-        transDate
-    } from "../../../assets/lib/myStorage.js";
-    import { mapState } from "vuex";
-    import { videoPlayer } from "vue-video-player";
-import ImgSwiper from '../../../components/ImgSwiper.vue'
-    export default {
-        name: "mytext",
-        data() {
-            return {
-                playerOptions: {
-                    //        playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
-                    autoplay: true, //如果true,浏览器准备好时开始回放。
-                    muted: false, // 默认情况下将会消除任何音频。
-                    loop: false, // 导致视频一结束就重新开始。
-                    preload: "auto", // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-                    language: "zh-CN",
-                    aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-                    fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-                    sources: [
-                        {
-                            type: "video/mp4",
-                            src: "" //你的m3u8地址（必填）
-                        }
-                    ],
-                    poster: "poster.jpg", //你的封面地址
-                    width: document.documentElement.clientWidth,
-                    notSupportedMessage: "此视频暂无法播放，请稍后再试" //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-                    //        controlBar: {
-                    //          timeDivider: true,
-                    //          durationDisplay: true,
-                    //          remainingTimeDisplay: false,
-                    //          fullscreenToggle: true  //全屏按钮
-                    //        }
-                },
+import {
+  getPostInfo,
+  getStorage,
+  getToTime,
+  setFileTyleImge,
+  transDate,
+  getDayNewTime
+} from "../../../assets/lib/myStorage.js";
+import { mapState } from "vuex";
+import { videoPlayer } from "vue-video-player";
+import ImgSwiper from "../../../components/ImgSwiper.vue";
+import router from "../../../router";
+export default {
+  name: "mytext",
+  data() {
+    return {
+      playerOptions: {
+        //        playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
+        autoplay: true, //如果true,浏览器准备好时开始回放。
+        muted: false, // 默认情况下将会消除任何音频。
+        loop: false, // 导致视频一结束就重新开始。
+        preload: "auto", // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+        language: "zh-CN",
+        aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+        fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+        sources: [
+          {
+            type: "video/mp4",
+            src: "" //你的m3u8地址（必填）
+          }
+        ],
+        poster: "poster.jpg", //你的封面地址
+        width: document.documentElement.clientWidth,
+        notSupportedMessage: "此视频暂无法播放，请稍后再试" //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        //        controlBar: {
+        //          timeDivider: true,
+        //          durationDisplay: true,
+        //          remainingTimeDisplay: false,
+        //          fullscreenToggle: true  //全屏按钮
+        //        }
+      },
 
-                loading: true,
-                detailList: {},
-                activeIndex: true,
-                focusState: false,
-                dialogImageUrl: "",
-                MaxHShow: false,
-                dialogVisible: false,
-                videoVisible: false,
-                isLike: true,
-                DescValue: "给Ta的日志评论",
-                commentType: "comment",
-                ToUserId: "",
-                ToUserName: "",
-                ruleForm: {
-                    commentDesc: ""
-                },
+      loading: true,
+      detailList: {},
+      activeIndex: true,
+      focusState: false,
+      dialogImageUrl: "",
+      MaxHShow: false,
+      dialogVisible: false,
+      videoVisible: false,
+      isLike: true,
+      DescValue: "给Ta的日志评论",
+      commentType: "comment",
+      ToUserId: "",
+      ToUserName: "",
+      isEdit: false,
+      ruleForm: {
+        commentDesc: ""
+      },
 
-                rules: {},
-                imgLength: 0,
-                videoLength: 0,
-                acceLength: 0,
-                locationLength: 0,
-                lookUserLength: 0,
-                CommentListLength: 0,
-                userLogLength: 0
-            };
-        },
-        computed: {
-            ...mapState(["sWHeight", "proTitle", "userInfo"]),
-            player() {
-                return this.$refs.videoPlayer.player;
-            }
-        },
-        components: {
-            videoPlayer,
-              ImgSwiper
-        },
-        methods: {
-            onPlayerPlay(player) {
-                //   alert("play");
-            },
-            onPlayerPause(player) {
-                //   alert("pause");
-            },
-
-            open2(msg) {
-                this.$message({
-                    message: msg,
-                    type: "success"
-                });
-            },
-
-            open4(msg) {
-                this.$message.error(msg);
-            },
-
-            handTitleChange() {
-                this.activeIndex = false;
-                this.focusState = true;
-            },
-
-            focusclick() {
-                this.focusState = true;
-            },
-
-            changeTime(time) {
-                return getToTime(time, "-");
-            },
-            fileTypeImgChange(fileName) {
-                return setFileTyleImge(fileName);
-            },
-
-            handTitleBlur(value, id) {
-                this.activeIndex = true;
-                // console.log(value,id,getStorage("userInfo").id)
-                let titleObj = {
-                    diaryId: id,
-                    userId: getStorage("userInfo").id,
-                    title: value
-                };
-
-                getPostInfo("yq_api/projectDiary/addDiaryTitle", titleObj).then(res => {
-                    if (res.data.code === 200) {
-                        this.open2(res.data.msg);
-                    }
-                });
-            },
-
-            getOperationType(typeStr) {
-                let HtmlStr = "";
-                switch (typeStr) {
-                    case "look":
-                        HtmlStr = `浏览过`;
-                        break;
-                    case "like":
-                        HtmlStr = `点赞过`;
-                        break;
-                    case "comment":
-                        HtmlStr = `评论过`;
-                        break;
-                }
-                return HtmlStr;
-            },
-            userLogClass(typeStr) {
-                let HtmlStr = "";
-                switch (typeStr) {
-                    case "look":
-                        HtmlStr = "lookUserlog";
-                        break;
-                    case "like":
-                        HtmlStr = "likeUserlog";
-                        break;
-                    case "comment":
-                        HtmlStr = "commentUserlog";
-                        break;
-                }
-                return HtmlStr;
-            },
-            openUpH() {
-                this.MaxHShow = !this.MaxHShow;
-            },
-
-            LikeCountChange() {
-                if (this.isLike) {
-                    let obj = {
-                        projectDiaryId: this.$route.query.diaryId,
-                        userId: getStorage("userInfo").id,
-                        projectId: this.proTitle.proId,
-                        type: "0"
-                    };
-                    getPostInfo("yq_api/projectDiary/projectDiaryLike", obj).then(res => {
-                        if (res.data.code === 200) {
-                            this.open2("点赞成功！");
-                            this.detailList.projectDiaryLikeCount =
-                                this.detailList.projectDiaryLikeCount * 1 + 1;
-                            this.isLike = false;
-                        }
-                    });
-                } else {
-                    this.open4("您已点过赞！请勿重复点赞");
-                }
-            },
-
-            changComment(ToUserId, ToUserName) {
-                this.DescValue = "@回复：" + ToUserName + "的评论";
-                this.commentType = "reply";
-                this.ToUserId = ToUserId;
-                this.ToUserName = ToUserName;
-                // console.log(ToUserId,ToUserName,this.ToUserId)
-            },
-
-            submitForm(formName) {
-                let _that = this;
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        // console.log(this.ruleForm.commentDesc)
-                        if (!this.ruleForm.commentDesc) {
-                            this.open4("请填写评论内容");
-                        } else {
-                            let obj = {
-                                projectId: this.proTitle.proId,
-                                commentFromUserId: getStorage("userInfo").id, //本会员的ID
-                                commentToUserId:
-                                    this.commentType === "reply"
-                                        ? this.ToUserId
-                                        : this.detailList.createPerson, //被评论员的ID
-                                projectDiaryId: this.detailList.diaryId,
-                                content: this.ruleForm.commentDesc,
-                                commentType: this.commentType,
-                                isTop: "0"
-                            };
-
-                            getPostInfo("yq_api/projectDiary/addProjectDiaryComment", obj).then(
-                                res => {
-                                    if (res.data.code === 200) {
-                                        this.open2(res.data.msg);
-                                        let commentObj = {
-                                            commentFromUserId: obj.commentFromUserId,
-                                            commentFromUserName: getStorage("userInfo").name,
-                                            commentFromUserUrl: getStorage("userInfo").mainPic,
-                                            commentType: this.commentType,
-                                            commentToUserName: this.ToUserName,
-                                            content: this.ruleForm.commentDesc
-                                        };
-                                        this.detailList.projectDiaryCommentList.push(commentObj);
-
-                                        (this.commentType = "comment"),
-                                            (this.DescValue = "给Ta的日志评论");
-                                        this.ruleForm.commentDesc = "";
-                                    }
-                                }
-                            );
-
-                            // console.log(obj)
-                            // alert("submit!");
-                        }
-                    } else {
-                        console.log("error submit!!");
-                        return false;
-                    }
-                });
-            },
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
-            },
-
-            LargeImage(imagesUrl) {
-                this.dialogImageUrl = imagesUrl;
-                this.dialogVisible = true;
-            },
-
-            Largevideo(videoUrl) {
-                this.playerOptions.sources[0].src = videoUrl;
-                this.videoVisible = true;
-            }
-        },
-        mounted() {
-            this.loading = true;
-            // console.log(this.$route.query.diaryId);
-            let obj = {
-                diaryId: this.$route.query.diaryId,
-                userId: getStorage("userInfo").id,
-                projectId: this.proTitle.proId
-            };
-
-            getPostInfo("yq_api/projectDiary/detail", obj).then(res => {
-                if (res.data.code === 200) {
-                    console.log(res.data.data)
-                    this.detailList =
-                        res.data.data == null ? (res.data.data = []) : res.data.data;
-                    this.isLike =
-                        res.data.data.isDiaryLike === 0
-                            ? (this.isLike = true)
-                            : (this.isLike = false);
-                }
-
-                this.loading = false;
-            });
-        },
-        watch: {
-            detailList: {
-                handler(newValue, oldValue) {
-                    this.imgLength = newValue.imageList.length;
-                    this.videoLength = newValue.videoList.length;
-                    this.acceLength = newValue.accessoryList.length;
-                    this.locationLength = newValue.locationList.length;
-                    this.lookUserLength = newValue.lookUserList.length + 1;
-                    this.userLogLength = newValue.userLogList.length;
-                    this.CommentListLength = newValue.projectDiaryCommentList
-                        ? newValue.projectDiaryCommentList.length
-                        : 0;
-
-                   
-                },
-                deep: true
-            }
-        },
-
-        directives: {
-            focus: {
-                inserted: function (el, option) {
-                    var defClass = "el-input",
-                        defTag = "input";
-                    var value = option.value || true;
-                    if (typeof value === "boolean")
-                        value = { cls: defClass, tag: defTag, foc: value };
-                    else
-                        value = {
-                            cls: value.cls || defClass,
-                            tag: value.tag || defTag,
-                            foc: value.foc || false
-                        };
-                    if (el.classList.contains(value.cls) && value.foc)
-                        el.getElementsByTagName(value.tag)[0].focus();
-                }
-            }
-        }
+      rules: {},
+      imgLength: 0,
+      videoLength: 0,
+      acceLength: 0,
+      locationLength: 0,
+      lookUserLength: 0,
+      CommentListLength: 0,
+      userLogLength: 0,
+      resouLength:0,
     };
+  },
+  computed: {
+    ...mapState(["sWHeight", "proTitle", "userInfo"]),
+    player() {
+      return this.$refs.videoPlayer.player;
+    }
+  },
+  components: {
+    videoPlayer,
+    ImgSwiper
+  },
+  methods: {
+    onPlayerPlay(player) {
+      //   alert("play");
+    },
+    onPlayerPause(player) {
+      //   alert("pause");
+    },
+
+    open2(msg) {
+      this.$message({
+        message: msg,
+        type: "success"
+      });
+    },
+
+    open4(msg) {
+      this.$message.error(msg);
+    },
+
+    handTitleChange() {
+      this.activeIndex = false;
+      this.focusState = true;
+    },
+
+    focusclick() {
+      this.focusState = true;
+    },
+
+    changeTime(time) {
+      return getToTime(time, "-");
+    },
+    fileTypeImgChange(fileName) {
+      return setFileTyleImge(fileName);
+    },
+
+    handTitleBlur(value, id) {
+      this.activeIndex = true;
+      // console.log(value,id,getStorage("userInfo").id)
+      let titleObj = {
+        diaryId: id,
+        userId: getStorage("userInfo").id,
+        title: value
+      };
+
+      getPostInfo("yq_api/projectDiary/addDiaryTitle", titleObj).then(res => {
+        if (res.data.code === 200) {
+          this.open2(res.data.msg);
+        }
+      });
+    },
+
+    deleteDiary(id) {
+      let obj = {
+        diaryId: id,
+        userId: getStorage("userInfo").id
+      };
+
+      if (this.lookUserLength == 0) {
+        this.$confirm("您确定要删除这篇日志吗?删除后不可恢复", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            getPostInfo("yq_api/projectDiary/delete", obj).then(res => {
+              if (res.data.code === 200) {
+                // this.open2(res.data.msg);
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                this.$router.push("/diary/MyDiary");
+              }
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除"
+            });
+          });
+        // console.log("直接删除");
+      } else {
+        if (this.isEdit) {
+          this.$confirm("您确定要删除这篇日志吗?删除后不可恢复", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          })
+            .then(() => {
+              getPostInfo("yq_api/projectDiary/delete", obj).then(res => {
+                if (res.data.code === 200) {
+                  this.$message({
+                    type: "success",
+                    message: "删除成功!"
+                  });
+                  this.$router.push("/diary/MyDiary");
+                }
+              });
+            })
+            .catch(() => {
+              this.$message({
+                type: "info",
+                message: "已取消删除"
+              });
+            });
+          // console.log("可以删除！！");
+        }
+      }
+    },
+    EditLog(did,pid){
+      if(this.lookUserLength == 0){
+
+          router.push({
+           path:'/diary/EditDiary',
+           query:{
+               did:did,
+               pid:pid
+           }
+         
+           });
+
+      }else{
+  if(this.isEdit){
+         router.push({
+           path:'/diary/EditDiary',
+           query:{
+               did:did,
+               pid:pid
+           }
+         
+           });
+        // console.log('可以编辑')
+        //  console.log(did,pid)
+      }
+
+      }
+    
+     
+
+    },
+    getOperationType(typeStr) {
+      let HtmlStr = "";
+      switch (typeStr) {
+        case "look":
+          HtmlStr = `浏览过`;
+          break;
+        case "like":
+          HtmlStr = `点赞过`;
+          break;
+        case "comment":
+          HtmlStr = `评论过`;
+          break;
+      }
+      return HtmlStr;
+    },
+    userLogClass(typeStr) {
+      let HtmlStr = "";
+      switch (typeStr) {
+        case "look":
+          HtmlStr = "lookUserlog";
+          break;
+        case "like":
+          HtmlStr = "likeUserlog";
+          break;
+        case "comment":
+          HtmlStr = "commentUserlog";
+          break;
+      }
+      return HtmlStr;
+    },
+    openUpH() {
+      this.MaxHShow = !this.MaxHShow;
+    },
+
+    LikeCountChange() {
+      if (this.isLike) {
+        let obj = {
+          projectDiaryId: this.$route.query.diaryId,
+          userId: getStorage("userInfo").id,
+          projectId: this.proTitle.proId,
+          type: "0"
+        };
+        getPostInfo("yq_api/projectDiary/projectDiaryLike", obj).then(res => {
+          if (res.data.code === 200) {
+            this.open2("点赞成功！");
+            this.detailList.projectDiaryLikeCount =
+              this.detailList.projectDiaryLikeCount * 1 + 1;
+            this.isLike = false;
+          }
+        });
+      } else {
+        this.open4("您已点过赞！请勿重复点赞");
+      }
+    },
+
+    changComment(ToUserId, ToUserName) {
+      this.DescValue = "@回复：" + ToUserName + "的评论";
+      this.commentType = "reply";
+      this.ToUserId = ToUserId;
+      this.ToUserName = ToUserName;
+      // console.log(ToUserId,ToUserName,this.ToUserId)
+    },
+
+    submitForm(formName) {
+      let _that = this;
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // console.log(this.ruleForm.commentDesc)
+          if (!this.ruleForm.commentDesc) {
+            this.open4("请填写评论内容");
+          } else {
+            let obj = {
+              projectId: this.proTitle.proId,
+              commentFromUserId: getStorage("userInfo").id, //本会员的ID
+              commentToUserId:
+                this.commentType === "reply"
+                  ? this.ToUserId
+                  : this.detailList.createPerson, //被评论员的ID
+              projectDiaryId: this.detailList.diaryId,
+              content: this.ruleForm.commentDesc,
+              commentType: this.commentType,
+              isTop: "0"
+            };
+
+            getPostInfo("yq_api/projectDiary/addProjectDiaryComment", obj).then(
+              res => {
+                if (res.data.code === 200) {
+                  this.open2(res.data.msg);
+                  let commentObj = {
+                    commentFromUserId: obj.commentFromUserId,
+                    commentFromUserName: getStorage("userInfo").name,
+                    commentFromUserUrl: getStorage("userInfo").mainPic,
+                    commentType: this.commentType,
+                    commentToUserName: this.ToUserName,
+                    content: this.ruleForm.commentDesc
+                  };
+                  this.detailList.projectDiaryCommentList.push(commentObj);
+
+                  (this.commentType = "comment"),
+                    (this.DescValue = "给Ta的日志评论");
+                  this.ruleForm.commentDesc = "";
+                }
+              }
+            );
+
+            // console.log(obj)
+            // alert("submit!");
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+
+    LargeImage(imagesUrl) {
+      this.dialogImageUrl = imagesUrl;
+      this.dialogVisible = true;
+    },
+
+    Largevideo(videoUrl) {
+      this.playerOptions.sources[0].src = videoUrl;
+      this.videoVisible = true;
+    }
+  },
+  mounted() {
+    this.loading = true;
+    let obj = {
+      diaryId: this.$route.query.diaryId,
+      userId: getStorage("userInfo").id,
+      projectId: this.proTitle.proId
+    };
+
+    getPostInfo("yq_api/projectDiary/detail", obj).then(res => {
+      if (res.data.code === 200) {
+        // console.log(res.data.data)
+        this.detailList =
+          res.data.data == null ? (res.data.data = []) : res.data.data;
+        this.isLike =
+          res.data.data.isDiaryLike === 0
+            ? (this.isLike = true)
+            : (this.isLike = false);
+        this.isEdit = getDayNewTime(this.detailList.createTime);
+        // console.log(this.detailList)
+      }
+      // console.log(this.detailList);
+
+      this.loading = false;
+    });
+  },
+  watch: {
+    detailList: {
+      handler(newValue, oldValue) {
+        this.resouLength = newValue.resourceList.length;
+        this.imgLength = newValue.imageList.length;
+        this.videoLength = newValue.videoList.length;
+        this.acceLength = newValue.accessoryList.length;
+        this.locationLength = newValue.locationList.length;
+        this.lookUserLength = newValue.lookUserList.length;
+        this.userLogLength = newValue.userLogList.length;
+        this.CommentListLength = newValue.projectDiaryCommentList
+          ? newValue.projectDiaryCommentList.length
+          : 0;
+      },
+      deep: true
+    }
+  },
+
+  directives: {
+    focus: {
+      inserted: function(el, option) {
+        var defClass = "el-input",
+          defTag = "input";
+        var value = option.value || true;
+        if (typeof value === "boolean")
+          value = { cls: defClass, tag: defTag, foc: value };
+        else
+          value = {
+            cls: value.cls || defClass,
+            tag: value.tag || defTag,
+            foc: value.foc || false
+          };
+        if (el.classList.contains(value.cls) && value.foc)
+          el.getElementsByTagName(value.tag)[0].focus();
+      }
+    }
+  }
+};
 </script>
 <style>
-    .video-js .vjs-big-play-button {
-        /*
+.video-js .vjs-big-play-button {
+  /*
      播放按钮换成圆形
     */
-        height: 2em;
-        width: 2em;
-        line-height: 2em;
-        border-radius: 1em;
-    }
+  height: 2em;
+  width: 2em;
+  line-height: 2em;
+  border-radius: 1em;
+}
 </style>

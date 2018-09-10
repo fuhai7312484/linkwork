@@ -10,8 +10,12 @@ import ProList from '../pages/Project/components/ProList.vue'
 import PorIndex from '../pages/Project/index.vue'
 import DiaryIndex from '../pages/Diary/index.vue'
 import DiaryPublic from '../pages/Diary/components/DiaryPublic.vue'
+import EditdiaryIndex from '../pages/Diary/components/EditDiaryIndex.vue'
 import EditDiary from '../pages/Diary/components/EditDiary.vue'
 
+import DraftIndex from '../pages/Diary/components/DraftIndex'
+import DraftboxList from '../pages/Diary/components/DraftBoxList'
+import DraftDetail from '../pages/Diary/components/DraftDetail'
 import mytext from '../pages/Diary/components/mytext'
 
 
@@ -65,8 +69,35 @@ export default new Router({
             {
               path:"/diary/EditDiary",
               name:"EditDiary",
-              component:EditDiary,
-        
+              component:EditdiaryIndex,
+              redirect: '/diary/EditDiary',
+              children:[
+                {
+                  path:"/diary/EditDiary",
+                  name:"EditDiary",
+                 component:EditDiary,
+                },
+                {
+                  path:"/diary/EditDiary/DraftboxList",
+                  name:"DraftIndex",
+                  redirect: '/diary/EditDiary/DraftboxList',
+                  component:DraftIndex, 
+                  children:[
+                    {
+                      path:"/diary/EditDiary/DraftboxList",
+                      name:"DraftboxList",
+                      component:DraftboxList, 
+                    },
+                    {
+                      path:"/diary/EditDiary/DraftboxList/:id",
+                      name:"DraftDetail",
+                      component:DraftDetail, 
+                    },
+
+                  ]
+                },
+
+              ],
             },
             {
               path:"/diary/MyDiary",

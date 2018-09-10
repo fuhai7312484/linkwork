@@ -33,6 +33,10 @@ export default new vuex.Store({
     proTitle:{},
     fiaworkfiow:[],
     ProList:[],
+    DraftBox:[],
+    // create1proId:{},
+    // create2orgId:'',
+
   },
  getters: {
     // 请求数据时加载状态
@@ -70,6 +74,14 @@ export default new vuex.Store({
         state.proTitle = getStorage('proInfo')
         // localStorage.proTitle = data;
     },
+    // setcreate1proId(state,data){
+    //   state.create1proId = data;
+     
+    // },
+    // setcreate2orgId(state,data){
+    //   state.create1proId.orgId = data;
+
+    // }
   },
   actions: {
     updateState({ commit }) {

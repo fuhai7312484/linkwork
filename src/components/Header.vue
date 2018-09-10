@@ -6,20 +6,33 @@
       <el-collapse-transition>
         <div v-show="show3">
           <div class="transition-box">
-              <el-table
-              :show-header="false"
-      :data="gridData"
-      class="HeadProList"
-      style="width: 100%">
-       <el-table-column
-       type="index"
-        width="40">
-      </el-table-column>
-      <el-table-column
-        prop="shortName"
-        width="280">
-      </el-table-column>
-    </el-table>
+             <div class="porMore">
+              <router-link tag="span" to="/project/prolist" > 更多项目 </router-link>
+               </div>
+           
+            <ul class="headMuneBox HeadProList">
+               <li v-for="(proItme,index) in gridData" :key="index" :style="setTaskState(proItme.isMyProject,proItme.status,proItme.uStatus)"
+               @click="handChangproTitle({protitle:proItme.shortName,proId:proItme.projectId,orgName:proItme.orgName,uStatus:proItme.uStatus,shortName:proItme.shortName,title:proItme.title,period:proItme.period},('/'))"
+                >
+                 <!-- :style="fn(proItme.isMyProject,proItme.status,proItme.uStatus)" -->
+                 
+                   <span class="proListKey"> {{index+1}}</span> 
+                   
+                  
+                    {{proItme.shortName}}
+
+                     <el-badge v-if="proItme.msgCount!=0" :value="proItme.msgCount" class="UnreadNum">
+                  
+                    </el-badge>
+
+                  
+            
+               
+               </li>
+          </ul>
+         
+
+
  <router-link tag="div" to="/project/createpro" class="transitionCretdBtn">
         <span class="iconfont addproIcon">&#xe659;</span>创建项目</router-link>
               </div>
@@ -89,7 +102,9 @@ import {
   getStorage,
   autodivheight,
   stoRemove,
-  stClear
+  stClear,
+  statusColor,
+  setStorage
 } from "../assets/lib/myStorage.js";
 import router from "../router";
 import { mapState, mapMutations, mapActions } from "vuex";
@@ -116,8 +131,37 @@ export default {
       // stClear();
       this.changeLogin(0);
       router.push("/login");
-    }
+    },
+      setTaskState(isMyProject, status, uStatus) {
+     return statusColor(isMyProject, status, uStatus)
+    },
+       handChangproTitle(obj,url) {
+      // this.showLoading(true);
+      if(obj.uStatus=== '4'){
+        // console.log(obj.uStatus,obj.proId,'这里是未完成的项目创建页面')
+      this.$router.push({
+          path: '/project/step_1',
+          query: {
+            projectId: obj.proId,
+            shortName:obj.shortName,
+          }
+        });
+      }else{
+  let StorageObj={
+        orgName:obj.orgName,
+        protitle:obj.protitle,
+        proId:obj.proId,
+          title:obj.title,
+          period:obj.period
+      }
+      setStorage('proInfo',StorageObj)
+      url == this.$route.path?this.$router.go(0):this.$router.push(url);
+      }
+    },
+  
   },
+   
+  
   mounted() {
     this.userData = getStorage("userInfo");
     this.proTitleChang()
@@ -125,7 +169,7 @@ export default {
     // console.log(this.$store.state.proTitle,getStorage('proInfo'))
   // console.log(this.$store.state.proTitle)
   // console.log(proTitle)
-  
+ 
 
     let _that = this;
 
@@ -157,6 +201,7 @@ export default {
     };
     await this.getProList(params);
     this.gridData = this.ProList;
+  
   }
 };
 </script>

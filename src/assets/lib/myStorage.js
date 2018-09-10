@@ -119,6 +119,30 @@ export function getToTime(timeStamp, str) {
   let s = toDou(date.getSeconds());
   return Y + M + D + h + m + s;
 }
+//获取当天00：00:00时间
+export function getDayNewTime(time){
+  function toDou(n) {
+    return n < 10 ? "0" + n : "" + n;
+  }
+  
+  var date = new Date(); 
+  let Y = date.getFullYear()
+  let M = toDou(date.getMonth() + 1)
+  let D = toDou(date.getDate()) 
+  let newTime = (Y+M+D)*1
+
+  var createdate = new Date(time);
+  let cY = createdate.getFullYear();
+  let cM = toDou(createdate.getMonth() + 1);
+  let cD = toDou(createdate.getDate());
+  let creatTime = (cY+cM+cD)*1
+  if(creatTime===newTime){
+    return true
+  }else{
+    return false
+  }
+ 
+}
 
 // 时间统一函数
 export function transDate(time) {

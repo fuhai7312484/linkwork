@@ -245,7 +245,6 @@
                 imgUploadPercent: 0,
 
                 isReplace: false,
-                isEditDiary:false,
 
                 DraftBoxLength: 0,
                 isDraftBox: true,
@@ -288,7 +287,7 @@
                     callback: action => {
                         this.$message({
                             type: "info",
-                            message: `取消: ${action}`
+                            message: `action: ${action}`
                         });
                     }
                 });
@@ -316,8 +315,8 @@
                     getStorage("userInfo").name +
                     "-" +
                     getNewDataTime();
-                // console.log(locatName);
-                // console.log(data);
+                console.log(locatName);
+                console.log(data);
 
                 let obj = {
                     name: data.name + " " + locatName,
@@ -327,7 +326,7 @@
 
                 this.ruleForm.locationList.push(obj);
 
-                // console.log(obj);
+                console.log(obj);
             },
 
             handImgUploadChange(ev) { },
@@ -385,7 +384,7 @@
                 this.imgUploadPercent = val * 1;
             },
             handleVideoSuccess(res, file, imgList) {
-                // console.log(res);
+                console.log(res);
                 if (res.code === 200) {
                     let fileType = file.name.split(".")[file.name.split(".").length - 1];
                     let videoName =
@@ -397,7 +396,7 @@
                         getNewDataTime() +
                         "." +
                         fileType;
-                    // console.log(fileType, videoName);
+                    console.log(fileType, videoName);
                     let _that = this;
                     setTimeout(function () {
                         this.vdImg = res.data[0].content;
@@ -415,13 +414,13 @@
                         if (_that.videoUploadPercent == 100) {
                             _that.videoFlag = false;
                         }
-                    }, 1500);
+                    }, 1000);
                 }
             },
 
             handleBeforeUpload(file) {
-                // console.log("before");
-                // console.log(file);
+                console.log("before");
+                console.log(file);
 
                 const isJPEG = file.type === "image/jpeg";
                 const isPNG = file.type === "image/png";
@@ -441,11 +440,11 @@
             },
 
             videoBeforeUpload(file) {
-                // console.log("视频before");
+                console.log("视频before");
             },
 
             annexBeforeUpload(file) {
-                // console.log("附件before");
+                console.log("附件before");
             },
             submitUpload() {
                 this.$refs.upload.submit();
@@ -475,9 +474,6 @@
             handlePreview(file) { },
 
             imageSuccess(res, file, imgList) {
-                // console.log(file,imgList)
-                console.log(imgList)
-                
                 let fileType = file.name.split(".")[file.name.split(".").length - 1];
                 let nameStr =
                     this.proTitle.protitle +
@@ -490,9 +486,7 @@
                     fileType;
 
                 if (res.code === 200) {
-                    console.log(res)
-                    // res.data[0].name = nameStr;
-                    res.data[0].name = file.name;
+                    res.data[0].name = nameStr;
                     res.data[0].type = getFileType(fileType);
                     if (res.data[0].type === "img") {
                         this.showImg = true;
@@ -526,6 +520,10 @@
 
                             let uploadInfo = {
                                 userId: getStorage("userInfo").id,
+                                projectId: this.proTitle.proId,
+                                status: "0",
+                                diaryType: "diary",
+                                diaryLookType: ""
                             };
 
                             let resourceList = [];
@@ -555,25 +553,8 @@
                                         resourceList[i][key];
                                 }
                             }
-                            if(this.isEditDiary){
-                                uploadInfo.diaryId = this.$route.query.did;
-                                // console.log(uploadInfo)
-                                
-                                getPostInfo("yq_api/projectDiary/updateProjectDiary", uploadInfo).then(res => {
-                                    if(res.data.code){
-                                        this.open2(res.data.msg); 
-                                         this.$router.push("/diary/MyDiary");
-                                    }
-                                
-                                })
-                            }else{
-                                 uploadInfo.projectId = this.proTitle.proId;
-                                uploadInfo.status = '0';
-                                uploadInfo.diaryType = 'diary';
-                                uploadInfo.diaryLookType = "";
-                                // console.log(uploadInfo)
 
-                     getPostInfo("yq_api/projectDiary/add", uploadInfo).then(res => {
+                            getPostInfo("yq_api/projectDiary/add", uploadInfo).then(res => {
                                 if (res.data.code === 200) {
                                     this.open2("日志上传成功！");
                                     this.isDraftBox = false;
@@ -585,10 +566,6 @@
 
                                 }
                             });
-
-                            }
-
-                       
 
                             // alert("submit!");
                         }
@@ -604,27 +581,18 @@
         },
         mounted() {
             this.userId = getStorage("userInfo").id;
-     
-            // console.log(this.$route.query.pid,this.$route.query.did,this.$route.query.DraftBoxId)
-            if (this.$route.query.pid && this.$route.query.did) {
-                this.isEditDiary = true;
-                this.isDraftBox = false;
-                let EditObj={
-                    diaryId:this.$route.query.did,
-                    userId:getStorage("userInfo").id,
-                    projectId:this.$route.query.pid,
-                }
-                  getPostInfo("yq_api/projectDiary/detail", EditObj).then(res => {
-                     
-                      if(res.data.code===200){
-                          let EditData = res.data.data;
-                           this.ruleForm.locationList = EditData.locationList;
-                            this.ruleForm.annexList = EditData.accessoryList;
-                            this.ruleForm.videoList = EditData.videoList;
-                            this.ruleForm.imgList = EditData.imageList;
-                            this.ruleForm.desc = EditData.resourceList[0].content;
-                      }
-                     })
+            if (this.$route.query.DraftBoxId) {
+                this.isReplace = true;
+                this.DraftBoxId = this.$route.query.DraftBoxId;
+                let StroArr = getStorage("DraftBox").filter(e => {
+                    return e.DraftBoxId === this.$route.query.DraftBoxId;
+                });
+                this.ruleForm.locationList = StroArr[0].locationList;
+                this.ruleForm.annexList = StroArr[0].annexList;
+                this.ruleForm.videoList = StroArr[0].videoList;
+                this.ruleForm.imgList = StroArr[0].imgList;
+                this.ruleForm.desc = StroArr[0].desc;
+                this.DraftBoxId = this.$route.query.DraftBoxId;
                
             } else {
                 this.DraftBoxId = +new Date();
@@ -637,6 +605,7 @@
                 projectId: this.proTitle.proId
             };
             getPostInfo("yq_api/projectDiary/searchMyDariyList", obj).then(res => {
+              
                 this.orgName = res.data.data.length===0?null:res.data.data[0].orgName;
             });
 

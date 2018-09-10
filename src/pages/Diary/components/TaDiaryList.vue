@@ -174,6 +174,10 @@
         </div>
 
         <div class="clear"></div>
+
+
+
+
     </div>
 </template>
 <script>
@@ -239,7 +243,7 @@
                 .then(res => {
 
                     this.TaDiaryList = res.data.data == null ? res.data.data = [] : res.data.data;
-
+                        // console.log(this.TaDiaryList)   
                     this.loading = false;
                 })
 
@@ -254,6 +258,7 @@
             getPostInfo('yq_api/mail/findProjectUnreadMailCountAZ', Wobj)
                 .then(res => {
                     this.diaryCount = res.data.data.diary
+                    
 
 
                 })

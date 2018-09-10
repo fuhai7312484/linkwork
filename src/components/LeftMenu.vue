@@ -25,7 +25,7 @@
 </span>
     </router-link>
 
-    <router-link tag="li" class="leftMenuList" to="/project" >
+    <router-link tag="li" class="leftMenuList" to="/g" >
 <span class="iconfont LeftIcon">&#xe640;</span>
 <span class="LeftMenuTitle">
 管理

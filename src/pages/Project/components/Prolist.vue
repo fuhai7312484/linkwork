@@ -4,11 +4,12 @@
     <div class="remarkBox" :style="{height:sWHeight}">
       <div class="proTitleBox">
         <h1>
-          链工作APP项目
+         {{proInfo.protitle}}
+          <!-- 链工作APP项目 -->
         
         </h1>
-        <h2>标题名称：项目</h2>
-        <h3>节点：测试</h3>
+        <h2>标题名称：{{proInfo.title!=null?proInfo.title:'无'}}</h2>
+        <h3>节点：{{proInfo.period!=null?proInfo.period:'无'}}</h3>
       </div>
 
       <router-link tag="div" to="/project/createpro" class="proCreateBtn">
@@ -94,10 +95,18 @@
          element-loading-text="拼命加载中"
          >
           <li class="porList" v-for="(item, index) in tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" >
-           
+           <!-- {{item.shortName}} -->
             <div class="porListNameBox">
               <el-col :span="16" class="porListTitle">
-                <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" @click="handChangproTitle({protitle:item.shortName,proId:item.projectId,orgName:item.orgName},('/'))">
+                <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" 
+                @click="handChangproTitle({protitle:item.shortName,
+                proId:item.projectId,
+                orgName:item.orgName,
+                uStatus:item.uStatus,
+                shortName:item.shortName,
+                title:item.title,
+                period:item.period
+                },('/'))">
          {{indexMethod(item.key)}}.{{item.shortName}}
 
          
@@ -184,6 +193,7 @@ export default {
       loading: true,
       searchInput: "",
       timer: null,
+      proInfo:{},
       noteInfo: [
         {
           prefix: "·",
@@ -226,9 +236,11 @@ export default {
   },
   computed: {
     ...mapState({
-      sWHeight: state => state.sWHeight
+      sWHeight: state => state.sWHeight,
+      proTitle:state => state.proTitle,
     })
   },
+
   methods: {
     current_change(currentPage) {
       this.currentPage = currentPage;
@@ -251,27 +263,33 @@ export default {
     },
     handChangproTitle(obj,url) {
       this.showLoading(true);
-      // let obj = {protitle:title,proId:proId}
-
-      setStorage('proInfo',obj)
-     
-      // this.proTitleChang(obj);
+      if(obj.uStatus=== '4'){
+        // console.log(obj.uStatus,obj.proId,'这里是未完成的项目创建页面')
+      this.$router.push({
+          path: '/project/step_1',
+          query: {
+            projectId: obj.proId,
+            shortName:obj.shortName,
+          }
+        });
+      }else{
+  let StorageObj={
+        orgName:obj.orgName,
+        protitle:obj.protitle,
+        proId:obj.proId,
+          title:obj.title,
+          period:obj.period
+      }
+      setStorage('proInfo',StorageObj)
       this.$router.push(url);
-
-      //   setTimeout(() => {
-      //       this.proTitleChang(title)
-      //  this.$router.push(url)
-
-      //   }, 1000);
-
-      //  this.proTitleChang(title)
-      //  this.$router.push(url)
+      }
     },
     indexMethod(index) {
       return index * 1 + 1;
     },
 
     handleCommand(command) {
+      // console.log(command)
       this.loading = true;
       let obj = {
         page: "1",
@@ -289,15 +307,16 @@ export default {
             setKeyIndex(data);
             this.searchArr = this.tableData = data;
             // console.log(this.tableData)
+        
             
             this.total = data.length;
             this.currentPage = 1;
-            // console.log(this.currentPage)
+         
             this.loading = false;
           }
         })
         .catch(err => {
-          console.log(11111)
+         
           console.log(err);
         });
     },
@@ -305,10 +324,11 @@ export default {
      return statusColor(isMyProject, status, uStatus)
     }
   },
+  mounted() {
+     this.proInfo = this.$store.state.proTitle;
+  },
   created() {
     this.handleCommand("10");
-
-    // console.log(statusColor('Y','0','0')) 
   },
 
   watch: {

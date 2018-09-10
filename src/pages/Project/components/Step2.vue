@@ -24,7 +24,7 @@
         <el-select v-model="ruleForm.UnitPosit" :multiple="false" filterable allow-create default-first-option :style="{width:'200px'}"
           placeholder="选择单位在项目中的定位/或自己创建">
           <div class="speLabelUlBox">
-            <el-option v-for="item in UnitPositList" :key="item.value" :label="item.label" :value="item.value" class="speLabelLists" >
+            <el-option v-for="(item,index) in UnitPositList" :key="index" :label="item.name" :value="item.name" class="speLabelLists" >
             </el-option>
           </div>
         </el-select> (选填)
@@ -61,119 +61,142 @@
         <i class="el-icon-delete removeBtn" @click.prevent="removeDomain(domain)"></i>
         <!-- <el-button >删除</el-button> -->
       </el-form-item>
-
-
     </el-form>
-
-
     <div class="stepBtnStyle">
       <el-button tag="el-button" @click="submitForm('ruleForm')" type="primary">
         编辑完成，继续编辑个人信息
       </el-button>
     </div>
+
   </div>
 </template>
 <script>
-  import { character, getStorage } from "../../../assets/lib/myStorage.js";
-  import router from "../../../router";
-  export default {
-    name: "Step2",
-    data() {
-      return {
-          UnitPositList: [
-            {
-              value: "政府机构",
-              label: "政府机构"
-            },
-            {
-              value: "协会",
-              label: "协会"
-            },
-            {
-              value: "民间组织",
-              label: "民间组织"
-            },
-            {
-              value: "临时组织",
-              label: "临时组织"
-            },
-            {
-              value: "甲方",
-              label: "甲方"
-            }
-          ],
-        ruleForm: {
-          titleAttr: "",
-          companyName: "",
-          UnitName: "",
-          phone: "18868877893",
-          nickname: "张三",
-          UnitPosit:'',
-          department: "部门",
-          domains: [
-            {
-              value: "部门A",
-              charaName: "A"
-            }
-          ]
-        },
-        rules: {
-          UnitName: [
-            { required: true, message: "请输入单位简称", trigger: "blur" },
-            { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" }
-          ]
-        }
-      };
-    },
-
-    methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate(valid => {
-          if (valid) {
-            console.log(this.ruleForm);
-            //   console.log(this.$refs.uploada.uploadFiles);
-            // console.log(this.$refs)
-
-            // let fileList = this.ruleForm.fileList;
-            // console.log(this.ruleForm.fileList)
-            // console.log(valid)
-            //  this.$refs.upload.submit();
-            // console.log(this.$refs.upload)
-
-            // alert('您填写的内容是：' + this.ruleForm.name);
-            router.push("/project/step_3");
-            this.$emit("next", 2);
-          } else {
-            console.log("error submit!!");
-            return false;
+import {
+  character,
+  getStorage,
+  getPostInfo
+} from "../../../assets/lib/myStorage.js";
+import router from "../../../router";
+export default {
+  name: "Step2",
+  data() {
+    return {
+      UnitPositList: [],
+      ruleForm: {
+        titleAttr: "",
+        companyName: "",
+        UnitName: "",
+        phone: "18868877893",
+        nickname: "张三",
+        UnitPosit: "",
+        department: "部门",
+        domains: [
+          {
+            value: "部门A",
+            charaName: "A"
           }
-        });
+        ]
       },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
-      removeDomain(item) {
-        var index = this.ruleForm.domains.indexOf(item);
-        if (index !== -1) {
-          this.ruleForm.domains.splice(index, 1);
+      rules: {
+        UnitName: [
+          { required: true, message: "请输入单位简称", trigger: "blur" },
+          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" }
+        ]
+      }
+    };
+  },
+  methods: {
+
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // console.log(this.ruleForm);
+          let uploadInfo = {
+            title: this.ruleForm.titleAttr,
+            shortName: this.ruleForm.UnitName,
+            userId: getStorage("userInfo").id,
+            orgName: this.ruleForm.companyName,
+            classifyName: this.ruleForm.UnitPosit,
+            // typeName: this.ruleForm.nickname,
+            createPersonMobile: this.ruleForm.phone,
+            projectId:this.$route.query.projectId,
+          };
+
+          let departmentList = [];
+          for (let i = 0; i < this.ruleForm.domains.length; i++) {
+            departmentList.push({});
+            departmentList[i].title = this.ruleForm.department;
+            departmentList[i].departmentName = this.ruleForm.domains[i].value;
+            departmentList[i].operation = 'add';
+          }
+
+          for (let i = 0; i < this.ruleForm.domains.length; i++) {
+            for (let key in departmentList[i]) {
+              uploadInfo["departmentList[" + i + "]." + key] =
+                departmentList[i][key];
+            }
+          }
+          // console.log(uploadInfo);
+          getPostInfo("/yq_api/orgDepartment/addOrg", uploadInfo).then(res => {
+            if (res.data.code === 200) {
+              // console.log(res.data.data)
+              router.push({
+            path: '/project/step_3',
+            query: {
+            projectId: this.$route.query.projectId,
+            shortName:this.$route.query.shortName,
+            orgId:res.data.data
+                }
+             })
+              this.$emit("next", 2);
+            }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
         }
-      },
-      addDomain() {
-        let charaName = character(this.ruleForm.domains.length);
-        this.ruleForm.domains.push({
-          value: "部门" + charaName,
-          key: Date.now(),
-          charaName
-        });
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    removeDomain(item) {
+      var index = this.ruleForm.domains.indexOf(item);
+      if (index !== -1) {
+        this.ruleForm.domains.splice(index, 1);
       }
     },
-    mounted() {
-      this.ruleForm.nickname = getStorage("userInfo").name;
-      this.ruleForm.phone = getStorage("userInfo").mobile;
-
-      this.$emit("next", 1);
+     open4(msg) {
+        this.$message.error(msg);
+      },
+    addDomain() {
+      let charaName = character(this.ruleForm.domains.length);
+      this.ruleForm.domains.push({
+        value: "部门" + charaName,
+        key: Date.now(),
+        charaName
+      });
     }
-  };
+  },
+  mounted() {
+    if(!this.$route.query.projectId){
+     this.open4('创建项目请先填写项目信息！')
+       router.push('/project/step_1')
+    }
+    this.ruleForm.nickname = getStorage("userInfo").name;
+    this.ruleForm.phone = getStorage("userInfo").mobile;
+    this.$emit("next", 1);
+    let classifyType = {
+      type: "projectorg"
+    };
+    getPostInfo("yq_api/classify/type", classifyType).then(res => {
+      if (res.data.code === 200) {
+        this.UnitPositList = res.data.data;
+      }
+    });
+  
+  }
+};
 </script>
 <style>
 </style>

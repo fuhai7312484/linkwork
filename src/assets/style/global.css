@@ -347,7 +347,8 @@ overflow: hidden;
     margin-left:308px; 
     margin-right:70px; 
     min-width:500px; 
-    /* overflow:auto; */
+    /* overflow: hidden; */
+    /* height: 200px; */
    
 
 }
@@ -357,6 +358,7 @@ overflow: hidden;
     margin-bottom:200px; 
     overflow-y:auto;
     min-width:400px; 
+  
     
 
 }
@@ -798,6 +800,10 @@ overflow: hidden;
     .editDiaryShow  .maxFont{
         font-size:30px; 
     }
+
+    .editDiaryShow li{
+        list-style: none;
+    }
 .editDiaryType{
      color: #009dff;
      font-size: 25px;
@@ -836,7 +842,7 @@ overflow: hidden;
 }
 .diary-left-pic{
  
-    width: 70%;
+    width: 55%;
     overflow: hidden;
    
 
@@ -862,7 +868,7 @@ margin-left:10px;
 
 .diary-right-icons{
  
-    width: 30%;
+    width: 45%;
     text-align: right
     
 }
@@ -912,6 +918,22 @@ margin-left:10px;
     background: #f6f6f6;
     border-radius:4px; 
     
+}
+.removeEl{
+    position: absolute;
+    width: 37px;
+    height: 37px;
+    right: 0;
+    top:0;
+    background: rgba(230,51,51,.7);
+    text-align: center;
+    line-height: 37px;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+}
+.removeEP{
+    right: 7px;
 }
 .resourceImgvdieoMak{
     position: absolute;
@@ -1268,8 +1290,131 @@ height: 44px;}
     background: rgba(0,0,0,.7);
 }
 
-/* .videoPercentage{
-    background: #000;
-    width: 50px;
+.VisiblePerson{
+    text-align: center;
+  
+
+}
+.DraftBox{
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    border-right:1px solid #c1c0c0;
+    cursor: pointer;
+}
+.DraftBox .DraftBoxFont{
+    display: block;
+    font-size: 24px;
+
+}
+.VisiblePerson{height: 100%;
+width: 100%;}
+.VisiblePerson .VisiblePersonCheBox{
+    display: block;
+}
+.upLoadBtn{
+    text-align: center;
+    height: 100%;
+}
+.upLoadBtn button{
+    margin-top:10px; 
+}
+.imgListBox{
+
+
+}
+.imgListBox .el-upload-list li.el-upload-list__item{
+    float: left;
     height: 50px;
-} */
+    width: 33.3333%;
+    height: 175px;
+    border: 0px;
+    background-color:#f6f6f6;
+
+}
+
+.imgListBox .el-upload-list li.el-upload-list__item img{
+    display: block;
+height: 100%;
+}
+
+.imgListBox .el-upload-list li.el-upload-list__item .el-upload-list__item-name{
+    display: block;
+    width: 100%;
+
+}
+
+.DarftDelet{
+    overflow: hidden;
+    height: 50px;
+ 
+}
+
+.DarftDelet span{
+  
+    
+     height: 100%;
+     /* width: 30px; */
+     display: inline-block;
+     text-align: center;
+     margin: 0 5px;
+     cursor: pointer;
+     display: inline-block;
+   
+}
+
+.DarftDelet span i{
+    display: block;
+    font-size: 20px;
+}
+
+.DarftDelet span:hover{
+    background: #f6f6f6;
+   
+}
+.porMore{
+    /* background: #000; */
+    height: 30px;
+    line-height: 30px;
+    
+    text-align: right; 
+    padding-right:20px; 
+}
+.porMore span{
+    /* display: inline-block; */
+    background: #409EFF;
+    border-radius:4px; 
+    cursor: pointer;
+    padding:8px 12px;
+    
+}
+.headMuneBox{ 
+    width: 100%;
+    min-width:260px;
+    max-height: 500px;
+    overflow-y: auto;
+    font-size: 16px;
+
+}
+.headMuneBox li{
+    color: #000;
+    height: 40px;
+    line-height: 35px;
+    padding: 3px 8px;
+    border-bottom:1px solid #f5f5f8; 
+    cursor: pointer;
+}
+.headMuneBox li:hover{
+    background: #f5f5f8
+}
+.headMuneBox li .proListKey{
+ display: inline-block;
+ margin-right:15px; 
+
+}
+.UnreadNum{
+    position: relative;
+}
+.headMuneBox li.UnreadNum sub.el-badge__content{
+ 
+}

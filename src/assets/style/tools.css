@@ -112,3 +112,8 @@ body{
 }
 
 /* 播放器样式*/
+
+.goToback{
+    background: #000;
+    position: absolute;
+}

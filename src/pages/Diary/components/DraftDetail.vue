@@ -12,12 +12,12 @@
                                 草稿箱({{DraftBoxLength}}条)
                             </router-link>
                         </el-col>
-                        <el-col :span="6">
+                        <!-- <el-col :span="6">
                             <div class="VisiblePerson">
-                                <!-- <el-checkbox class="VisiblePersonCheBox" v-model="MyChecked"></el-checkbox>
-                                个人可见 -->
+                                <el-checkbox class="VisiblePersonCheBox" v-model="MyChecked"></el-checkbox>
+                                个人可见
                             </div>
-                        </el-col>
+                        </el-col> -->
                         <el-col :span="6">
                             <div class="VisiblePerson">
                                 <el-checkbox v-model="KChecked" @change="KCheckedChange" class="VisiblePersonCheBox"></el-checkbox>
@@ -245,7 +245,6 @@
                 imgUploadPercent: 0,
 
                 isReplace: false,
-                isEditDiary:false,
 
                 DraftBoxLength: 0,
                 isDraftBox: true,
@@ -288,7 +287,7 @@
                     callback: action => {
                         this.$message({
                             type: "info",
-                            message: `取消: ${action}`
+                            message: `action: ${action}`
                         });
                     }
                 });
@@ -415,7 +414,7 @@
                         if (_that.videoUploadPercent == 100) {
                             _that.videoFlag = false;
                         }
-                    }, 1500);
+                    }, 1000);
                 }
             },
 
@@ -475,9 +474,6 @@
             handlePreview(file) { },
 
             imageSuccess(res, file, imgList) {
-                // console.log(file,imgList)
-                console.log(imgList)
-                
                 let fileType = file.name.split(".")[file.name.split(".").length - 1];
                 let nameStr =
                     this.proTitle.protitle +
@@ -490,12 +486,11 @@
                     fileType;
 
                 if (res.code === 200) {
-                    console.log(res)
-                    // res.data[0].name = nameStr;
-                    res.data[0].name = file.name;
+                    res.data[0].name = nameStr;
                     res.data[0].type = getFileType(fileType);
                     if (res.data[0].type === "img") {
                         this.showImg = true;
+
                         this.ruleForm.imgList.push(...res.data);
                     } else if (res.data[0].type === "file") {
                         this.showfile = true;
@@ -526,6 +521,10 @@
 
                             let uploadInfo = {
                                 userId: getStorage("userInfo").id,
+                                projectId: this.proTitle.proId,
+                                status: "0",
+                                diaryType: "diary",
+                                diaryLookType: ""
                             };
 
                             let resourceList = [];
@@ -555,25 +554,8 @@
                                         resourceList[i][key];
                                 }
                             }
-                            if(this.isEditDiary){
-                                uploadInfo.diaryId = this.$route.query.did;
-                                // console.log(uploadInfo)
-                                
-                                getPostInfo("yq_api/projectDiary/updateProjectDiary", uploadInfo).then(res => {
-                                    if(res.data.code){
-                                        this.open2(res.data.msg); 
-                                         this.$router.push("/diary/MyDiary");
-                                    }
-                                
-                                })
-                            }else{
-                                 uploadInfo.projectId = this.proTitle.proId;
-                                uploadInfo.status = '0';
-                                uploadInfo.diaryType = 'diary';
-                                uploadInfo.diaryLookType = "";
-                                // console.log(uploadInfo)
 
-                     getPostInfo("yq_api/projectDiary/add", uploadInfo).then(res => {
+                            getPostInfo("yq_api/projectDiary/add", uploadInfo).then(res => {
                                 if (res.data.code === 200) {
                                     this.open2("日志上传成功！");
                                     this.isDraftBox = false;
@@ -585,10 +567,6 @@
 
                                 }
                             });
-
-                            }
-
-                       
 
                             // alert("submit!");
                         }
@@ -604,27 +582,21 @@
         },
         mounted() {
             this.userId = getStorage("userInfo").id;
-     
-            // console.log(this.$route.query.pid,this.$route.query.did,this.$route.query.DraftBoxId)
-            if (this.$route.query.pid && this.$route.query.did) {
-                this.isEditDiary = true;
-                this.isDraftBox = false;
-                let EditObj={
-                    diaryId:this.$route.query.did,
-                    userId:getStorage("userInfo").id,
-                    projectId:this.$route.query.pid,
-                }
-                  getPostInfo("yq_api/projectDiary/detail", EditObj).then(res => {
-                     
-                      if(res.data.code===200){
-                          let EditData = res.data.data;
-                           this.ruleForm.locationList = EditData.locationList;
-                            this.ruleForm.annexList = EditData.accessoryList;
-                            this.ruleForm.videoList = EditData.videoList;
-                            this.ruleForm.imgList = EditData.imageList;
-                            this.ruleForm.desc = EditData.resourceList[0].content;
-                      }
-                     })
+          
+            if (this.$route.query.DraftBoxId) {
+                this.isReplace = true;
+                this.DraftBoxId = this.$route.query.DraftBoxId;
+                getStorage("DraftBox").forEach(e => {
+                    if(e.DraftBoxId == this.$route.query.DraftBoxId){
+                        this.ruleForm.locationList = e.locationList;
+                        this.ruleForm.annexList =e.annexList;
+                        this.ruleForm.videoList = e.videoList;
+                        this.ruleForm.imgList = e.imgList;
+                        this.ruleForm.desc = e.desc;
+                    }
+                });
+               
+                this.DraftBoxId = this.$route.query.DraftBoxId;
                
             } else {
                 this.DraftBoxId = +new Date();
@@ -637,7 +609,7 @@
                 projectId: this.proTitle.proId
             };
             getPostInfo("yq_api/projectDiary/searchMyDariyList", obj).then(res => {
-                this.orgName = res.data.data.length===0?null:res.data.data[0].orgName;
+                this.orgName = res.data.data[0].orgName;
             });
 
             let DraftNewArr = [];
@@ -687,7 +659,7 @@
                         setStorage("DraftBox", rep);
                     } else {
                         setStorage("DraftBox", rep);
-                     
+                       
                     }
                 } else {
                     if (
@@ -697,12 +669,8 @@
                         this.ruleForm.annexList.length != 0 ||
                         this.ruleForm.locationList.length != 0
                     ) {
-                        if(DraftArr.length>=10){
-                        DraftArr = DraftArr.slice(1);
-                        }
-                         DraftArr.push(DraftBoxObj);
-                         setStorage("DraftBox", DraftArr);
-                       
+                        DraftArr.push(DraftBoxObj);
+                        setStorage("DraftBox", DraftArr);
                     }
                 }
             }
@@ -710,7 +678,11 @@
         watch: {
             fileList() {
                 this.fileList.length ? (this.showImg = true) : (this.showImg = false);
+                console.log(this.ruleForm.imgList.length);
             }
+         
+
+            
         }
     };
 </script>

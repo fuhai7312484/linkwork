@@ -7,10 +7,10 @@
       <div class="proTitleBox">
            <ul class="DiaryTabs">
 
-            <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/e">
+            <!-- <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/e">
                   日程计划
                 
-          </router-link>
+          </router-link> -->
 
            <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/EditDiary">
                   编辑日志
@@ -22,7 +22,7 @@
           </router-link>
 
            <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/TaDiary">
-                  他的日志
+                  他人日志
                 
           </router-link>
 
