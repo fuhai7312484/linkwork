@@ -486,7 +486,7 @@
                     fileType;
 
                 if (res.code === 200) {
-                    res.data[0].name = nameStr;
+                    res.data[0].name =file.name;
                     res.data[0].type = getFileType(fileType);
                     if (res.data[0].type === "img") {
                         this.showImg = true;

@@ -550,7 +550,6 @@ export default {
     this.ruleForm.nickname = getStorage("userInfo").name;
     this.userInfo = getStorage("userInfo");
     this.ruleForm.AvatImageUrl = getStorage("userInfo").mainPic;
-
     }
  
   },

@@ -535,6 +535,7 @@ overflow: hidden;
     left: 140px;
     min-width: 872px;
     border-top:1px solid #dcdcdc;
+    z-index: 999;
 }
 
 .stepH1Title{
@@ -1418,3 +1419,31 @@ height: 100%;
 .headMuneBox li.UnreadNum sub.el-badge__content{
  
 }
+.demo-split{
+    /* float: left; */
+    min-width:650px;
+    width: 85%;
+ 
+    margin-left:140px;
+    /* margin-right:70px;   */
+    /* height: 500px; */
+}
+.demo-split .demo-split-pane{
+    /* background: #000; */
+}
+.custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-right: 8px;
+  }
+  .custom-treeImgBox{
+
+  }
+  .custom-treeImgBox img{
+      width: 23px;
+      height: 23px;
+      border-radius:3px; 
+  }

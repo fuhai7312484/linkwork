@@ -404,7 +404,7 @@
 
                         let obj = {
                             size: res.data[0].size,
-                            name: videoName,
+                            name: file.name,
                             type: "mv",
                             content: res.data[0].content,
                             url: res.data[0].url

@@ -35,6 +35,8 @@ import Step3 from '../pages/Project/components/Step3.vue'
 import router from '../router'
 import store from '../store'
 
+import AddressIndex from '../pages/Address/index'
+
 Vue.use(Router);
 
 
@@ -139,6 +141,17 @@ export default new Router({
             },
        
       ]
+    },
+    //通讯录
+
+    {
+      path: "/address",
+      name: "AddressIndex",
+      // redirect: '/diary/EditDiary',
+      meta: {
+        requireAuth: true 
+      },
+      component: AddressIndex,
     },
   
 

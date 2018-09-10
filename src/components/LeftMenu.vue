@@ -31,7 +31,7 @@
 管理
 </span>
     </router-link>
-     <router-link tag="li" class="leftMenuList" to="/b" >
+     <router-link tag="li" class="leftMenuList" to="/address" >
 <span class="iconfont LeftIcon">&#xe62b;</span>
 <span class="LeftMenuTitle">
 通讯录

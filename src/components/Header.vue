@@ -165,7 +165,7 @@ export default {
   mounted() {
     this.userData = getStorage("userInfo");
     this.proTitleChang()
-    this.proInfo = this.$store.state.proTitle;
+    this.proInfo = this.$store.state.proTitle?this.$store.state.proTitle:{protitle:'链工作APP'};
     // console.log(this.$store.state.proTitle,getStorage('proInfo'))
   // console.log(this.$store.state.proTitle)
   // console.log(proTitle)
