@@ -34,6 +34,7 @@ export default new vuex.Store({
     fiaworkfiow:[],
     ProList:[],
     DraftBox:[],
+    AddressUid:{},
     // create1proId:{},
     // create2orgId:'',
 
@@ -43,7 +44,9 @@ export default new vuex.Store({
     isLoding: state => state.isLoding
    },
   mutations: {
-   
+   setAddressUid(state,data){
+    state.AddressUid = data;
+   },
     getWorkCount(state,data){
       state.fiaworkfiow = data;
   },

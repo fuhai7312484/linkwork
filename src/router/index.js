@@ -36,7 +36,7 @@ import router from '../router'
 import store from '../store'
 
 import AddressIndex from '../pages/Address/index'
-
+import addDetails from '../pages/Address/AddDetails.vue'
 Vue.use(Router);
 
 
@@ -152,7 +152,37 @@ export default new Router({
         requireAuth: true 
       },
       component: AddressIndex,
+      children:[
+         {
+                path:"/address/:id",
+                name:"addDetails",
+                component:addDetails,
+              },
+      ],
     },
+
+
+    // {
+    //   path:"/diary/TaDiary",
+    //   name:"TadiaryIndex",
+    //   component:TadiaryIndex,
+    //   redirect: '/diary/TaDiary',
+    //   children:[
+    //     {
+    //       path:"/diary/TaDiary",
+    //       name:"TaDiary",
+    //       component:TaDiary,
+    //     },
+    //     {
+    //       path:"/diary/TaDiary/:id",
+    //       name:"TaDetail",
+    //       component:TaDetail,
+    //     },
+    //   ]
+
+    // },
+
+
   
 
     //项目列表创建项目步骤等路由
