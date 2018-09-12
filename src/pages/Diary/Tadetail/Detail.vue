@@ -594,7 +594,9 @@
                                 commentType: this.commentType,
                                 isTop: "0"
                             };
-
+                            // console.log( this.detailList.projectDiaryCommentList==null?[]: this.detailList.projectDiaryCommentList)
+                             this.detailList.projectDiaryCommentList==null?this.detailList.projectDiaryCommentList=[]:this.detailList.projectDiaryCommentList;
+                             console.log(this.detailList.projectDiaryCommentList)
                             getPostInfo("yq_api/projectDiary/addProjectDiaryComment", obj).then(
                                 res => {
                                     if (res.data.code === 200) {
@@ -607,7 +609,8 @@
                                             commentToUserName: this.ToUserName,
                                             content: this.ruleForm.commentDesc
                                         };
-                                        this.detailList.projectDiaryCommentList.push(commentObj);
+                                       
+                                   this.detailList.projectDiaryCommentList.push(commentObj);
 
                                         (this.commentType = "comment"),
                                             (this.DescValue = "给Ta的日志评论");

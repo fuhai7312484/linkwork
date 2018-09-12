@@ -36,7 +36,7 @@ import router from '../router'
 import store from '../store'
 
 import AddressIndex from '../pages/Address/index'
-import addDetails from '../pages/Address/AddDetails.vue'
+// import addDetails from '../pages/Address/AddDetails.vue'
 Vue.use(Router);
 
 
@@ -152,13 +152,13 @@ export default new Router({
         requireAuth: true 
       },
       component: AddressIndex,
-      children:[
-         {
-                path:"/address/:id",
-                name:"addDetails",
-                component:addDetails,
-              },
-      ],
+      // children:[
+      //    {
+      //           path:"/address/:id",
+      //           name:"addDetails",
+      //           component:addDetails,
+      //         },
+      // ],
     },
 
 

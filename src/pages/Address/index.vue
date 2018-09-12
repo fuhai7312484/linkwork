@@ -8,6 +8,23 @@
       <Split v-model="split1" min="190px" max="700px">
         <div slot="left" class="demo-split-pane splitLeft">
 
+
+<div class="inviteBox">
+
+<div class="approval">
+  <span class="el-icon-bell"></span>   邀请审批
+</div>
+<div class="friends">
+  <span class="el-icon-plus">
+ 
+  </span>
+邀请好友加入项目
+</div>
+
+
+</div>
+
+
           <div v-for="(itme,index) in data" :key="index">
             <div v-for="(oneItme,index) in itme.children" :key="index" v-if="oneItme.creator==='Y'" class="creatorBox">
               <img :src="oneItme.mainPic" /> {{oneItme.label}}
@@ -16,8 +33,11 @@
 
             </div>
           </div>
-          <el-tree :data="data" :props="defaultProps" accordion node-key="$treeNodeId" :default-expanded-keys="[1]"
-            :default-checked-keys="[5]" @node-click="handleNodeClick">
+          <el-tree :data="data" :props="defaultProps" accordion node-key="$treeNodeId" 
+          :default-expanded-keys="[1]"
+            :default-checked-keys="[5]" 
+            :expand-on-click-node="false"
+            @node-click="handleNodeClick" class="AddressUserListBox">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span class="custom-treeImgBox" :style="titleColor(data.pid)">
                 <i v-if="data.pid==1" class="GPid1Cl">
@@ -52,7 +72,15 @@
         </div>
         <div slot="right" class="demo-split-pane splitRinght">
           <!-- <router-view></router-view> -->
-          {{userData}}
+          <add-details v-if="UserShow" :userData="userData">
+
+          </add-details>
+          <org-details v-if="!UserShow" :userData="userData">
+
+
+          </org-details>
+         
+          <!-- {{userData}} -->
 
           <!-- {{data}} -->
           <!-- {{proTitle}} -->
@@ -89,6 +117,8 @@ import LeftMenu from "@/components/LeftMenu";
 import RightMenu from "@/components/RightMenu";
 import GHeader from "@/components/Header.vue";
 import GFooter from "@/components/Footer.vue";
+import AddDetails from "./components/AddDetails.vue";
+import OrgDetails from "./components/OrgDetails.vue";
 import { getPostInfo, getStorage } from "../../assets/lib/myStorage.js";
 import { mapState, mapMutations } from "vuex";
 
@@ -96,6 +126,7 @@ export default {
   name: "AddressIndex",
   data() {
     return {
+      UserShow:true,
       userData:{},
       split1: 0.3,
       data: [],
@@ -105,7 +136,6 @@ export default {
         id: "id",
         mainPic: "mainPic",
         level: "level",
-        userId: "userId",
         projectId: "projectId",
         peopleNum: "peopleNum",
         serNum: "serNum",
@@ -117,7 +147,10 @@ export default {
     LeftMenu,
     RightMenu,
     GHeader,
-    GFooter
+    GFooter,
+    AddDetails,
+    OrgDetails,
+
   },
   computed: {
     ...mapState({
@@ -129,11 +162,14 @@ export default {
   },
   methods: {
     ...mapMutations(["changeLogin", "getScrllH","setAddressUid"]),
-
+    gotoDetil(node,data){
+        this.UserShow= false;
+        console.log(data)
+    
+    },
     handleNodeClick(data) {
       if (data.pid === 3) {
-      
-
+        this.UserShow=true
              let addDe = {
             lookUserId:data.userId,
             projectId: this.proTitle.proId,
@@ -144,18 +180,14 @@ export default {
                if(res.data.code===200){
                 let data = res.data.data
                this.userData = data
+               if(data.userId===getStorage("userInfo").id){
+                 this.userData.isMySelf = true;
+               } 
                }
-               console.log(res)
+               
            }
          )
-
-
-        // this.$router.push({
-        //   path: "/address/" + data.id,
-        //   query: {
-        //     uid: data.userId
-        //   }
-        // });
+    
       }
 
       // console.log(data);
@@ -182,34 +214,45 @@ export default {
     }
   },
   mounted() {
-  
-
-     let addDe = {
-            lookUserId:'2C9136AE655B671001655B881BC20013',
-            projectId: this.proTitle.proId,
-             userId: getStorage("userInfo").id,
-        }
-         getPostInfo("/yq_api/projectUserRef/searchProjectUser",addDe).then(
-           res=>{
-               if(res.data.code===200){
-                let data = res.data.data
-               this.userData = data
-               }
-               console.log(res)
-           }
-         )
-         
-
-
-    let addObj = {
+  let addObj = {
       userId: getStorage("userInfo").id,
       projectId: this.proTitle.proId
     };
+       getPostInfo("yq_api/projectUserRef/findByProjectIdAndUseId",addObj).then(resd=>{
+         if(resd.data.code===200){
+           let newDataId = resd.data.data.userId
+         let addDe = {
+                  lookUserId:newDataId,
+                  projectId: this.proTitle.proId,
+                  userId: getStorage("userInfo").id,
+              }
+           
+              getPostInfo("/yq_api/projectUserRef/searchProjectUser",addDe).then(
+                res=>{
+                    if(res.data.code===200){
+                      let data = res.data.data
+                    this.userData = data
+                    
+                    }
+                   
+                }
+              )
+
+
+        
+         }
+       })
+
+
+         
+
+
+  
     // console.log(addObj);
     getPostInfo("/yq_api/orgDepartment/searchLinkmanList", addObj).then(res => {
       if (res.data.code === 200) {
         let data = res.data.data.orgList;
-        // console.log(data);
+        console.log(data);
         let newData = [];
         //第一层循环
         data.forEach((e, index) => {
@@ -220,7 +263,8 @@ export default {
             peopleNum: 1,
             id: e.id,
             serNum: index + 1,
-            pid: 1
+            orgId:e.orgId,
+            pid: 1,
           };
           // pObj.serNum++;
           //代表人循环
@@ -232,7 +276,8 @@ export default {
             projectId: e.orgLeader[0].projectId,
             pid: 3,
             id: e.orgLeader[0].id,
-            creator: e.orgLeader[0].creator
+            creator: e.orgLeader[0].creator,
+            orgId:e.orgLeader[0].orgId,
           };
           pObj.children.push(creUserObj);
 
@@ -260,6 +305,7 @@ export default {
                 projectId: ele.projectId,
                 id: ele.id,
                 pid: 3,
+                orgId:ele.orgId,
                 creator: ele.creator
               };
               // ele.label = ele.userName;
@@ -278,13 +324,14 @@ export default {
               projectId: ue.projectId,
               id: ue.id,
               creator: ue.creator,
+              orgId:ue.orgId,
               pid: 3
             };
             pObj.children.push(ueObj);
           });
           newData.push(pObj);
         });
-        // console.log(newData);
+        console.log(newData);
         this.data = newData;
 
         // this.data = data;

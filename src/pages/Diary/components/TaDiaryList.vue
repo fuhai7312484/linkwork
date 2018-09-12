@@ -56,10 +56,10 @@
                             </div>
                             <div class="diaryIcons">
                                 <span class="iconfont" :style="{color:itme.resourceList.length?'#4c91e2':''}">&#xe615;</span>
-                                <span class="iconfont" :style="{color:itme.imageList.length?'#4c91e2':''}">&#xe601;</span>
-                                <span class="iconfont font16" :style="{color:itme.videoList.length?'#4c91e2':''}">&#xe604;</span>
-                                <span class="iconfont font16" :style="{color:itme.locationList.length?'#4c91e2':''}">&#xe633;</span>
-                                <span class="iconfont font16">&#xe732;</span>
+                                <span class="iconfont" :style="{color:itme.imageList.length?'#4c91e2':''}">&#xe601; ({{itme.imageList.length}})</span>
+                                <span class="iconfont font16" :style="{color:itme.videoList.length?'#4c91e2':''}">&#xe604; ({{itme.videoList.length}})</span>
+                                <span class="iconfont font16" :style="{color:itme.locationList.length?'#4c91e2':''}">&#xe633; ({{itme.locationList.length}})</span>
+                                <span class="iconfont font16" :style="{color:itme.accessoryList.length?'#4c91e2':''}">&#xe732;({{itme.accessoryList.length}})</span>
                             </div>
                         </div>
 
@@ -75,7 +75,7 @@
                         </p>
                         <span v-show="lengthShow">
 
-                            {{itme.imageList.length>3?itme.imageList.length=3:itme.imageList.length}}
+                            <!-- {{itme.imageList.length>3?itme.imageList.length=3:itme.imageList.length}} -->
 
 
                         </span>
@@ -83,7 +83,7 @@
 
 
                         <el-row :gutter="20" class="flexibleUlBox" v-if="itme.imageList.length">
-                            <el-col class="resourceImgList" :span="8" v-for="(images,k) in itme.imageList" :key="k">
+                            <el-col class="resourceImgList" :span="8" v-for="(images,k) in itme.imageList" :key="k" v-if="k<3">
                                 <div
                                     class="grid-content bg-purple">
                                     <div class="resourceImg">
@@ -101,7 +101,7 @@
 
 
                         <el-row :gutter="20" class="flexibleUlBox" v-else-if="itme.videoList.length">
-                            <el-col class="resourceImgList" :span="8" v-for="(video,j) in itme.videoList" :key="j">
+                            <el-col class="resourceImgList" :span="8" v-for="(video,j) in itme.videoList" :key="j" v-if="j<3">
                                 <div class="grid-content bg-purple">
                                     <div class="resourceImg">
 
@@ -122,7 +122,7 @@
 
 
                         <el-row :gutter="12" class="annexListBox" v-else-if="itme.accessoryList.length">
-                            <el-col :span="12" class="annexList" v-for="(acces,j) in itme.accessoryList" :key="j">
+                            <el-col :span="12" class="annexList" v-for="(acces,j) in itme.accessoryList" :key="j" v-if="j<3">
                                 <el-card shadow="always">
 
                                     <div class="annexTypeImg fl">

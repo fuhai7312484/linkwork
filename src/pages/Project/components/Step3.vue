@@ -2,7 +2,6 @@
   <div>
     <div class="stepH1Title">
       <h1>我在项目中的个人信息</h1>
-
     </div>
     <!-- {{userInfo}}--- {{ruleForm.sex}} -->
     <!-- {{ruleForm.nickname}} -->

@@ -599,7 +599,7 @@ export default {
               commentType: this.commentType,
               isTop: "0"
             };
-
+ this.detailList.projectDiaryCommentList==null?this.detailList.projectDiaryCommentList=[]:this.detailList.projectDiaryCommentList;
             getPostInfo("yq_api/projectDiary/addProjectDiaryComment", obj).then(
               res => {
                 if (res.data.code === 200) {

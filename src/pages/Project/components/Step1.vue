@@ -26,28 +26,19 @@
 
 
 
-      <el-form-item label="标题名称">
-        <!-- <el-input v-model="ruleForm.name"></el-input> -->
+      <!-- <el-form-item label="标题名称">
         <el-select v-model="ruleForm.TitleName" :multiple="false" filterable allow-create default-first-option placeholder="选择标题名称/或自己创建">
           <el-option v-for="item in TitleNameOpt" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
         (选填)
       </el-form-item>
-
-
-
-
       <el-form-item label="节点提示">
-        <!-- <el-input v-model="ruleForm.name"></el-input> -->
         <el-select v-model="ruleForm.NodePrompt" :multiple="false" filterable allow-create default-first-option placeholder="选择节点提示/或自己创建">
           <el-option v-for="item in NodeOpt" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
-
         </el-select> (选填)
-
-
-      </el-form-item>
+      </el-form-item> -->
 
 
 
@@ -416,7 +407,7 @@ export default {
             propertyThree:this.ruleForm.addContent,
             url:imageStr,
           }
-          // console.log(uploadInfo)
+          console.log(uploadInfo)
           if(this.$route.query.projectId){
                   uploadInfo.projectId = this.$route.query.projectId
               getPostInfo("yq_api/project/edite", uploadInfo).then(res => {
@@ -433,21 +424,21 @@ export default {
               }
             })
           }else{
-          // getPostInfo("/yq_api/project/add", uploadInfo).then(res => {
-          //     if(res.data.code===200){
-          //       // console.log(res.data.data)
-          //       // this.setcreate1proId({shortName:this.ruleForm.SimpleName,projectId:res.data.data,})
-          //       router.push({
-          //   path: '/project/step_2',
-          //   query: {
-          //   projectId: res.data.data,
-          //   shortName:this.ruleForm.SimpleName,
-          //       }
-          //    })
-          //       //  router.push("/project/step_2");
-          //         this.$emit("next", 1);
-          //     }
-          //   })
+          getPostInfo("/yq_api/project/add", uploadInfo).then(res => {
+              if(res.data.code===200){
+                // console.log(res.data.data)
+                // this.setcreate1proId({shortName:this.ruleForm.SimpleName,projectId:res.data.data,})
+                router.push({
+            path: '/project/step_2',
+            query: {
+            projectId: res.data.data,
+            shortName:this.ruleForm.SimpleName,
+                }
+             })
+                //  router.push("/project/step_2");
+                  this.$emit("next", 1);
+              }
+            })
 
 
           }
