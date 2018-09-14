@@ -1601,13 +1601,16 @@ text-align: right;
 
 }
 .addDet_textInfoBox{
-    height: 30px;
-    line-height: 30px;
+    height: 35px;
+    line-height: 35px;
     padding-left:20px; 
 
 }
 .userDataDetil .el-row{
 margin-bottom:15px; 
+}
+.userDataDetil .addDet_textRigth .el-row{
+    margin-bottom:5px; 
 }
 .addDet_TagsList{
     padding: 0 20px;
@@ -1629,8 +1632,8 @@ margin-bottom:15px;
     border-radius:10px; 
 }
 .inviteBox{
-    height: 90px;
-    border-bottom:1px solid #029cff;
+    /* height: 90px; */
+    border-bottom:3px solid #029cff;
     box-sizing: border-box;
 }
 .approval,.friends{
@@ -1649,7 +1652,7 @@ margin-bottom:15px;
 .approval:hover span,.friends:hover span{
     color: #fff;
 }
-.inviteBox span{
+.inviteBox .approval span,.inviteBox .friends span{
     color: #029cff;
     font-size: 16px;
     font-weight: bold;
@@ -1659,3 +1662,48 @@ margin-bottom:15px;
 .AddressUserListBox .el-tree-node__expand-icon{
 font-size: 16px;
 }
+
+.addDet_InputBox{
+    height: 50px;
+}
+
+.userDataDetil .stepBtnStyle{
+    margin-top:10px; 
+}
+/* .is-current{
+    background: #029cff;
+    color: #fff;
+} */
+
+
+.addInv-box {
+    /* margin-bottom: 10px; */
+    /* width: 200px; */
+    /* height: 100px; */
+    border-radius:0 0 4px 4px;
+    background-color: #fff;
+    /* text-align: center; */
+    color: #606266;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    /* border-bottom:3px solid #029cff */
+    /* margin-right: 20px; */
+  }
+  .addFriendTitle{
+      color: #029cff;
+  }
+  .addFriendPad{
+    padding: 5px 0;
+    height:40px;
+    line-height: 40px;
+  }
+  .addFriendPad span.addFriendTagColor{
+      color: #fd7100;
+  }
+  .addFriendPro{
+     
+  }
+  .addFriendDep{
+
+  }
+ 

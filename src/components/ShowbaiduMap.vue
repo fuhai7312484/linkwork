@@ -18,7 +18,8 @@ export default {
         return document.getElementById(id);
       }
       var map = new BMap.Map("allmap");
-      var point = new BMap.Point(this.coordinate.lon*1,this.coordinate.lat*1);
+    
+      var point = new BMap.Point(this.coordinate.lng*1,this.coordinate.lat*1);
       map.centerAndZoom(point, 14);
       map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
 	  map.enableContinuousZoom();    //启用地图惯性拖拽，默认禁用

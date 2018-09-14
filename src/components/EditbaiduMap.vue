@@ -1,20 +1,21 @@
 <template>
     <div>
         <!-- {{ruleForm.mapSearch}}{{ruleForm.lat}}{{ruleForm.lng}} -->
-  <div class="secrecyBox">
+  <div class="secrecyBox" style="margin-bottom:10px;">
         <div class="secrecyLeft">
           <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
-          <el-form-item label="位置">
+         
             <el-input v-model="ruleForm.mapSearch" @focus="mapSearchFocus($event)" id="suggestId" placeholder="请输入详细地址或拖拽地址坐标点选地址"></el-input>
-          </el-form-item>
+      
         </div>
-        <span @click="baiduMapToParent">
+       
+        <!-- <span @click="baiduMapToParent">
             提交位置
 
-        </span>
-      
+        </span> -->
+    
       </div>
-
+<!-- {{post}} -->
 
         <div id="allmap" ref="allmap"></div>
       <div id="r-result" ref="r-result"></div>
@@ -24,7 +25,9 @@
 </template>
 <script>
 export default {
-    name:'BaiduMap',
+    name:'EditbaiduMap',
+      props:['post'],
+    
     data(){
         return {
     ruleForm: {
@@ -40,8 +43,7 @@ export default {
     methods:{
 
         baiduMapToParent(){
-         
-            this.$emit('baiduMapFromChild',{name:this.ruleForm.mapSearch,lat:this.ruleForm.lat,lng:this.ruleForm.lng,type:'position',size:null})
+            this.$emit('baiduMapFromChild',{name:this.ruleForm.mapSearch,lat:this.post.lat,lng:this.post.lng})
         },
 
            mapSearchFocus(ev) {
@@ -59,16 +61,26 @@ export default {
       }
       //  let map =new BMap.Map(this.$refs.allmap); // 创建Map实例
       var map = new BMap.Map(this.$refs.allmap);
-      var initLat = 39.916527;
-      var initLng = 116.397128;
+
+    
+    // console.log(this.post.lat,this.post.lon)
+      
+      var initLat = this.post.lat*1;
+      var initLng = this.post.lng*1;
       var point = new BMap.Point(initLng, initLat);
 
-      map.centerAndZoom(point, 13);
+      map.centerAndZoom(point, 14);
       // 初始化地图,设置城市和地图级别。
       //   var marker = new BMap.Marker(point);        // 创建标注
       // map.addOverlay(marker);
       map.enableScrollWheelZoom(); // 启用滚轮放大缩小
       map.addControl(new BMap.NavigationControl()); // 启用放大缩小 尺
+ 
+      var marker = new BMap.Marker(point); // 创建标注
+      map.addOverlay(marker); // 将标注添加到地图中
+      marker.addEventListener("dragend", showInfo);
+      marker.enableDragging();
+       getAddress(point);
 
       var ac = new BMap.Autocomplete({
         //建立一个自动完成的对象
@@ -77,22 +89,22 @@ export default {
       });
 
       //获取当前位置
-      var geolocation = new BMap.Geolocation();
-      geolocation.getCurrentPosition(function(r) {
-        if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-          ac = new BMap.Marker(r.point);
-          ac.addEventListener("dragend", showInfo);
-          ac.enableDragging(); //可拖拽
-          getAddress(r.point);
-          map.addOverlay(ac); //把点添加到地图上
-          map.panTo(r.point);
-          _that.ruleForm.lat = r.point.lat;
-          _that.ruleForm.lng = r.point.lng;
-          // console.log(r.point)
-        } else {
-          alert("failed" + this.getStatus());
-        }
-      });
+      // var geolocation = new BMap.Geolocation();
+      // geolocation.getCurrentPosition(function(r) {
+      //   if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+      //     ac = new BMap.Marker(r.point);
+      //     ac.addEventListener("dragend", showInfo);
+      //     ac.enableDragging(); //可拖拽
+      //     getAddress(r.point);
+      //     map.addOverlay(ac); //把点添加到地图上
+      //     map.panTo(r.point);
+      //     _that.post.lat = r.point.lat;
+      //     _that.post.lon = r.point.lng;
+      //     // console.log(r.point)
+      //   } else {
+      //     alert("failed" + this.getStatus());
+      //   }
+      // });
 
       ac.addEventListener("onhighlight", function(e) {
         //鼠标放在下拉列表上的事件
@@ -144,6 +156,7 @@ export default {
           _value.street +
           _value.business;
         _that.ruleForm.mapSearch = myValue;
+          _that.baiduMapToParent()
 
         G("searchResultPanel").innerHTML =
           "onconfirm<br />index = " +
@@ -159,8 +172,8 @@ export default {
         function myFun() {
           var pp = local.getResults().getPoi(0).point; //获取第一个智能搜索的结果
           map.centerAndZoom(pp, 18);
-          _that.ruleForm.lat = pp.lat;
-          _that.ruleForm.lng = pp.lng;
+          _that.post.lat = pp.lat;
+          _that.post.lng = pp.lng;
           //   console.log(pp.lat,pp.lng)
           let marker = new BMap.Marker(pp);
 
@@ -189,8 +202,9 @@ export default {
             addComp.street +
             addComp.streetNumber; //获取地址
           _that.ruleForm.mapSearch = address;
-          _that.ruleForm.lat = e.point.lat;
-          _that.ruleForm.lng = e.point.lng;
+          _that.post.lat = e.point.lat;
+          _that.post.lng = e.point.lng;
+           _that.baiduMapToParent()
         });
       }
       //获取地址信息，设置地址label
@@ -206,6 +220,7 @@ export default {
             addComp.street +
             addComp.streetNumber; //获取地址
           _that.ruleForm.mapSearch = address;
+            _that.baiduMapToParent()
         });
       }
     },
