@@ -29,6 +29,8 @@
           </div>
         </el-select> (选填)
       </el-form-item>
+
+      
       <el-form-item label="昵称">
         <el-input v-model="ruleForm.nickname" placeholder="昵称"></el-input>
       </el-form-item>

@@ -15,11 +15,12 @@
               <span class="el-icon-bell"></span> 邀请审批
             </div>
             <div class="friends" @click="addInvitees">
-              <span :class="addInv?'el-icon-minus':'el-icon-plus'">
+              <span class="el-icon-plus">
 
               </span>
 
               邀请好友加入项目
+              <i :class="addInv?'el-icon-arrow-up':'el-icon-arrow-down'"></i>
 
             </div>
 
@@ -27,7 +28,7 @@
               <el-collapse-transition>
                 <div v-show="addInv">
                   <div class="addInv-box">
-                    <add-friend>
+                    <add-friend :orgLeaderIsMe="orgLeaderIsMe">
 
 
                     </add-friend>
@@ -46,6 +47,8 @@
 
           <div v-for="(itme,index) in data" :key="index" class="LeveTagBoxFounder">
             <div v-for="(oneItme,index) in itme.children" :key="index" v-if="oneItme.creator==='Y'" class="creatorBox">
+              
+            
               <img :src="oneItme.mainPic" /> {{oneItme.label}}
               <span class="LeveTag" :style="{background:'#029cff',}">创建人
               </span>
@@ -63,6 +66,7 @@
                 <i v-else-if="data.pid==2" class="DPid2Cl">
                   D{{data.serNum}}
                 </i>
+            
 
                 <!-- {{data}} -->
                 <img :src="data.mainPic" v-if="data.mainPic" />{{ node.label }}
@@ -147,6 +151,7 @@
         split1: 0.3,
         addInv: false,
         data: [],
+        orgLeaderIsMe:false,
         defaultProps: {
           children: "children",
           label: "label",
@@ -156,7 +161,8 @@
           projectId: "projectId",
           peopleNum: "peopleNum",
           serNum: "serNum",
-          creator: "creator"
+          creator: "creator",
+          orgIsMe:"orgIsMe",
         }
       };
     },
@@ -180,20 +186,20 @@
     methods: {
       ...mapMutations(["changeLogin", "getScrllH", "setAddressUid"]),
       gotoDetil(node, data) {
-        // console.log(data)
+       
         this.addInv = false;
         this.UserShow = false;
-
         let orgObj = {
           userId: getStorage("userInfo").id,
           projectId: this.proTitle.proId,
           orgId: data.orgId
         };
+        
         getPostInfo("/yq_api/orgDepartment/detail", orgObj).then(res => {
           if (res.data.code === 200) {
             let orgData = res.data.data;
             this.userData = orgData;
-            console.log(orgData);
+            this.userData.orgIsMe = data.orgIsMe;
           }
         });
       },
@@ -210,7 +216,7 @@
             res => {
               if (res.data.code === 200) {
                 let data = res.data.data;
-                console.log(data)
+                // console.log(data)
                 this.userData = data;
                 if (data.userId === getStorage("userInfo").id) {
                   this.userData.isMySelf = true;
@@ -260,17 +266,19 @@
       getPostInfo("/yq_api/orgDepartment/searchLinkmanList", addObj).then(res => {
         if (res.data.code === 200) {
           let data = res.data.data.orgList;
-          console.log(data);
+          // console.log(data);
           let newData = [];
           //第一层循环
           data.forEach((e, index) => {
+         
+
             getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
               res => {
                 if (res.data.code === 200) {
                   let data = res.data.data;
                   // console.log(data)
                   if (data.orgId === e.orgId) {
-                    console.log(e.orgLeader[0])
+                    // console.log(e.orgLeader[0])
                     this.userData = e.orgLeader[0];
                     if (e.orgLeader[0].userId === getStorage("userInfo").id) {
                       this.userData.isMySelf = true;
@@ -280,6 +288,8 @@
               }
             );
 
+
+
             let pObj = {
               label: e.shortName + (e.typeName ? "-(" + e.typeName + ")" : ""),
               children: [],
@@ -288,7 +298,8 @@
               id: e.id,
               serNum: index + 1,
               orgId: e.orgId,
-              pid: 1
+              pid: 1,
+              orgIsMe:false,
             };
             // pObj.serNum++;
             //代表人循环
@@ -301,8 +312,19 @@
               pid: 3,
               id: e.orgLeader[0].id,
               creator: e.orgLeader[0].creator,
-              orgId: e.orgLeader[0].orgId
+              orgId: e.orgLeader[0].orgId,
+             
             };
+            // console.log(e.orgLeader[0].userId,getStorage("userInfo").id)
+            if(e.orgLeader[0].userId===getStorage("userInfo").id){
+                pObj.orgIsMe = true;
+              }
+
+            //  console.log(e.orgLeader[0].userId,getStorage("userInfo").id)
+            if(e.orgLeader[0].creator=='Y' && e.orgLeader[0].userId===getStorage("userInfo").id){
+                this.orgLeaderIsMe =true
+            }
+        
 
             pObj.children.push(creUserObj);
 
@@ -333,8 +355,11 @@
                   orgId: ele.orgId,
                   creator: ele.creator
                 };
-                // ele.label = ele.userName;
+               
                 cobj.children.push(eleObj);
+               cobj.children.sort(function(a,b){
+                  return a.level - b.level
+                })
               });
               pObj.children.push(cobj);
             });
@@ -358,6 +383,7 @@
           });
           // console.log(newData);
           this.data = newData;
+          
 
           // this.data = data;
           // console.log(this.data);

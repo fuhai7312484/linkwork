@@ -63,15 +63,11 @@
                                 <el-checkbox v-model="ruleForm.nameSecrecy">保密</el-checkbox>
                             </el-col>
                         </el-row>
-
-
-
-
                         <el-row :gutter="20" class="addDet_InputBox">
                             <el-col :span="16">
                                 <el-form-item label="性别：">
-                                    <el-radio v-model="userData.sex" label="1">男</el-radio>
-                                    <el-radio v-model="userData.sex" label="0">女</el-radio>
+                                    <el-radio v-model="ruleForm.sex" label="1">男</el-radio>
+                                    <el-radio v-model="ruleForm.sex" label="0">女</el-radio>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="8">
@@ -470,6 +466,7 @@
                 inputVisible: false,
                 inputValue: "",
                 ruleForm: {
+                    sex:'1',
                     mobileSecrecy:false,
                  accountSecrecy:false,
                  sexSecrecy:false,
@@ -560,7 +557,7 @@
                            projectId:this.userData.projectId,
                            userName:this.userData.userName,
                            mainPic:this.userData.mainPic,
-                           sex:this.userData.sex,
+                           sex:this.ruleForm.sex,
                            mobileSecrecy:this.ruleForm.mobileSecrecy?'Y':'N',
                            accountSecrecy:this.ruleForm.accountSecrecy?'Y':'N',
                            nameSecrecy:this.ruleForm.nameSecrecy?'Y':'N',
@@ -642,6 +639,7 @@
                     this.ruleForm.emailSecrecy = this.isSecret(n.emailSecrecy)
                     this.ruleForm.topicSecrecy =this.isSecret(n.topicSecrecy)
                      this.ruleForm.positionSecrecy =this.isSecret(n.positionSecrecy)
+                     this.ruleForm.sex = this.userData.sex
 
                   },
                   deep:true,

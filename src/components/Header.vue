@@ -12,7 +12,7 @@
            
             <ul class="headMuneBox HeadProList">
                <li v-for="(proItme,index) in gridData" :key="index" :style="setTaskState(proItme.isMyProject,proItme.status,proItme.uStatus)"
-               @click="handChangproTitle({protitle:proItme.shortName,proId:proItme.projectId,orgName:proItme.orgName,uStatus:proItme.uStatus,shortName:proItme.shortName,title:proItme.title,period:proItme.period},('/'))"
+               @click="handChangproTitle({protitle:proItme.shortName,proId:proItme.projectId,orgName:proItme.orgName,uStatus:proItme.uStatus,shortName:proItme.shortName,title:proItme.title,period:proItme.period},('/address'))"
                 >
                  <!-- :style="fn(proItme.isMyProject,proItme.status,proItme.uStatus)" -->
                  
