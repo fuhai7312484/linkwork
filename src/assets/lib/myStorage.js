@@ -3,6 +3,7 @@ import axios from "axios";
 
 export function getPostInfo(url, obj) {
   let ipUrl = "http://39.107.254.60:8081/";
+  // let ipUrl = "http://47.94.251.93:8080/";
   var qs = require("qs");
   return axios.post(ipUrl + url, qs.stringify(obj));
 }

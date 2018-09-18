@@ -85,12 +85,12 @@
 <div class="HeadmainPicName fl">{{userData.name}}</div>
 
 
-    <div class="HeadSearch fl">
+    <!-- <div class="HeadSearch fl">
         <i class="el-icon-search">
         </i>
         <input type="text"/>
 
-    </div>
+    </div> -->
 
 
 </div>

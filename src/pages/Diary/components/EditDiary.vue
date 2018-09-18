@@ -38,7 +38,7 @@
                         <div class="editDiaryType iconfont">
                             &#xe615;
                         </div>
-                        <el-input type="textarea" v-model="ruleForm.desc" :autosize="{ minRows: 5, maxRows: 20}" placeholder="文字区域" class="editTxt"
+                        <el-input type="textarea" v-model="ruleForm.desc" :autosize="{ minRows: 10, maxRows: 20}" placeholder="文字区域" class="editTxt"
                             ref="handTextRef"></el-input>
                     </div>
                     <div class="editDiaryShow" v-if="ruleForm.imgList!=0 || ImgFlag==true">

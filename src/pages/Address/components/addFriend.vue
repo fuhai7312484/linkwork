@@ -1,7 +1,29 @@
 <template>
     <div class="addFriendBox">
-      <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="100px" class="demo-dynamic">
 
+       <!-- {{orgInfoObj}} -->
+
+       
+      <div class="proMeOrgBox">
+        <div class="proMeOrgMainPicImg fl">
+  <img :src="InvitePeople.mainPic"/>
+        </div>
+   
+   <div class="fl">
+     <div class="proMeOrgTitle">
+       我在本项目中的角色
+     </div>
+      <div>
+  
+      {{InvitePeople.orgName}}(单位)-{{InvitePeople.departmentName}}(部门)-{{InvitePeople.levelName}}
+      
+     </div>
+
+     </div>   
+        
+
+      </div>
+      <el-form :model="dynamicValidateForm" ref="ruleForm" label-width="100px" class="demo-dynamic">
         <div class="addFriendTitle">邀请Ta:</div>
          <div class="addFriendPad addFriendPro" v-if="orgLeaderIsMe" >
 <el-radio v-model="radio" label="1">邀请在本项目<span class="addFriendTagColor"> 创建新单位 </span></el-radio>
@@ -11,69 +33,38 @@
  </div>
  <div class="addFriendPad addFriendDep">
   <el-radio v-model="radio" label="3">邀请加入<span class="addFriendTagColor"> 部门 </span></el-radio>
-
-
-        <el-select v-model="value" size="mini" style="width:100px;" placeholder="请选择" v-if="radio==3">
+        <el-select v-model="value" size="mini" style="width:100px;" placeholder="请选择" v-if="radio==3" @change="getValue">
+   
     <el-option
-      v-for="item in options"
-      :key="item.value"
+      v-for="(item,index) in options"
+      :key="index"
       :label="item.label"
-      :value="item.value">
+      :value="item.value"
+       :class="item.cl"
+      >
     </el-option>
   </el-select>
-
       <el-select v-model="value1" size="mini" style="width:100px;" placeholder="请选择" v-if="radio==3">
     <el-option
-      v-for="item in options1"
-      :key="item.value"
+      v-for="(item,index) in options1"
+      :key="index"
       :label="item.label"
       :value="item.value">
     </el-option>
   </el-select>
-       
         </div>
-
         <div class="addPersonsBox">
           <div class="addPersonsBtn" @click="addDomain">
 <span class="el-icon-circle-plus-outline"></span>添加被邀请人
           </div>
-
-            
         </div>
 
-
-
-        <!-- <el-tag
-  :key="tag"
-  v-for="tag in dynamicTags"
-  closable
-  :disable-transitions="false"
-  @close="handleClose(tag)">
-  {{tag}}
-</el-tag>
-<el-input
-  class="input-new-tag"
-  v-if="inputVisible"
-  v-model="inputValue"
-  ref="saveTagInput"
-  size="small"
-  @keyup.enter.native="handleInputConfirm"
-  @blur="handleInputConfirm"
->
-</el-input>
-<el-button v-else class="button-new-tag" size="small" @click="showInput"></el-button> -->
-
-
-
-      
 <el-row :gutter="12" class="FriendList" v-if="dynamicValidateForm.domains.length!=0">
 <el-col :span="12"  v-for="(domain, index) in dynamicValidateForm.domains" :key="index" >
     <el-card shadow="hover" class="FriendListItme">
 {{domain}}
       <span class="el-icon-error removeFriend" @click="handleClose(index)"></span>
     </el-card>
-
-   
   </el-col>
 </el-row>
 
@@ -82,145 +73,304 @@
        完成
       </el-button>
 </div>
-
-<!-- <el-form-item
-    v-for="(domain, index) in dynamicValidateForm.domains"
-    :label="'域名' + index"
-    :key="domain.key"
-    :prop="'domains.' + index + '.value'"
-    :rules="{
-      required: true, message: '域名不能为空', trigger: 'blur'
-    }"
-  >
-    <el-input v-model="domain.value"></el-input><el-button @click.prevent="removeDomain(domain)">删除</el-button>
-  </el-form-item> -->
-
-
-    
        </el-form>
     </div>
 </template>
 <script>
+import { getPostInfo, getStorage } from "../../../assets/lib/myStorage.js";
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "addFriend",
-  props:['orgLeaderIsMe'],
+  props: ["orgLeaderIsMe", "InvitePeople", "isMeOrgId","isMeShortName","orgInfoObj"],
   data() {
     return {
-
       //  dynamicTags: ['标签一', '标签二', '标签三'],
       //   inputVisible: false,
       //   inputValue: '',
 
-
-
       radio: "2",
-            dynamicValidateForm: {
-          domains: [],
-          email: ''
-        },
+      dynamicValidateForm: {
+        domains: [],
+        email: ""
+      },
       options: [
-        {
-          value: "0",
-          label: "部门A"
-        },
-  
+        // {
+        //   value: "0",
+        //   label: "部门A"
+        // },
       ],
-       options1: [
-        {
-          value: "0",
-          label: "成员"
-        },
-  
+      options1: [
+            //  {
+            //   value: "0",
+            //   label: "负责人"
+            // }
       ],
       value: "0",
       value1: "0"
     };
   },
-
+  computed: {
+    ...mapState(["proTitle"])
+  },
   methods: {
+    getValue(value) {
+     
+      if(this.options.length===value*1){
+        this.addDepartment();
 
-  // handleClose(tag) {
-  //       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
-  //     },
+      
+      }
+     
+    },
+    addDepartment() {
+      this.$prompt("请输入部门名称", "提示", {
+        confirmButtonText: "确定",
+      })
+        .then(({ value }) => {
+            console.log('这里调用新创建部门',value)
+          
+            let obj={
+             projectId:this.proTitle.proId,
+             userId:getStorage("userInfo").id,
+             orgId:this.isMeOrgId,
+             secrecy:'N',
+             shortName:this.isMeShortName,
+             orgName:this.orgInfoObj.orgName,
+             classifyName:this.orgInfoObj.classifyName,
+             nickName:this.orgInfoObj.nickName,
+             title:"",
+            }
 
-  //     showInput() {
-  //       this.inputVisible = true;
-  //       this.$nextTick(_ => {
-  //         this.$refs.saveTagInput.$refs.input.focus();
-  //       });
-  //     },
-
-  //     handleInputConfirm() {
-  //       let inputValue = this.inputValue;
-  //       if (inputValue) {
-  //         this.dynamicTags.push(inputValue);
-  //       }
-  //       this.inputVisible = false;
-  //       this.inputValue = '';
-  //     },
 
 
 
+            let optNum = this.options.length-1
+          let departmentList = [];
+          for (let i = 0; i < 1; i++) {
+            departmentList.push({});
+            departmentList[i].orgId = this.isMeOrgId;
+            departmentList[i].departmentName = value;
+            departmentList[i].operation = 'add';
+            departmentList[i].createPerson = getStorage("userInfo").id;
+         
+          }
 
-      addDomain() {
-          this.$prompt('请输入邀请人手机号', '提示', {
-          confirmButtonText: '确定',
-          inputPattern: /^1[3|4|5|7|8][0-9]{9}$/,
-          inputErrorMessage: '手机号格式不正确'
+          for (let i = 0; i < 1; i++) {
+            for (let key in departmentList[i]) {
+              obj["departmentList[" + i + "]." + key] =
+                departmentList[i][key];
+            }
+          }
+
+   
+
+            getPostInfo("/yq_api/orgDepartment/editeOrg", obj).then(res => {
+              if(res.data.code===200){
+                let newV = this.options.length-1+''
+                this.options.splice(this.options.length-1, 0,
+                  {
+                label:  value,
+                value:  "" +(this.options.length-1),
+                len: 0,
+                 cl:''
+                  }
+                )
+                this.value =  newV,
+       
+                this.$message({
+              type: "success",
+                message: "部门创建成功！",
+                  });
+
+              }
+            
+              })
         
-        }).then(({ value }) => {
-          this.dynamicValidateForm.domains.push(value)
+          
+        })
+        .catch(() => {
+           console.log('取消了')
+           this.value = '0'
+        });
+    },
+
+    addDomain() {
+      this.$prompt("请输入邀请人手机号", "提示", {
+        confirmButtonText: "确定",
+        inputPattern: /^1[3|4|5|7|8][0-9]{9}$/,
+        inputErrorMessage: "手机号格式不正确"
+      })
+        .then(({ value }) => {
+          this.dynamicValidateForm.domains.push(value);
           this.$message({
-            type: 'success',
-            message: '邀请的手机号是: ' + value
+            type: "success",
+            message: "邀请的手机号是: " + value
           });
-        }).catch(() => {
+        })
+        .catch(() => {
           // this.$message({
           //   type: 'info',
           //   message: '取消输入'
-          // });       
+          // });
         });
-      },
+    },
 
-      handleClose(tag) {
-        this.dynamicValidateForm.domains.splice(this.dynamicValidateForm.domains.indexOf(tag), 1);
-        console.log(tag)
-      },
+    handleClose(tag) {
+      this.dynamicValidateForm.domains.splice(
+        this.dynamicValidateForm.domains.indexOf(tag),
+        1
+      );
+      // console.log(tag)
+    },
 
-         submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // alert('submit!');
+          console.log(this.radio);
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    }
+  },
+  mounted() {
+       let addObj = {
+          orgId: this.isMeOrgId,
+          projectId: this.proTitle.proId,
+          userId: getStorage("userInfo").id
+        };
+        getPostInfo("/yq_api/orgDepartment/detail", addObj).then(res => {
+          if (res.data.code === 200) {
+             console.log(res.data)
+            let depart = res.data.data.departmentList;
+           
+            let arr = []
+           
+            depart.forEach((e, index) => {
+            
+              arr.push({
+                label: e.departmentName,
+                value: index + "",
+                len: e.purList.length,
+                cl:''
+              })
+            });
+
+            if(this.orgLeaderIsMe){
+              arr.push({
+              label: "创建新部门",
+              value: depart.length + 1,
+              len: 0,
+               cl:'createNew'
+            });
+            }
+            this.options = arr;
+         
+            this.value = '0'
+            this.value1 = '0'
           }
         });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
+
+
+  },
+  watch: {
+    radio(newVal, oldVal) {
+      // console.log(newVal);
+      if (newVal === "3") {
+        let addObj = {
+          orgId: this.isMeOrgId,
+          projectId: this.proTitle.proId,
+          userId: getStorage("userInfo").id
+        };
+        getPostInfo("/yq_api/orgDepartment/detail", addObj).then(res => {
+          if (res.data.code === 200) {
+            let depart = res.data.data.departmentList;
+            let arr = []
+            
+            depart.forEach((e, index) => {
+            
+              arr.push({
+                label: e.departmentName,
+                value: index + "",
+                len: e.purList.length,
+                 cl:''
+              })
+            });
+           
+          if(depart[0].purList.length==0){
+            this.options1 = [{
+              value: "0",
+              label: "负责人"
+            }]
+          }else{
+            this.options1 = [{
+              value: "0",
+              label: "成员"
+            }]
+            }
+
+            if(this.orgLeaderIsMe){
+              arr.push({
+              label: "创建新部门",
+              value: depart.length + 1,
+              len: 0,
+               cl:'createNew'
+            });
+            }
+            this.options = arr;
+         
+
+           
+          }
+        });
+      }
+    },
+    value(n, o) {
+      if (this.options[n * 1]) {
+        if (this.options[n * 1].len == 0) {
+          this.options1 = [
+            {
+              value: "0",
+              label: "负责人"
+            }
+          ];
+        } else if (this.options[n * 1].len > 0) {
+          this.options1 = [
+            {
+              value: "0",
+              label: "成员"
+            }
+          ];
+         
+        }
+      }
+
+     
+    }
+  
   }
-    
 };
 </script>
 <style>
-
-
- .el-tag + .el-tag {
-    margin-left: 10px;
-  }
-  .button-new-tag {
-    margin-left: 10px;
-    height: 32px;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
 </style>
 

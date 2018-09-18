@@ -158,7 +158,7 @@ export default {
                         }else if(res.data.code === 200){
                           
                          let data = res.data.data
-                         console.log(data)
+                        //  console.log(data)
                          if(data.data){
                             _that.open4('登录成功！但还未完善个人信息');
                           setTimeout(function(){
@@ -168,7 +168,7 @@ export default {
                           _that.ruleForm2.username = _that.ruleForm2.pass = "";
                           },1000)
 
-                          console.log('这里是还没完善页面')
+                          // console.log('这里是还没完善页面')
                          }else{
                            
                            if(_that.delivery){

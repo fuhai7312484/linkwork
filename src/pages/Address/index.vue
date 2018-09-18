@@ -6,7 +6,7 @@
 
     <div class="demo-split" :style="{height:sWHeight}">
       <Split v-model="split1" min="190px" max="700px">
-        <div slot="left" class="demo-split-pane splitLeft">
+        <div slot="left" class="demo-split-pane splitLeft" :style="{height:sWHeight}">
 
 
           <div class="inviteBox">
@@ -28,7 +28,7 @@
               <el-collapse-transition>
                 <div v-show="addInv">
                   <div class="addInv-box">
-                    <add-friend :orgLeaderIsMe="orgLeaderIsMe">
+                    <add-friend :orgInfoObj="orgInfoObj" :orgLeaderIsMe="orgLeaderIsMe" :InvitePeople="InvitePeople" :isMeOrgId="isMeOrgId" :isMeShortName="isMeShortName" >
 
 
                     </add-friend>
@@ -87,6 +87,7 @@
         </span>  -->
             </span>
           </el-tree>
+          <div class="clear" style=" background: #f5f5f8;"></div>
 
         </div>
         <div slot="right" class="demo-split-pane splitRinght">
@@ -146,6 +147,10 @@
     name: "AddressIndex",
     data() {
       return {
+        isMeOrgId:'',
+        isMeShortName:'',
+        orgInfoObj:{},
+        InvitePeople:{},
         UserShow: true,
         userData: {},
         split1: 0.3,
@@ -198,7 +203,10 @@
         getPostInfo("/yq_api/orgDepartment/detail", orgObj).then(res => {
           if (res.data.code === 200) {
             let orgData = res.data.data;
+            // console.log(data.orgId)
+          
             this.userData = orgData;
+            this.userData.orgId = data.orgId;
             this.userData.orgIsMe = data.orgIsMe;
           }
         });
@@ -253,16 +261,11 @@
       }
     },
     mounted() {
+     
       let addObj = {
         userId: getStorage("userInfo").id,
         projectId: this.proTitle.proId
       };
-      let addDe = {
-        lookUserId: getStorage("userInfo").id,
-        projectId: this.proTitle.proId,
-        userId: getStorage("userInfo").id
-      };
-
       getPostInfo("/yq_api/orgDepartment/searchLinkmanList", addObj).then(res => {
         if (res.data.code === 200) {
           let data = res.data.data.orgList;
@@ -270,26 +273,24 @@
           let newData = [];
           //第一层循环
           data.forEach((e, index) => {
-         
-
+        let addDe = {
+                lookUserId: e.orgLeader[0].userId,
+                projectId: this.proTitle.proId,
+                userId: getStorage("userInfo").id
+              };
             getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
               res => {
                 if (res.data.code === 200) {
                   let data = res.data.data;
-                  // console.log(data)
-                  if (data.orgId === e.orgId) {
-                    // console.log(e.orgLeader[0])
-                    this.userData = e.orgLeader[0];
-                    if (e.orgLeader[0].userId === getStorage("userInfo").id) {
+                  this.userData = data
+                  if (data.userId === getStorage("userInfo").id) {
+                    console.log('0000000')
                       this.userData.isMySelf = true;
                     }
-                  }
+                
                 }
               }
             );
-
-
-
             let pObj = {
               label: e.shortName + (e.typeName ? "-(" + e.typeName + ")" : ""),
               children: [],
@@ -313,25 +314,42 @@
               id: e.orgLeader[0].id,
               creator: e.orgLeader[0].creator,
               orgId: e.orgLeader[0].orgId,
-             
             };
-            // console.log(e.orgLeader[0].userId,getStorage("userInfo").id)
+       
             if(e.orgLeader[0].userId===getStorage("userInfo").id){
-                pObj.orgIsMe = true;
+        
+              this.orgInfoObj ={
+                orgId:e.orgLeader[0].orgId,
+                shortName:e.orgLeader[0].shortName,
+                userId:e.orgLeader[0].userId,
+                orgName:e.orgLeader[0].orgName,
+                classifyName:e.typeName,
+                nickName:e.orgLeader[0].nickName,
               }
-
-            //  console.log(e.orgLeader[0].userId,getStorage("userInfo").id)
+              this.isMeOrgId = e.orgLeader[0].orgId;
+              // console.log(e.orgLeader[0])
+              this.isMeShortName = e.orgLeader[0].shortName
+           
+                  this.InvitePeople = {
+                    mainPic:e.orgLeader[0].mainPic,
+                   userId:e.orgLeader[0].userId,
+                   orgName:e.orgLeader[0].orgName,
+                   departmentName:e.orgLeader[0].departmentName,
+                   levelName:e.orgLeader[0].levelName,
+                 }
+                pObj.orgIsMe = true;
+                 
+              }
             if(e.orgLeader[0].creator=='Y' && e.orgLeader[0].userId===getStorage("userInfo").id){
+              
                 this.orgLeaderIsMe =true
             }
-        
-
             pObj.children.push(creUserObj);
 
             //部门循环
             e.departmentList.forEach((el, index) => {
-              // let children =[]
-
+           
+              
               let cobj = {
                 label: el.departmentName,
                 children: [],
@@ -340,7 +358,6 @@
                 serNum: index + 1,
                 pid: 2
               };
-              // console.log(el.purList.length)
               // 用户循环
               el.purList.forEach(ele => {
                 pObj.peopleNum++;
@@ -355,7 +372,25 @@
                   orgId: ele.orgId,
                   creator: ele.creator
                 };
-               
+
+              
+
+                if(e.orgLeader[0].userId===getStorage("userInfo").id && ele.orgId===e.orgLeader[0].orgId){
+                  console.log(e.orgLeader[0].userId,getStorage("userInfo").id,ele.orgId,e.orgLeader[0].orgId)
+                 
+                }
+
+                 if(ele.userId===getStorage("userInfo").id){
+                this.isMeOrgId = ele.orgId;   
+
+                  this.InvitePeople = {
+                    mainPic:ele.mainPic,
+                   userId:ele.userId,
+                   orgName:ele.orgName,
+                   departmentName:ele.departmentName,
+                   levelName:ele.levelName,
+                  } 
+                 }
                 cobj.children.push(eleObj);
                cobj.children.sort(function(a,b){
                   return a.level - b.level
@@ -377,16 +412,23 @@
                 orgId: ue.orgId,
                 pid: 3
               };
+              
+                  if(ue.userId===getStorage("userInfo").id){
+                  
+                     this.isMeOrgId = ue.orgId;   
+                  this.InvitePeople = {
+                    mainPic:ue.mainPic,
+                   userId:ue.userId,
+                   orgName:ue.orgName,
+                   departmentName:ue.departmentName,
+                   levelName:ue.levelName,
+                  } 
+                 }
               pObj.children.push(ueObj);
             });
             newData.push(pObj);
           });
-          // console.log(newData);
           this.data = newData;
-          
-
-          // this.data = data;
-          // console.log(this.data);
         }
       });
     }

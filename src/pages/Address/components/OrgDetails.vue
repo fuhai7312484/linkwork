@@ -8,7 +8,7 @@
   
 <el-form :model="userData" :rules="rules" ref="ruleForm" label-width="160px" class="demo-ruleForm">
 
-
+{{userData.departmentList}}
 
  <el-row :gutter="20">
  <el-col :span="7" class="addDet_textLeft">
@@ -61,7 +61,7 @@
 
                          <el-row :gutter="20" class="addDet_InputBox">
                             <el-col :span="16">
-                                <el-form-item label="单位全称：">
+                                <el-form-item label="昵称：">
                                     {{userData.createPersonName}}
                                     <!-- <el-input v-model="userData.orgName" placeholder="请输入单位全称"></el-input> -->
                                 </el-form-item>
@@ -125,8 +125,9 @@
 <el-form-item v-for="(domain, index) in userData.departmentList" 
             :label="'部门'" 
             :key="index" 
+            v-if="!domain.del"
            >
-        <el-input v-model="domain.departmentName" :style="{width:'150px'}"></el-input>
+        <el-input v-model="domain.departmentName" :style="{width:'150px'}"  ></el-input>
 
         <i class="el-icon-delete removeBtn" @click.prevent="removeDomain(domain)"></i>
     
@@ -211,7 +212,7 @@
     </div>
 </template>
 // <script>
-import { getPostInfo, character } from "../../../assets/lib/myStorage.js";
+import { getPostInfo, character,getStorage } from "../../../assets/lib/myStorage.js";
 import { mapState } from "vuex";
 import ShowbaiduMap from "../../../components/ShowbaiduMap.vue";
 export default {
@@ -219,8 +220,6 @@ export default {
   props: ["userData"],
   data() {
     return {
-
-
           dynamicValidateForm: {
           domains: [{
             value: ''
@@ -234,6 +233,7 @@ export default {
          domains: [{
             value: ''
           }],
+          deleteDepart:[],
       },
 
       rules: {
@@ -244,7 +244,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["sWHeight"])
+    ...mapState(["sWHeight","proTitle"])
   },
   components: {
     ShowbaiduMap
@@ -257,13 +257,61 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(11111);
+            console.log(this.userData)
+              let obj={
+             projectId:this.proTitle.proId,
+             userId:getStorage("userInfo").id,
+             orgId:this.userData.orgId,
+             secrecy:'N',
+             shortName:this.userData.shortName,
+             orgName:this.userData.orgName,
+             classifyName:this.userData.typeName,
+             nickName:this.userData.createPersonName,
+             title:this.ruleForm.department,
+            }
+          
+
+          let departmentList = [];
+          for (let i = 0; i < this.userData.departmentList.length; i++) {
+            departmentList.push({});
+            departmentList[i].orgId = this.userData.orgId;
+            departmentList[i].departmentName = this.userData.departmentList[i].departmentName;
+            departmentList[i].del = this.userData.departmentList[i].del;
+            departmentList[i].operation = this.userData.departmentList[i].del?'delete':'add';
+            //  departmentList[i].operation = 'delete';
+            departmentList[i].createPerson = getStorage("userInfo").id;
+         
+          }
+          console.log(this.ruleForm.deleteDepart.departmentList)
+
+
+          for (let i = 0; i < departmentList.length; i++) {
+            for (let key in departmentList[i]) {
+              obj["departmentList[" + i + "]." + key] =
+                departmentList[i][key];
+            }
+          }
+          console.log(obj)
+
+
+            //  getPostInfo("/yq_api/orgDepartment/editeOrg", obj).then(res => {
+            //      if(res.data.code===200){
+            //          console.log(res)
+            //      }
+
+            //  })
+        
+
+          
         }
       });
     },
     removeDomain(item) {
       var index = this.userData.departmentList.indexOf(item);
       if (index !== -1) {
+        //   this.ruleForm.deleteDepart.push()
+     
+        this.ruleForm.deleteDepart.departmentList[index].del = true
         this.userData.departmentList.splice(index, 1);
       }
     },
@@ -275,9 +323,27 @@ export default {
         key: Date.now(),
         charaName
       });
+    //   this.ruleForm.deleteDepart.departmentList.push({
+    //     departmentName: "部门" + charaName,
+    //     key: Date.now(),
+    //     charaName
+    //   });
+      console.log(this.ruleForm.deleteDepart)
     }
   },
+  watch: {
+      userData:{
+          handler(n,o){
+              console.log(n)
+              this.ruleForm.deleteDepart = n;
+
+          },
+        //   deep:true,
+      }
+  },
   mounted() {
+    //   this.ruleForm.deleteDepart = this.userData;
+    // console.log(this.userData.departmentList)
     let classifyType = {
       type: "projectorg"
     };

@@ -21,7 +21,7 @@
 <router-link tag="li" class="leftMenuList" to="/diary" >
 <span class="iconfont LeftIcon">&#xe636;</span>
 <span class="LeftMenuTitle">
-日程日志
+日志
 </span>
     </router-link>
 
