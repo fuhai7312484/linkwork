@@ -47,16 +47,38 @@
 
           <div v-for="(itme,index) in data" :key="index" class="LeveTagBoxFounder">
             <div v-for="(oneItme,index) in itme.children" :key="index" v-if="oneItme.creator==='Y'" class="creatorBox">
-              
-            
               <img :src="oneItme.mainPic" /> {{oneItme.label}}
               <span class="LeveTag" :style="{background:'#029cff',}">创建人
               </span>
 
             </div>
+            
           </div>
-          <el-tree :data="data" :props="defaultProps" accordion node-key="$treeNodeId" :default-expanded-keys="[1]"
-            :default-checked-keys="[5]" :expand-on-click-node="false" @node-click="handleNodeClick" class="AddressUserListBox">
+          <div style="padding:0 10px;">
+
+            <el-input
+  placeholder="搜索好友..."
+  v-model="filterText">
+</el-input>
+          </div>
+
+           <!-- <div style="padding:0 20px;">
+            <el-input
+  placeholder="搜索好友..."
+  v-model="filterText">
+</el-input>
+          </div> -->
+          
+          <el-tree :data="data" :props="defaultProps" 
+           ref="tree2"
+            accordion 
+            node-key="$treeNodeId"
+           :default-expanded-keys="[1]"
+            :default-checked-keys="[5]" 
+            :expand-on-click-node="false"
+             @node-click="handleNodeClick" 
+             :filter-node-method="filterNode"
+            class="AddressUserListBox">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span class="custom-treeImgBox" :style="titleColor(data.pid)">
                 <i v-if="data.pid==1" class="GPid1Cl">
@@ -147,6 +169,7 @@
     name: "AddressIndex",
     data() {
       return {
+        filterText: '',
         isMeOrgId:'',
         isMeShortName:'',
         orgInfoObj:{},
@@ -258,6 +281,16 @@
       },
       addInvitees() {
         this.addInv = !this.addInv;
+      },
+       filterNode(value, data) {
+        if (!value) return true;
+        return data.label.indexOf(value) !== -1;
+      }
+    },
+      watch: {
+      filterText(val) {
+        // console.log(this.$refs.tree2.filter(val))
+        this.$refs.tree2.filter(val);
       }
     },
     mounted() {
@@ -273,7 +306,10 @@
           let newData = [];
           //第一层循环
           data.forEach((e, index) => {
-        let addDe = {
+
+            if(e.orgLeader[0].userId===getStorage("userInfo").id){
+
+              let addDe = {
                 lookUserId: e.orgLeader[0].userId,
                 projectId: this.proTitle.proId,
                 userId: getStorage("userInfo").id
@@ -284,13 +320,14 @@
                   let data = res.data.data;
                   this.userData = data
                   if (data.userId === getStorage("userInfo").id) {
-                    console.log('0000000')
+                  
                       this.userData.isMySelf = true;
                     }
                 
                 }
               }
             );
+            }
             let pObj = {
               label: e.shortName + (e.typeName ? "-(" + e.typeName + ")" : ""),
               children: [],
@@ -315,6 +352,9 @@
               creator: e.orgLeader[0].creator,
               orgId: e.orgLeader[0].orgId,
             };
+
+
+            
        
             if(e.orgLeader[0].userId===getStorage("userInfo").id){
         
@@ -338,8 +378,11 @@
                    levelName:e.orgLeader[0].levelName,
                  }
                 pObj.orgIsMe = true;
+
                  
               }
+
+
             if(e.orgLeader[0].creator=='Y' && e.orgLeader[0].userId===getStorage("userInfo").id){
               
                 this.orgLeaderIsMe =true
@@ -373,12 +416,37 @@
                   creator: ele.creator
                 };
 
+
+                if(ele.userId === getStorage("userInfo").id ){
+                     let addDe = {
+                lookUserId:e.orgLeader[0].orgId===ele.orgId?e.orgLeader[0].userId:console.log('没有'),
+                projectId: this.proTitle.proId,
+                userId: getStorage("userInfo").id
+              };
+            getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
+              res => {
+                if (res.data.code === 200) {
+                  let data = res.data.data;
+                  this.userData = data
+                  if (data.userId === getStorage("userInfo").id) {
+                  
+                      this.userData.isMySelf = true;
+                    }
+                
+                }
+              }
+            );
+
+
+                }
+                
+
               
 
-                if(e.orgLeader[0].userId===getStorage("userInfo").id && ele.orgId===e.orgLeader[0].orgId){
-                  console.log(e.orgLeader[0].userId,getStorage("userInfo").id,ele.orgId,e.orgLeader[0].orgId)
+                // if(e.orgLeader[0].userId===getStorage("userInfo").id && ele.orgId===e.orgLeader[0].orgId){
+                //   console.log(e.orgLeader[0].userId,getStorage("userInfo").id,ele.orgId,e.orgLeader[0].orgId)
                  
-                }
+                // }
 
                  if(ele.userId===getStorage("userInfo").id){
                 this.isMeOrgId = ele.orgId;   
@@ -412,6 +480,29 @@
                 orgId: ue.orgId,
                 pid: 3
               };
+
+                   if(ue.userId === getStorage("userInfo").id ){
+                     let addDe = {
+                lookUserId:e.orgLeader[0].orgId===ue.orgId?e.orgLeader[0].userId:console.log('没有'),
+                projectId: this.proTitle.proId,
+                userId: getStorage("userInfo").id
+              };
+            getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
+              res => {
+                if (res.data.code === 200) {
+                  let data = res.data.data;
+                  this.userData = data
+                  if (data.userId === getStorage("userInfo").id) {
+                   
+                      this.userData.isMySelf = true;
+                    }
+                
+                }
+              }
+            );
+                }
+
+                 
               
                   if(ue.userId===getStorage("userInfo").id){
                   

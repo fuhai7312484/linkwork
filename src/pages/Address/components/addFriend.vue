@@ -3,7 +3,7 @@
 
        <!-- {{orgInfoObj}} -->
 
-       
+      
       <div class="proMeOrgBox">
         <div class="proMeOrgMainPicImg fl">
   <img :src="InvitePeople.mainPic"/>
@@ -43,6 +43,7 @@
        :class="item.cl"
       >
     </el-option>
+   
   </el-select>
       <el-select v-model="value1" size="mini" style="width:100px;" placeholder="请选择" v-if="radio==3">
     <el-option
@@ -60,9 +61,27 @@
         </div>
 
 <el-row :gutter="12" class="FriendList" v-if="dynamicValidateForm.domains.length!=0">
-<el-col :span="12"  v-for="(domain, index) in dynamicValidateForm.domains" :key="index" >
+<el-col :span="24"  v-for="(domain, index) in dynamicValidateForm.domains" :key="index" >
     <el-card shadow="hover" class="FriendListItme">
-{{domain}}
+
+{{domain.phone}}
+<br/>
+<div v-if="domain.code==200" :style="{color:'#009944'}" class="addFirendMsgInfo">
+  <span class="el-icon-success"></span>
+{{domain.msg}}
+</div>
+
+<div v-if="domain.code==1008" :style="{color:'red'}" class="addFirendMsgInfo">
+  <span class="el-icon-question"></span>
+{{domain.msg}}
+</div>
+
+<div v-if="domain.code==1009" class="addFirendMsgInfo" :style="{color:'red'}">
+  <span class="el-icon-success" :style="{color:'#009944'}"></span><span class="el-icon-question" :style="{color:'red'}"></span>
+{{domain.msg}}
+</div>
+
+
       <span class="el-icon-error removeFriend" @click="handleClose(index)"></span>
     </el-card>
   </el-col>
@@ -81,7 +100,13 @@ import { getPostInfo, getStorage } from "../../../assets/lib/myStorage.js";
 import { mapState, mapMutations } from "vuex";
 export default {
   name: "addFriend",
-  props: ["orgLeaderIsMe", "InvitePeople", "isMeOrgId","isMeShortName","orgInfoObj"],
+  props: [
+    "orgLeaderIsMe",
+    "InvitePeople",
+    "isMeOrgId",
+    "isMeShortName",
+    "orgInfoObj"
+  ],
   data() {
     return {
       //  dynamicTags: ['标签一', '标签二', '标签三'],
@@ -90,7 +115,13 @@ export default {
 
       radio: "2",
       dynamicValidateForm: {
-        domains: [],
+        domains: [
+          // {
+          //   code: 200,
+          //   msg: "当前用户已存在于当前项目中，无法重复邀请",
+          //   phone: "13051376806"
+          // }
+        ],
         email: ""
       },
       options: [
@@ -100,10 +131,10 @@ export default {
         // },
       ],
       options1: [
-            //  {
-            //   value: "0",
-            //   label: "负责人"
-            // }
+        //  {
+        //   value: "0",
+        //   label: "负责人"
+        // }
       ],
       value: "0",
       value1: "0"
@@ -114,94 +145,85 @@ export default {
   },
   methods: {
     getValue(value) {
+      console.log(value)
      
-      if(this.options.length===value*1){
+      if (this.options.length === value * 1) {
         this.addDepartment();
-
-      
       }
-     
     },
     addDepartment() {
       this.$prompt("请输入部门名称", "提示", {
-        confirmButtonText: "确定",
+        confirmButtonText: "确定"
       })
         .then(({ value }) => {
-            console.log('这里调用新创建部门',value)
-          
-            let obj={
-             projectId:this.proTitle.proId,
-             userId:getStorage("userInfo").id,
-             orgId:this.isMeOrgId,
-             secrecy:'N',
-             shortName:this.isMeShortName,
-             orgName:this.orgInfoObj.orgName,
-             classifyName:this.orgInfoObj.classifyName,
-             nickName:this.orgInfoObj.nickName,
-             title:"",
-            }
+          console.log("这里调用新创建部门", value);
 
+          let obj = {
+            projectId: this.proTitle.proId,
+            userId: getStorage("userInfo").id,
+            orgId: this.isMeOrgId,
+            secrecy: "N",
+            shortName: this.isMeShortName,
+            orgName: this.orgInfoObj.orgName,
+            classifyName: this.orgInfoObj.classifyName,
+            nickName: this.orgInfoObj.nickName,
+            title: ""
+          };
 
-
-
-            let optNum = this.options.length-1
+          let optNum = this.options.length - 1;
           let departmentList = [];
           for (let i = 0; i < 1; i++) {
             departmentList.push({});
             departmentList[i].orgId = this.isMeOrgId;
             departmentList[i].departmentName = value;
-            departmentList[i].operation = 'add';
+            departmentList[i].operation = "add";
             departmentList[i].createPerson = getStorage("userInfo").id;
-         
           }
 
           for (let i = 0; i < 1; i++) {
             for (let key in departmentList[i]) {
-              obj["departmentList[" + i + "]." + key] =
-                departmentList[i][key];
+              obj["departmentList[" + i + "]." + key] = departmentList[i][key];
             }
           }
 
-   
-
-            getPostInfo("/yq_api/orgDepartment/editeOrg", obj).then(res => {
-              if(res.data.code===200){
-                let newV = this.options.length-1+''
-                this.options.splice(this.options.length-1, 0,
-                  {
-                label:  value,
-                value:  "" +(this.options.length-1),
+          getPostInfo("/yq_api/orgDepartment/editeOrg", obj).then(res => {
+            if (res.data.code === 200) {
+              let newV = this.options.length - 1 + "";
+              this.options.splice(this.options.length - 1, 0, {
+                label: value,
+                value: "" + (this.options.length - 1),
                 len: 0,
-                 cl:''
-                  }
-                )
-                this.value =  newV,
-       
+                cl: ""
+              });
+              (this.value = newV),
                 this.$message({
-              type: "success",
-                message: "部门创建成功！",
-                  });
-
-              }
-            
-              })
-        
-          
+                  type: "success",
+                  message: "部门创建成功！"
+                });
+            }
+          });
         })
         .catch(() => {
-           console.log('取消了')
-           this.value = '0'
+          console.log("取消了");
+          this.value = "0";
         });
     },
 
     addDomain() {
+      if(this.dynamicValidateForm.domains[0]){
+        if(this.dynamicValidateForm.domains[0].code){
+            this.dynamicValidateForm.domains=[]
+        }
+      
+      }
+      console.log(this.dynamicValidateForm.domains[0])
       this.$prompt("请输入邀请人手机号", "提示", {
         confirmButtonText: "确定",
         inputPattern: /^1[3|4|5|7|8][0-9]{9}$/,
         inputErrorMessage: "手机号格式不正确"
       })
         .then(({ value }) => {
-          this.dynamicValidateForm.domains.push(value);
+          this.dynamicValidateForm.domains.push({phone:value});
           this.$message({
             type: "success",
             message: "邀请的手机号是: " + value
@@ -228,6 +250,55 @@ export default {
         if (valid) {
           // alert('submit!');
           console.log(this.radio);
+           
+          let mobiles=''
+           this.dynamicValidateForm.domains.forEach(e => {
+            mobiles +=  e.phone + ','
+          });
+        
+          let opeType = "member";
+          switch (this.radio) {
+            case "1":
+              opeType = "createorg";
+              break;
+            case "2":
+              opeType = "member";
+              break;
+            case "3":
+            if(this.options[this.value * 1].len===0){
+            opeType = "joinorg";
+            }else{
+               opeType = "joindepartment";
+            }
+              break;
+          }
+
+          let addFrindObj = {
+            userId: getStorage("userInfo").id,
+            projectId: this.proTitle.proId,
+            mobile: mobiles,
+            operationType: opeType,
+          };
+          
+          if(this.radio==='3'){
+            addFrindObj.departmentId=this.options[this.value * 1].departmentId;
+            addFrindObj.orgId=this.options[this.value * 1].orgId;
+          }
+          console.log(addFrindObj);
+
+          getPostInfo(
+            "yq_api/authority/inviteJoinProjectForAugust",
+            addFrindObj
+          ).then(res => {
+            if(res.data.code===200){
+              this.dynamicValidateForm.domains = res.data.bizList;
+              console.log(res);
+
+            }
+            
+          });
+
+
         } else {
           console.log("error submit!!");
           return false;
@@ -239,44 +310,43 @@ export default {
     }
   },
   mounted() {
-       let addObj = {
-          orgId: this.isMeOrgId,
-          projectId: this.proTitle.proId,
-          userId: getStorage("userInfo").id
-        };
-        getPostInfo("/yq_api/orgDepartment/detail", addObj).then(res => {
-          if (res.data.code === 200) {
-             console.log(res.data)
-            let depart = res.data.data.departmentList;
-           
-            let arr = []
-           
-            depart.forEach((e, index) => {
-            
-              arr.push({
-                label: e.departmentName,
-                value: index + "",
-                len: e.purList.length,
-                cl:''
-              })
-            });
+    let addObj = {
+      orgId: this.isMeOrgId,
+      projectId: this.proTitle.proId,
+      userId: getStorage("userInfo").id
+    };
+    getPostInfo("/yq_api/orgDepartment/detail", addObj).then(res => {
+      if (res.data.code === 200) {
+        //  console.log(res.data)
+        let depart = res.data.data.departmentList;
 
-            if(this.orgLeaderIsMe){
-              arr.push({
-              label: "创建新部门",
-              value: depart.length + 1,
-              len: 0,
-               cl:'createNew'
-            });
-            }
-            this.options = arr;
-         
-            this.value = '0'
-            this.value1 = '0'
-          }
+        let arr = [];
+
+        depart.forEach((e, index) => {
+          arr.push({
+            label: e.departmentName,
+             orgId:e.orgId,
+             departmentId:e.departmentId,
+            value: index + "",
+            len: e.purList.length,
+            cl: ""
+          });
         });
 
+        if (this.orgLeaderIsMe) {
+          arr.push({
+            label: "创建新部门",
+            value: depart.length + 1,
+            len: 0,
+            cl: "createNew"
+          });
+        }
+        this.options = arr;
 
+        this.value = "0";
+        this.value1 = "0";
+      }
+    });
   },
   watch: {
     radio(newVal, oldVal) {
@@ -290,42 +360,44 @@ export default {
         getPostInfo("/yq_api/orgDepartment/detail", addObj).then(res => {
           if (res.data.code === 200) {
             let depart = res.data.data.departmentList;
-            let arr = []
-            
+           
+            let arr = [];
             depart.forEach((e, index) => {
-            
               arr.push({
                 label: e.departmentName,
+                orgId:e.orgId,
+                departmentId:e.departmentId,
                 value: index + "",
                 len: e.purList.length,
-                 cl:''
-              })
+                cl: ""
+              });
             });
-           
-          if(depart[0].purList.length==0){
-            this.options1 = [{
-              value: "0",
-              label: "负责人"
-            }]
-          }else{
-            this.options1 = [{
-              value: "0",
-              label: "成员"
-            }]
+
+            if (depart[0].purList.length == 0) {
+              this.options1 = [
+                {
+                  value: "0",
+                  label: "负责人"
+                }
+              ];
+            } else {
+              this.options1 = [
+                {
+                  value: "0",
+                  label: "成员"
+                }
+              ];
             }
 
-            if(this.orgLeaderIsMe){
+            if (this.orgLeaderIsMe) {
               arr.push({
-              label: "创建新部门",
-              value: depart.length + 1,
-              len: 0,
-               cl:'createNew'
-            });
+                label: "创建新部门",
+                value: depart.length + 1,
+                len: 0,
+                cl: "createNew"
+              });
             }
             this.options = arr;
-         
-
-           
           }
         });
       }
@@ -346,13 +418,9 @@ export default {
               label: "成员"
             }
           ];
-         
         }
       }
-
-     
     }
-  
   }
 };
 </script>

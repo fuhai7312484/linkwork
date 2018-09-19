@@ -1761,11 +1761,28 @@ font-size: 16px;
  .FriendListItme{
      position: relative;
  }
+ .addFirendMsgInfo{
+      padding: 3px 0;
+      font-size: 12px;
+ }
+ .FriendListItme{ font-size: 14px;}
  .FriendListItme .el-icon-success{
     color: #009944;
     vertical-align: middle;
     text-align: center;
     line-height: 28px;
+    display: inline-block;
+    margin:0 5px; 
+    font-size: 14px;
+ }
+ .FriendListItme .el-icon-question{
+    color: red;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 28px;
+    display: inline-block;
+    margin:0 5px; 
+    font-size: 16px;
  }
  .FriendListItme .el-icon-error{
     color:#ccc;
