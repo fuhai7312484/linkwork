@@ -20,7 +20,7 @@
           注释：
         </h3>
         <p>
-          <el-progress type="circle" :width="28" :percentage="45"></el-progress>
+          <el-progress type="circle" :width="28" :percentage="45" class="IE" ></el-progress>
           <span>时间进度图表</span>
         </p>
         <p>
@@ -106,7 +106,7 @@
                 shortName:item.shortName,
                 title:item.title,
                 period:item.period
-                },('/'))">
+                },('/address'))">
          {{indexMethod(item.key)}}.{{item.shortName}}
 
          
@@ -278,7 +278,8 @@ export default {
         protitle:obj.protitle,
         proId:obj.proId,
           title:obj.title,
-          period:obj.period
+          period:obj.period,
+          userId:getStorage("userInfo").id,
       }
       setStorage('proInfo',StorageObj)
       this.$router.push(url);

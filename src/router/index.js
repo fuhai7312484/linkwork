@@ -42,13 +42,15 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
+
     {
       path: "/",
-      name: "Home",
+      name: "AddressIndex",
+      redirect: '/address',
       meta: {
-        requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+        requireAuth: true 
       },
-      component: Home
+      component: AddressIndex,
     },
     {
       path: "/home",
@@ -58,6 +60,24 @@ export default new Router({
       },
       component: Home
     },
+
+
+    // {
+    //   path: "/",
+    //   name: "Home",
+    //   meta: {
+    //     requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+    //   },
+    //   component: Home
+    // },
+    // {
+    //   path: "/home",
+    //   name: "Home",
+    //   meta: {
+    //     requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+    //   },
+    //   component: Home
+    // },
     //日程日志路由
     {
       path: "/diary",

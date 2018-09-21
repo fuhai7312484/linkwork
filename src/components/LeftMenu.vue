@@ -12,12 +12,12 @@
     </router-link> -->
 
 
-  <router-link tag="li" class="leftMenuList" to="/a" >
+  <!-- <router-link tag="li" class="leftMenuList" to="/a" >
 <span class="iconfont LeftIcon">&#xe626;</span>
 <span class="LeftMenuTitle">
 消息
 </span>
-    </router-link>
+    </router-link> -->
 <router-link tag="li" class="leftMenuList" to="/diary" >
 <span class="iconfont LeftIcon">&#xe636;</span>
 <span class="LeftMenuTitle">
@@ -25,12 +25,14 @@
 </span>
     </router-link>
 
-    <router-link tag="li" class="leftMenuList" to="/g" >
+    <!-- <router-link tag="li" class="leftMenuList" to="/g" >
 <span class="iconfont LeftIcon">&#xe640;</span>
 <span class="LeftMenuTitle">
 管理
 </span>
-    </router-link>
+    </router-link> -->
+
+    
      <router-link tag="li" class="leftMenuList" to="/address" >
 <span class="iconfont LeftIcon">&#xe62b;</span>
 <span class="LeftMenuTitle">

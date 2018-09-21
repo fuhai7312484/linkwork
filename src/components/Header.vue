@@ -128,6 +128,7 @@ export default {
   
     signOut() {
          stoRemove('userName');
+          // stoRemove('proInfo');
       // stClear();
       this.changeLogin(0);
       router.push("/login");
@@ -152,7 +153,8 @@ export default {
         protitle:obj.protitle,
         proId:obj.proId,
           title:obj.title,
-          period:obj.period
+          period:obj.period,
+           userId:getStorage("userInfo").id,
       }
       setStorage('proInfo',StorageObj)
       url == this.$route.path?this.$router.go(0):this.$router.push(url);

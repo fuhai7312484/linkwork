@@ -10,6 +10,10 @@ import {getStorage} from './assets/lib/myStorage'
 
 import store from './store'
 
+
+import 'babel-polyfill'
+
+
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 

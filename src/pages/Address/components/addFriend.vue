@@ -216,7 +216,7 @@ export default {
         }
       
       }
-      console.log(this.dynamicValidateForm.domains[0])
+      // console.log(this.dynamicValidateForm.domains[0])
       this.$prompt("请输入邀请人手机号", "提示", {
         confirmButtonText: "确定",
         inputPattern: /^1[3|4|5|7|8][0-9]{9}$/,
@@ -249,7 +249,7 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // alert('submit!');
-          console.log(this.radio);
+          // console.log(this.radio);
            
           let mobiles=''
            this.dynamicValidateForm.domains.forEach(e => {
@@ -284,7 +284,7 @@ export default {
             addFrindObj.departmentId=this.options[this.value * 1].departmentId;
             addFrindObj.orgId=this.options[this.value * 1].orgId;
           }
-          console.log(addFrindObj);
+          // console.log(addFrindObj);
 
           getPostInfo(
             "yq_api/authority/inviteJoinProjectForAugust",
@@ -292,7 +292,7 @@ export default {
           ).then(res => {
             if(res.data.code===200){
               this.dynamicValidateForm.domains = res.data.bizList;
-              console.log(res);
+              // console.log(res);
 
             }
             

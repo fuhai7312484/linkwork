@@ -1,7 +1,12 @@
 <template>
         <div id="query" class="allsv">
-            <canvas class="qr" id="canvas"></canvas>
-            <p class="wsv">链工作扫码登录</p>
+          <div style=" line-height: 158px; font-size: 22px;">
+
+ 此功能暂未开放
+          </div>
+         
+            <!-- <canvas class="qr" id="canvas"></canvas>
+            <p class="wsv">链工作扫码登录</p> -->
         </div>   
 </template>
 <script>
@@ -21,7 +26,7 @@ export default {
     },
       mounted() {
     //   console.log('执行到这了')
-      this.useqrcode();
+      // this.useqrcode();
     },
       methods:{
         useqrcode(){ 

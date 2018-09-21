@@ -179,7 +179,7 @@
         <div class="clear"></div>
     </div>
 </template>
-//
+
 <script>
     import {
         getPostInfo,

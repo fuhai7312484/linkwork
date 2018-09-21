@@ -11,9 +11,26 @@
 
           <div class="inviteBox">
 
-            <div class="approval">
-              <span class="el-icon-bell"></span> 邀请审批
+            <div class="approval" @click="approval = !approval">
+              <span class="el-icon-bell"></span> 
+
+     邀请审批
+      <el-badge v-if="inveUnlook!=0" class="mark" :value="inveUnlook" />
+
             </div>
+             
+            <div>
+              <el-collapse-transition>
+         <ul class="inviteChangeMenu" v-show="approval">
+           <li @click="inviteChange" :class="this.UserShow ==='3'?' approvalAct':' '">
+             好友加入审批 <el-badge v-if="inveUnlook!=0" class="mark" :value="inveUnlook" />
+           </li>
+         <li>
+           角色转换通知</li>           
+         </ul>
+            </el-collapse-transition>
+            </div>
+           
             <div class="friends" @click="addInvitees">
               <span class="el-icon-plus">
 
@@ -114,13 +131,23 @@
         </div>
         <div slot="right" class="demo-split-pane splitRinght">
           <!-- <router-view></router-view> -->
-          <add-details v-if="UserShow" :userData="userData">
+
+           
+         
+         
+          <add-details v-if="UserShow==='1'" :userData="userData">
 
           </add-details>
-          <org-details v-if="!UserShow" :userData="userData">
+          <org-details v-if="UserShow==='2'" :userData="userData">
 
 
           </org-details>
+
+          <invite-list v-if="UserShow==='3'" :unReadList="unReadList">
+
+          </invite-list>
+      
+         
 
           <!-- {{userData}} -->
 
@@ -162,6 +189,7 @@
   import AddDetails from "./components/AddDetails.vue";
   import OrgDetails from "./components/OrgDetails.vue";
   import addFriend from "./components/addFriend.vue";
+  import InviteList from "./components/InviteList.vue";
   import { getPostInfo, getStorage } from "../../assets/lib/myStorage.js";
   import { mapState, mapMutations } from "vuex";
 
@@ -169,16 +197,19 @@
     name: "AddressIndex",
     data() {
       return {
+        inveUnlook:0,
         filterText: '',
         isMeOrgId:'',
         isMeShortName:'',
         orgInfoObj:{},
         InvitePeople:{},
-        UserShow: true,
+        UserShow: '1',
         userData: {},
         split1: 0.3,
         addInv: false,
+        approval:false,
         data: [],
+        unReadList:[],
         orgLeaderIsMe:false,
         defaultProps: {
           children: "children",
@@ -201,7 +232,8 @@
       GFooter,
       AddDetails,
       OrgDetails,
-      addFriend
+      addFriend,
+      InviteList,
     },
     computed: {
       ...mapState({
@@ -213,10 +245,36 @@
     },
     methods: {
       ...mapMutations(["changeLogin", "getScrllH", "setAddressUid"]),
+      getInveList(){
+   let invObj={
+          userId:getStorage("userInfo").id,
+          type:'createdepartment,joindepartment,inviteproject,joinorg,joinorglooker,createorg,member',
+          projectId:this.proTitle.proId,
+          status:'0,1',
+          isAuthority:'0,1'
+        }
+     
+         getPostInfo("/yq_api/mail/getMailListForType", invObj).then(res => {
+           if(res.data.code ===200){
+             let unData =  res.data.data.unReadList;
+             this.inveUnlook = unData.length;
+             unData.forEach((e,index)=>{
+               e.tarnState = false;
+             })
+            //  console.log(unData)
+             this.unReadList = unData;
+           }
+           
+         })
+      },
+      inviteChange(){
+        this.UserShow = '3';
+        this.getInveList()
+      },
       gotoDetil(node, data) {
-       
         this.addInv = false;
-        this.UserShow = false;
+        this.approval = false
+        this.UserShow = '2';
         let orgObj = {
           userId: getStorage("userInfo").id,
           projectId: this.proTitle.proId,
@@ -236,8 +294,10 @@
       },
       handleNodeClick(data) {
         this.addInv = false;
+        this.approval =false;
         if (data.pid === 3) {
-          this.UserShow = true;
+          this.UserShow = '1';
+          // this.UserShow = true;
           let addDe = {
             lookUserId: data.userId,
             projectId: this.proTitle.proId,
@@ -294,6 +354,12 @@
       }
     },
     mounted() {
+ this.getInveList()
+      let inveUnlookObj={
+        userId:getStorage("userInfo").id,
+        projectId:this.proTitle.proId,
+
+      }
      
       let addObj = {
         userId: getStorage("userInfo").id,
@@ -302,32 +368,32 @@
       getPostInfo("/yq_api/orgDepartment/searchLinkmanList", addObj).then(res => {
         if (res.data.code === 200) {
           let data = res.data.data.orgList;
-          // console.log(data);
           let newData = [];
           //第一层循环
           data.forEach((e, index) => {
-
-            if(e.orgLeader[0].userId===getStorage("userInfo").id){
-
-              let addDe = {
-                lookUserId: e.orgLeader[0].userId,
-                projectId: this.proTitle.proId,
-                userId: getStorage("userInfo").id
-              };
-            getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
-              res => {
-                if (res.data.code === 200) {
-                  let data = res.data.data;
-                  this.userData = data
-                  if (data.userId === getStorage("userInfo").id) {
-                  
-                      this.userData.isMySelf = true;
-                    }
+            // console.log(e)
+           
+            // if(e.orgLeader[0].userId===getStorage("userInfo").id){
+            //   let addDe = {
+            //     lookUserId: e.orgLeader[0].userId,
+            //     projectId: this.proTitle.proId,
+            //     userId: getStorage("userInfo").id
+            //   };
+            // getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
+            //   res => {
+            //     if (res.data.code === 200) {
+            //       let data = res.data.data;
                 
-                }
-              }
-            );
-            }
+            //       console.log(data)
+            //       this.userData = data
+            //       if (data.userId === getStorage("userInfo").id) {
+            //           this.userData.isMySelf = true;
+            //         }
+                
+            //     }
+            //   }
+            // );
+            // }
             let pObj = {
               label: e.shortName + (e.typeName ? "-(" + e.typeName + ")" : ""),
               children: [],
@@ -353,11 +419,27 @@
               orgId: e.orgLeader[0].orgId,
             };
 
+            if(e.orgLeader[0].userId===getStorage("userInfo").id){              
+                     let addDe = {
+                lookUserId:e.orgLeader[0].userId,
+                projectId: this.proTitle.proId,
+                userId: getStorage("userInfo").id
+              };
+            getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
+              res => {
+                if (res.data.code === 200) {
+                 
+                  let data = res.data.data;
+                  this.userData = data
+                  if (data.userId === getStorage("userInfo").id) {
+                    // console.log(data)
+                      this.userData.isMySelf = true;
+                    }
+                
+                }
+              }
+            );
 
-            
-       
-            if(e.orgLeader[0].userId===getStorage("userInfo").id){
-        
               this.orgInfoObj ={
                 orgId:e.orgLeader[0].orgId,
                 shortName:e.orgLeader[0].shortName,
@@ -392,7 +474,7 @@
             //部门循环
             e.departmentList.forEach((el, index) => {
            
-              
+            
               let cobj = {
                 label: el.departmentName,
                 children: [],
@@ -415,9 +497,9 @@
                   orgId: ele.orgId,
                   creator: ele.creator
                 };
-
-
-                if(ele.userId === getStorage("userInfo").id ){
+                //  console.log(ele.userId === e.orgLeader[0].userId )
+               
+                if(ele.userId === getStorage("userInfo").id){
                      let addDe = {
                 lookUserId:e.orgLeader[0].orgId===ele.orgId?e.orgLeader[0].userId:console.log('没有'),
                 projectId: this.proTitle.proId,
@@ -426,10 +508,11 @@
             getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
               res => {
                 if (res.data.code === 200) {
+                 
                   let data = res.data.data;
                   this.userData = data
                   if (data.userId === getStorage("userInfo").id) {
-                  
+                   console.log(data)
                       this.userData.isMySelf = true;
                     }
                 
@@ -439,10 +522,6 @@
 
 
                 }
-                
-
-              
-
                 // if(e.orgLeader[0].userId===getStorage("userInfo").id && ele.orgId===e.orgLeader[0].orgId){
                 //   console.log(e.orgLeader[0].userId,getStorage("userInfo").id,ele.orgId,e.orgLeader[0].orgId)
                  
@@ -463,6 +542,11 @@
                cobj.children.sort(function(a,b){
                   return a.level - b.level
                 })
+
+
+  
+
+
               });
               pObj.children.push(cobj);
             });
@@ -480,8 +564,14 @@
                 orgId: ue.orgId,
                 pid: 3
               };
+            // console.log(ue.orgId===e.orgLeader[0].orgId&&ue.userId===e.orgLeader[0].userId)
+        
+  //  console.log(e.orgId,ue.orgId,e.orgLeader)
+
 
                    if(ue.userId === getStorage("userInfo").id ){
+                  
+                    //  console.log(e.orgLeader[0].orgId,ue.orgId)
                      let addDe = {
                 lookUserId:e.orgLeader[0].orgId===ue.orgId?e.orgLeader[0].userId:console.log('没有'),
                 projectId: this.proTitle.proId,
@@ -491,9 +581,10 @@
               res => {
                 if (res.data.code === 200) {
                   let data = res.data.data;
+                  
                   this.userData = data
                   if (data.userId === getStorage("userInfo").id) {
-                   
+                     console.log(data)
                       this.userData.isMySelf = true;
                     }
                 
@@ -502,6 +593,7 @@
             );
                 }
 
+                 
                  
               
                   if(ue.userId===getStorage("userInfo").id){

@@ -1,6 +1,8 @@
 <template>
-    <div class="userDataDetil" :style="{height:sWHeight}">
 
+    <div class="userDataDetil" :style="{height:sWHeight}">
+      <!-- {{userData}} -->
+<div v-if="userData.id">
         <div v-if="userData.isMySelf">
             <el-form :model="userData" :rules="rules" ref="ruleForm" label-width="90px" class="demo-ruleForm">
 
@@ -449,10 +451,13 @@
 
         </div>
 
+</div>
 
+<div v-else class="noData">
+暂无数据
+</div>
     </div>
 </template>
-//
 <script>
     import {getPostInfo} from "../../../assets/lib/myStorage.js";
     import { mapState } from "vuex";

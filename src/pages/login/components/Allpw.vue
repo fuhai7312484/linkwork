@@ -1,6 +1,5 @@
 <template>
    <div class="allpw">
-   
      <!-- <el-button :plain="true" @click="open2">成功</el-button> -->
 <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" >
      <el-form-item prop="username">
@@ -16,7 +15,7 @@
             </div>
 </template>
 <script>
-import { setStorage,getPostInfo,PhoneReg } from "../../../assets/lib/myStorage.js";
+import { setStorage,getPostInfo,PhoneReg,getStorage} from "../../../assets/lib/myStorage.js";
 import router from "../../../router";
 import {mapState, mapMutations} from 'vuex'
 import axios from 'axios'
@@ -29,6 +28,7 @@ export default {
       show:state =>state.show,
       isLogin:state=>state.isLogin,
       userInfo:state=>state.userInfo,
+      proTitle:state=>state.proTitle,
     })
 
   },
@@ -175,7 +175,34 @@ export default {
                             setStorage("userName", _that.ruleForm2.username);
                           }
                           _that.changeLogin(100)
+
                           setStorage("userInfo",data);
+
+                          // console.log(data.id, getStorage('proInfo').userId)
+                        if(getStorage('proInfo')==undefined || getStorage('proInfo').userId != data.id){
+                          let defaultObj={
+                            page:'1',
+                            size:'1',
+                            userId:data.id,
+                          }
+                          getPostInfo('yq_api/project/defaultCreateTimeProject',defaultObj).then(deRes=>{
+                               if(deRes.data.code===200){
+                                 
+                                  let StorageObj={
+                                  orgName:deRes.data.data[0].orgName,
+                                  protitle:deRes.data.data[0].shortName,
+                                  proId:deRes.data.data[0].projectId,
+                                    title:deRes.data.data[0].title,
+                                    period:deRes.data.data[0].period,
+                                    userId:data.id,
+                                }
+                                 setStorage('proInfo',StorageObj)
+                               }
+                             })
+                        }
+
+
+
                           _that.setUserInfo(data)
                             //  console.log(date)
                           _that.open2('登录成功！');
