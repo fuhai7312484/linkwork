@@ -23,10 +23,13 @@
               <el-collapse-transition>
          <ul class="inviteChangeMenu" v-show="approval">
            <li @click="inviteChange" :class="this.UserShow ==='3'?' approvalAct':' '">
-             好友加入审批 <el-badge v-if="inveUnlook!=0" class="mark" :value="inveUnlook" />
+             好友加入审批 
+             <el-badge v-if="inveUnlook!=0" class="mark" :value="inveUnlook" />
            </li>
-         <li>
-           角色转换通知</li>           
+         <li @click="RoleConver">
+           角色转换通知
+           <el-badge v-if="RoleUnlook!=0" class="mark" :value="RoleUnlook" />
+           </li>           
          </ul>
             </el-collapse-transition>
             </div>
@@ -146,7 +149,12 @@
           <invite-list v-if="UserShow==='3'" :unReadList="unReadList">
 
           </invite-list>
-      
+          <role-conver v-if="UserShow==='4'" :RoleConsentList="RoleConsentList" :RoleList="RoleList">
+
+
+          </role-conver>
+          
+    
          
 
           <!-- {{userData}} -->
@@ -190,6 +198,7 @@
   import OrgDetails from "./components/OrgDetails.vue";
   import addFriend from "./components/addFriend.vue";
   import InviteList from "./components/InviteList.vue";
+  import RoleConver from "./components/RoleConver.vue"
   import { getPostInfo, getStorage } from "../../assets/lib/myStorage.js";
   import { mapState, mapMutations } from "vuex";
 
@@ -198,6 +207,7 @@
     data() {
       return {
         inveUnlook:0,
+        RoleUnlook:0,
         filterText: '',
         isMeOrgId:'',
         isMeShortName:'',
@@ -210,6 +220,8 @@
         approval:false,
         data: [],
         unReadList:[],
+        RoleConsentList:[],
+        RoleList:[],
         orgLeaderIsMe:false,
         defaultProps: {
           children: "children",
@@ -234,6 +246,7 @@
       OrgDetails,
       addFriend,
       InviteList,
+      RoleConver,
     },
     computed: {
       ...mapState({
@@ -245,6 +258,32 @@
     },
     methods: {
       ...mapMutations(["changeLogin", "getScrllH", "setAddressUid"]),
+      //获取角色转换通知列表
+      getRoleList(){
+        let RoleObj={
+          status:'0,1',
+          projectId:this.proTitle.proId,
+          type:'roleconvert',
+          userId:getStorage("userInfo").id,
+          isAuthority:'0,1',
+                 }
+              console.log(RoleObj)
+                 getPostInfo("/yq_api/mail/getMailListForType", RoleObj).then(res => {
+                   console.log(res)
+                   if(res.data.code===200){
+                     let unReadList = res.data.data.unReadList;
+                     let consentList = res.data.data.consentList;
+                     this.RoleList = unReadList;
+                    
+                     this.RoleConsentList = consentList;
+                     this.RoleUnlook = unReadList.length
+                     console.log(unReadList,consentList)
+                    
+                   }
+                 })
+
+      },
+      //获取好友加入审批数据
       getInveList(){
    let invObj={
           userId:getStorage("userInfo").id,
@@ -267,9 +306,14 @@
            
          })
       },
+      //
       inviteChange(){
         this.UserShow = '3';
-        this.getInveList()
+        // this.getInveList()
+      },
+    
+      RoleConver(){
+         this.UserShow = '4';
       },
       gotoDetil(node, data) {
         this.addInv = false;
@@ -341,6 +385,7 @@
       },
       addInvitees() {
         this.addInv = !this.addInv;
+        
       },
        filterNode(value, data) {
         if (!value) return true;
@@ -355,6 +400,7 @@
     },
     mounted() {
  this.getInveList()
+ this.getRoleList()
       let inveUnlookObj={
         userId:getStorage("userInfo").id,
         projectId:this.proTitle.proId,

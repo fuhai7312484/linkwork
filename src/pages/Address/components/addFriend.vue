@@ -248,9 +248,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // alert('submit!');
-          // console.log(this.radio);
-           
           let mobiles=''
            this.dynamicValidateForm.domains.forEach(e => {
             mobiles +=  e.phone + ','
@@ -272,33 +269,25 @@ export default {
             }
               break;
           }
-
           let addFrindObj = {
             userId: getStorage("userInfo").id,
             projectId: this.proTitle.proId,
             mobile: mobiles,
             operationType: opeType,
+            orgId:this.isMeOrgId,
           };
-          
           if(this.radio==='3'){
             addFrindObj.departmentId=this.options[this.value * 1].departmentId;
-            addFrindObj.orgId=this.options[this.value * 1].orgId;
           }
-          // console.log(addFrindObj);
-
+          console.log(addFrindObj)
           getPostInfo(
             "yq_api/authority/inviteJoinProjectForAugust",
             addFrindObj
           ).then(res => {
             if(res.data.code===200){
               this.dynamicValidateForm.domains = res.data.bizList;
-              // console.log(res);
-
             }
-            
           });
-
-
         } else {
           console.log("error submit!!");
           return false;

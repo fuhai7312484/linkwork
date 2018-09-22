@@ -25,7 +25,9 @@
                 </el-row>
                 <el-row class="inviteListTopCenten">
                     <el-col :span="24" class="inviteListCentenLeft">
-                        申请事项：<span class="LeveTag" :style="{background:'#029cff',}">非成员</span> <span class="el-icon-minus"></span><span class="el-icon-caret-right"></span> <span class="LeveTag" :style="{background:'#029cff',}">成员</span>
+                        申请事项：<span class="LeveTag" :style="{background:'#029cff',}">非成员</span> 
+                         <span class="iconfont">&#xe60c;</span>
+                        <span class="LeveTag" :style="{background:'#029cff',}">成员</span>
                     </el-col>
                     
                 </el-row>

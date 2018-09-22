@@ -1944,3 +1944,62 @@ font-size: 16px;
          background: #029cff;
          color: #fff;
      }
+     .Role-Info-box{
+         padding: 10px 30px;
+     }
+     .Role-title{
+         color: #000;
+         cursor: pointer;
+     }
+     .Role-title span{
+         margin-left:10px; 
+     }
+     .Role-PendingLeft{
+         padding:20px 30px;
+         background: #fff;
+         border-radius:10px; 
+     }
+     .Role-btns{
+         text-align: right;
+        
+     }
+     .RoleRightArrow,.RoleLeftArrow{
+         
+         display: block;
+     }
+     .RoleRightArrow{
+         color: #029cff;
+     }
+     .RoleLeftArrow{
+         color: #fd7100;
+     }
+     .Role-main-PicBox{
+         margin-bottom:10px; 
+     }
+     .Role-main-arrowBox span{
+         height: 20px;
+         text-align: center;
+         font-size: 34px;
+
+     }
+     .Role-mainPic{
+         width: 24px;
+         height: 24px;
+         margin-right:5px;
+         vertical-align: middle;
+         border-radius:5px;  
+     }
+     .Role-mainInfo{
+         color:#000;
+     }
+     .Rolefd7100{
+         color: #fd7100;
+     }
+     .Role029cff{
+        color: #029cff;
+    }
+     .Role-btns{
+         height: 40px;
+         padding-right:50px;
+         box-sizing: border-box; 
+     }
