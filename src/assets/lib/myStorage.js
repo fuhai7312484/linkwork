@@ -249,15 +249,25 @@ export function setKeyIndex(arr){
 export function getFileType(str){
   // let imageType = "jpg" || "png" || "gif" || "bmp";
   // let videoType = "mp4";
-  if(str=='jpg' || str=='png'){
-    return 'img';
-  }else if(str=='mp4'){
-    return 'mv';
-  }else if(str=='pdf' || str=='xls' || str=='zip'){
 
+  if(str=='jpg' || str=='png' || str=='jpeg' ||  str=='gif' || str=='bmp'){
+    return 'img';
+  }else if(str=='mp4' || str=='avi' || str=='flv' ||  str=='mpg' ){
+    return 'mv';
+  }else{
     return 'file'
 
   }
+
+
+
+  // if(str=='jpg' || str=='png' || str=='jpeg' ||  str=='gif' || 'bmp' ){
+  //   return 'img';
+  // }else if(str=='mp4' || str=='avi' || str=='flv' ||  str=='mpg'   ){
+  //   return 'mv';
+  // }else{
+  //   return 'file';
+  // }
 
 
   

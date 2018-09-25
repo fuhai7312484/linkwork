@@ -210,6 +210,9 @@
                     message: msg
                 });
             },
+              fileTypeImgChange(fileName) {
+                return setFileTyleImge(fileName);
+            },
 
             changeTime(time) {
                 return transDate(time);
@@ -233,6 +236,7 @@
         },
         mounted() {
             if (getStorage("DraftBox")) {
+                console.log(getStorage("DraftBox"))
                 let arr = getStorage("DraftBox").filter(e => {
                     return (
                         e.projectId == this.proTitle.proId &&

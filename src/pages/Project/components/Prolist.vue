@@ -120,7 +120,7 @@
                 <el-progress type="circle" :width="39" :percentage="item.timeDuty===null?item.timeDuty=0:(item.timeDuty*1)"></el-progress>
               </el-col>
               <el-col :span="3" class="RingType">
-                <el-progress type="circle" color="#e9cf33" :width="39" :percentage="item.duty"></el-progress>
+                <el-progress type="circle" color="#e9cf33" :width="39" :percentage="item.duty===null?item.duty=0:(item.duty*1)"></el-progress>
               </el-col>
               <el-col :span="2" class="porListTitle">
 

@@ -227,8 +227,7 @@
                     //          fullscreenToggle: true  //全屏按钮
                     //        }
                 },
-
-                dialogImageUrl: "",
+  dialogImageUrl: "",
                 dialogVisible: false,
                 locationVisible: false,
                 showImg: false,
@@ -239,12 +238,13 @@
 
                 MyChecked: false,
                 KChecked: false,
-
+                annexFlag:false,
                 ImgFlag: false,
                 videoUploadPercent: 0,
                 imgUploadPercent: 0,
 
                 isReplace: false,
+                isEditDiary:false,
 
                 DraftBoxLength: 0,
                 isDraftBox: true,
@@ -303,7 +303,7 @@
                 });
             },
 
-            fileTypeImgChange(fileName) {
+             fileTypeImgChange(fileName) {
                 return setFileTyleImge(fileName);
             },
             baiduMapFromChild(data) {
@@ -377,7 +377,13 @@
                 this.videoUploadPercent = val * 1;
             },
 
-            uploadImgProcess(event, file, fileList) {
+            uploadAnnexProcess(event, file, fileList) {
+                this.annexFlag = true;
+
+                let val = (event.loaded / event.total * 100).toFixed(0);
+                this.imgUploadPercent = val * 1;
+            },
+             uploadImgProcess(event, file, fileList) {
                 this.ImgFlag = true;
 
                 let val = (event.loaded / event.total * 100).toFixed(0);
@@ -403,7 +409,7 @@
 
                         let obj = {
                             size: res.data[0].size,
-                            name: videoName,
+                            name: file.name,
                             type: "mv",
                             content: res.data[0].content,
                             url: res.data[0].url
@@ -414,7 +420,7 @@
                         if (_that.videoUploadPercent == 100) {
                             _that.videoFlag = false;
                         }
-                    }, 1000);
+                    }, 1500);
                 }
             },
 
@@ -473,8 +479,14 @@
             },
             handlePreview(file) { },
 
+            
+
             imageSuccess(res, file, imgList) {
+                console.log(imgList)
+                // console.log(imgList)
+                
                 let fileType = file.name.split(".")[file.name.split(".").length - 1];
+                // console.log(fileType)
                 let nameStr =
                     this.proTitle.protitle +
                     "-" +
@@ -486,18 +498,63 @@
                     fileType;
 
                 if (res.code === 200) {
-                    res.data[0].name =file.name;
-                    res.data[0].type = getFileType(fileType);
-                    if (res.data[0].type === "img") {
-                        this.showImg = true;
+                    // console.log(res)
+                    // res.data[0].name = nameStr;
+                   
+                    // res.data[0].name = file.name;
+                    // res.data[0].type = getFileType(fileType);
+                    // let fileData=[]
+                    // imgList.forEach((e,index) => {
+                    //     if(e.response && e.response.code ===200){
+                    //         // if(e.response.data[0])
+                    //         fileData.push(e.response.data[0])
+                    //         //   console.log(e.response.data[0])
+                    //     }
+                      
 
-                        this.ruleForm.imgList.push(...res.data);
-                    } else if (res.data[0].type === "file") {
-                        this.showfile = true;
-                        this.ruleForm.annexList.push(...res.data);
-                    }
+                    // });
+                    this.ruleForm.imgList = imgList;
+                    // console.log(fileData)
+
+                    //  console.log(res.data,imgList)
+                    // console.log(getFileType(fileType))
+                    // if (res.data[0].type === "img") {
+                    //     this.showImg = true;
+                    //     // this.ruleForm.imgList = imgList;
+                    //     // this.ruleForm.imgList.push(...res.data);
+                    // } else if (res.data[0].type === "file") {
+                    //     this.showfile = true;
+                    //     // this.ruleForm.annexList = imgList;
+
+                    //     this.ruleForm.annexList.push(...res.data);
+                    // }
 
                     this.ImgFlag = false;
+                }
+            },
+
+               annexSuccess(res, file, annexList) {
+                console.log(annexList)
+            
+                
+                let fileType = file.name.split(".")[file.name.split(".").length - 1];
+                // console.log(fileType)
+                let nameStr =
+                    this.proTitle.protitle +
+                    "-" +
+                    (this.proTitle.orgName === null ? "" : this.proTitle.orgName + "-") +
+                    getStorage("userInfo").name +
+                    "-" +
+                    getNewDataTime() +
+                    "." +
+                    fileType;
+
+                if (res.code === 200) {
+                
+                    this.ruleForm.annexList = annexList;
+             
+
+                    this.annexFlag = false;
                 }
             },
 
@@ -508,10 +565,41 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         this.$refs.upload.submit();
+                        let imgListArr=[]
+                    this.ruleForm.imgList.forEach((e,index) => {
+                        let obj={
+                            name:e.name,
+                            type:'img',
+                        }
+                        if(e.response && e.response.code ===200){
+                            obj.size = e.response.data[0].size;
+                             obj.url = e.response.data[0].url;
+                            imgListArr.push(obj)
+                        }
+                    });
+
+
+                    let annexListArr=[]
+                    this.ruleForm.annexList.forEach((e,index) => {
+                        let obj={
+                            name:e.name,
+                            type:'file',
+                        }
+                        if(e.response && e.response.code ===200){
+                            obj.size = e.response.data[0].size;
+                             obj.url = e.response.data[0].url;
+                            annexListArr.push(obj)
+                        }
+                    });
+
+
+
+
+
                         this.resourceList = [
-                            ...this.ruleForm.imgList,
+                            ...imgListArr,
                             ...this.ruleForm.videoList,
-                            ...this.ruleForm.annexList,
+                            ...annexListArr,
                             ...this.ruleForm.locationList
                         ];
                         if (!this.ruleForm.desc && this.resourceList.length <= 0) {
@@ -554,6 +642,7 @@
                                         resourceList[i][key];
                                 }
                             }
+                            console.log(uploadInfo)
 
                             getPostInfo("yq_api/projectDiary/add", uploadInfo).then(res => {
                                 if (res.data.code === 200) {
@@ -608,6 +697,7 @@
                 userId: getStorage("userInfo").id,
                 projectId: this.proTitle.proId
             };
+            console.log(obj)
             getPostInfo("yq_api/projectDiary/searchMyDariyList", obj).then(res => {
                 this.orgName = res.data.data[0].orgName;
             });

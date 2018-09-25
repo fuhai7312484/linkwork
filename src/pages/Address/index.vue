@@ -102,16 +102,17 @@
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span class="custom-treeImgBox" :style="titleColor(data.pid)">
                 <i v-if="data.pid==1" class="GPid1Cl">
-                  G{{data.serNum}}
+                  D{{data.serNum}}
                 </i>
 
                 <i v-else-if="data.pid==2" class="DPid2Cl">
-                  D{{data.serNum}}
+                  B{{data.serNum}}
                 </i>
             
 
                 <!-- {{data}} -->
                 <img :src="data.mainPic" v-if="data.mainPic" />{{ node.label }}
+               
                 <span v-if="data.level==1 || data.level==3" class="LeveTag" :style="{background:data.level==1?'#07a816':data.level==3?'#fd7100':'',}">{{levelChange(data.level)}}</span>
                 {{data.peopleNum?'('+data.peopleNum+')人':''}}
               </span>
