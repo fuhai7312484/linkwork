@@ -276,9 +276,9 @@
             <div class="allCrntent">
                 <div class="allCrntentTitleBox pad20">
                     <div class="detailTitle fl">可见人</div>
-                    <div class="fr">
+                    <!-- <div class="fr">
                         添加可见人
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="allCrntentText pad20">

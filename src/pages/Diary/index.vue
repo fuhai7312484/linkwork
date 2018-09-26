@@ -13,16 +13,16 @@
           </router-link> -->
 
            <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/EditDiary">
-                  编辑日志
+                  编辑记事
                 
           </router-link>
             <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/MyDiary">
-                  我的日志
+                  我的记事
                 
           </router-link>
 
            <router-link tag="li" class="DiaryLiTab iconfont icon-dian" to="/diary/TaDiary">
-                  他人日志
+                  他人记事
                 
           </router-link>
 

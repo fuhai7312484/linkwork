@@ -1,5 +1,23 @@
 <template>
     <div class="content" :style="{maxHeight:sWHeight}">
+
+
+<!-- <el-button type="text" @click="FriendsVisible = true">点击打开 Dialog</el-button> -->
+
+
+<el-dialog
+  title="添加可见人"
+  :visible.sync="FriendsVisible"
+  width="30%"
+  :before-close="handleClose">
+
+
+<friends-list :FriendsVisible="FriendsVisible" @handleClose="handleClose" @handFriendArr="handFriendArr" >
+
+
+
+</friends-list>
+</el-dialog>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <div class="editDiaryBox">
                 <div class="editDiaryTop">
@@ -20,14 +38,14 @@
                         </el-col>
                         <el-col :span="6">
                             <div class="VisiblePerson">
-                                <el-checkbox v-model="KChecked" @change="KCheckedChange" class="VisiblePersonCheBox"></el-checkbox>
+                                <el-checkbox v-model="KChecked" @change="FriendsVisible = true" class="VisiblePersonCheBox"></el-checkbox>
                                 指定可见人
                             </div>
                         </el-col>
                         <el-col :span="6">
                             <div class="upLoadBtn">
                                 <el-button tag="el-button" @click="submitForm('ruleForm')" type="primary">
-                                    上传日志
+                                    上传记事
                                 </el-button>
                             </div>
                         </el-col>
@@ -200,6 +218,7 @@
         setStorage
     } from "../../../assets/lib/myStorage.js";
     import BaiduMap from "../../../components/BaiduMap.vue";
+    import FriendsList from "../../../components/FriendsList.vue";
     import { videoPlayer } from "vue-video-player";
     import { mapState } from "vuex";
     import axios from "axios";
@@ -232,7 +251,8 @@
                     //          fullscreenToggle: true  //全屏按钮
                     //        }
                 },
-
+                FriendArr:[],
+                FriendsVisible:false,
                 dialogImageUrl: "",
                 dialogVisible: false,
                 locationVisible: false,
@@ -274,7 +294,8 @@
             };
         },
         components: {
-            BaiduMap
+            BaiduMap,
+            FriendsList,
         },
         computed: {
             ...mapState(["sWHeight", "proTitle", "userInfo"])
@@ -286,17 +307,27 @@
             onPlayerPause(player) {
                 //   alert("pause");
             },
-
+           
+  handleClose(done) {
+    
+        this.$confirm('确认关闭？')
+          .then(_ => {
+             this.FriendsVisible = false;
+            done();
+          })
+          .catch(_ => {});
+      },
             KCheckedChange() {
-                this.$alert("可见人列表", "添加可见人", {
-                    confirmButtonText: "确定",
-                    callback: action => {
-                        this.$message({
-                            type: "info",
-                            message: `取消: ${action}`
-                        });
-                    }
-                });
+                this.FriendsVisible = true;
+                // this.$alert("可见人列表", "添加可见人", {
+                //     confirmButtonText: "确定",
+                //     callback: action => {
+                //         this.$message({
+                //             type: "info",
+                //             message: `取消: ${action}`
+                //         });
+                //     }
+                // });
             },
             open4(msg) {
                 this.$message.error(msg);
@@ -312,7 +343,16 @@
             fileTypeImgChange(fileName) {
                 return setFileTyleImge(fileName);
             },
+
+             handFriendArr(data){
+                this.FriendsVisible = false;
+                this.FriendArr = data;
+            
+              
+            },
+
             baiduMapFromChild(data) {
+             
                 this.locationVisible = false;
                 let locatName =
                     this.proTitle.protitle +
@@ -488,7 +528,7 @@
             
 
             imageSuccess(res, file, imgList) {
-                console.log(imgList)
+                // console.log(imgList)
                 // console.log(imgList)
                 
                 let fileType = file.name.split(".")[file.name.split(".").length - 1];
@@ -540,7 +580,7 @@
             },
 
                annexSuccess(res, file, annexList) {
-                console.log(annexList)
+                // console.log(annexList)
             
                 
                 let fileType = file.name.split(".")[file.name.split(".").length - 1];
@@ -661,13 +701,29 @@
                                 uploadInfo.status = '0';
                                 uploadInfo.diaryType = 'diary';
                                 uploadInfo.diaryLookType = "";
-                                console.log(uploadInfo)
+                               
 
                      getPostInfo("yq_api/projectDiary/add", uploadInfo).then(res => {
                                 if (res.data.code === 200) {
+                                    let _that = this;
+                                 
                                     this.open2("日志上传成功！");
                                     this.isDraftBox = false;
-                                    this.$router.push("/diary/MyDiary");
+                                    let ResouceObj={
+                                        userId:getStorage("userInfo").id,
+                                        projectId:this.proTitle.proId,
+                                        receivePeople:this.FriendArr.join(','),
+                                        resourceId:res.data.data,
+                                        resourceType:'diary',
+                                    }
+                                
+                                    //分享可见人
+                                     getPostInfo("yq_api/userResource/shareMyResouce", ResouceObj).then(resInfo => {
+                                         if(resInfo.data.code ===200){
+                                             _that.$router.push("/diary/MyDiary");
+                                         }
+                                     })
+                                     
                                     let rep = getStorage("DraftBox").filter(e => {
                                         return e.DraftBoxId != this.DraftBoxId;
                                     });
@@ -800,6 +856,14 @@
         watch: {
             fileList() {
                 this.fileList.length ? (this.showImg = true) : (this.showImg = false);
+            },
+            FriendArr(){
+              
+                if(this.FriendArr.length!=0){
+                    this.KChecked = true;
+                }else{
+                    this.KChecked = false;
+                }
             }
         }
     };

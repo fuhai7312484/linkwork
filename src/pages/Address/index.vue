@@ -89,7 +89,8 @@
 </el-input>
           </div> -->
           
-          <el-tree :data="data" :props="defaultProps" 
+          <el-tree :data="data"
+           :props="defaultProps" 
            ref="tree2"
             accordion 
             node-key="$treeNodeId"
@@ -268,9 +269,9 @@
           userId:getStorage("userInfo").id,
           isAuthority:'0,1',
                  }
-              console.log(RoleObj)
+              // console.log(RoleObj)
                  getPostInfo("/yq_api/mail/getMailListForType", RoleObj).then(res => {
-                   console.log(res)
+                  //  console.log(res)
                    if(res.data.code===200){
                      let unReadList = res.data.data.unReadList;
                      let consentList = res.data.data.consentList;
@@ -278,7 +279,7 @@
                     
                      this.RoleConsentList = consentList;
                      this.RoleUnlook = unReadList.length
-                     console.log(unReadList,consentList)
+                    //  console.log(unReadList,consentList)
                     
                    }
                  })
@@ -414,7 +415,9 @@
       };
       getPostInfo("/yq_api/orgDepartment/searchLinkmanList", addObj).then(res => {
         if (res.data.code === 200) {
+          // console.log(res.data.data)
           let data = res.data.data.orgList;
+          
           let newData = [];
           //第一层循环
           data.forEach((e, index) => {

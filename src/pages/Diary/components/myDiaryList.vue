@@ -10,10 +10,7 @@
     :title="myDiaryList?'我共有'+ myDiaryList.length+'条日志':'你还没有发布过日志'"
     type="success">
   </el-alert>
-
-
 </div>
-
 
 
 
@@ -22,10 +19,58 @@
                     您当前没有发布任何日志！<span @click="goToEdit">去发布日志</span>
                     </div>
          </div>
+         
+         <div class="conditionFilterBox pad20">
+             <el-form :model="numberValidateForm" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
+             <div class="fl">
+    <el-date-picker
+    :style="{width:'130px'}"
+    size="small"
+      v-model="value4"
+      type="month"
+      placeholder="开始时间">
+    </el-date-picker>
+  </div>
+<div class="el-icon-minus fl">
 
+</div>
+    <div class="fl">
+    <el-date-picker
+    :style="{width:'130px'}"
+      size="small"
+      v-model="value5"
+      type="month"
+      placeholder="结束时间">
+    </el-date-picker>
+  </div>
+  <div class="TypeScreening fl">
+      <div class="fl">
+          <el-select v-model="value" 
+          class="TypeSelect"
+          placeholder="请选择" 
+           :style="{width:'130px'}"
+             size="small">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
 
+      </div>
+      <div class="TypeIcon fl iconfont">
+          <el-button  size="small" class="TypeSelectBtn" type="primary" @click="submitForm('numberValidateForm')">提交</el-button>
 
+      </div>
+
+  </div>
+
+</el-form>
+         </div>
+         
 <ul class="diaryListUlBox" >
+    
 <li class="resourceList pad20" v-for="(itme,index) in myDiaryList" :key="index">
 <div class="diaryListTop">
     <div class="diary-left-pic fl">
@@ -166,6 +211,29 @@ export default {
     name:'MyDiary',
     data(){
         return {
+              value4: '',
+              value5:'',
+              options: [{
+          value: '选项1',
+          label: '文本'
+        }, {
+          value: '选项2',
+          label: '图片'
+        }, {
+          value: '选项3',
+          label: '视频'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        value: '',
+         numberValidateForm: {
+        
+        },
+
             loading:true,
             lengthShow:false,
             myDiaryList:[],
@@ -186,7 +254,19 @@ export default {
 
     },
     methods: {
-
+ submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
  goToEdit() {
        this.$emit('toggleTabs',1); 
     },
@@ -254,6 +334,29 @@ export default {
         mounted() {
            
     this.loading = true;
+
+//类型筛选
+    // let searchObj={
+    //     page:'1',
+    //     size:'999',
+    //    userId:getStorage("userInfo").id,
+    //     projectId:this.proTitle.proId,
+    //     createTime:'2018-08',
+    //     bigTime:'2018-10',
+    //     type:'position'
+    // }
+    // console.log(searchObj)
+
+    //    getPostInfo('yq_api/projectDiary/searchMyDariyList',searchObj)
+    //         .then(res=>{
+    //             if(res.data.code===200){
+    //                 console.log(res.data.data)
+    //                 this.myDiaryList = res.data.data;
+    //                 this.loading = false;
+                
+    //             }
+               
+    //         })
 
 // 删除日志接口
 //   let delObj = {

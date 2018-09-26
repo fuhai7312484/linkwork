@@ -1,8 +1,21 @@
 <template>
     <div class="content content_dairy" :style="{maxHeight:sWHeight}">
 
-        <div v-loading="loading" element-loading-text="拼命加载中">
+      <el-dialog
+  title="添加可见人"
+  :visible.sync="FriendsVisible"
+  width="30%"
+  :before-close="handleClose">
 
+
+<friends-list :FriendsVisible="FriendsVisible" @handleClose="handleClose" @handFriendArr="handFriendArr" >
+
+
+
+</friends-list>
+</el-dialog>
+
+        <div v-loading="loading" element-loading-text="拼命加载中">
 
 
 
@@ -106,12 +119,12 @@
                                 </div>
                             </el-col>
                         </el-row>
+
                         <el-dialog :visible.sync="dialogVisible">
-                            
                           <img-swiper :imagesUrl="detailList.imageList">
-                          
                           </img-swiper>
                         </el-dialog>
+
                     </div>
 
 
@@ -255,6 +268,35 @@
 
             <div class="allCrntent">
                 <div class="allCrntentTitleBox pad20">
+                    <div class="detailTitle fl">可见人</div>
+                    <div class="allCrntentAddBtn fr" @click="FriendsVisible=true" >
+                       <span class="el-icon-plus"></span> 添加可见人
+                    </div>
+                </div>
+
+                <div class="allCrntentText pad20">
+                    <div class="noComment" v-if="lookUserListLength==0">
+                        暂无可见人
+                    </div>
+
+                    <el-row :gutter="20">
+                        <el-col :span="8" v-for="(look,index) in detailList.lookUserList" :key="index" class="lookUserBox">
+                            <span class="lookUserText">
+                                {{look.orgName}}-{{look.departmentName}}-{{look.levelName}}-{{look.userName}}
+                                <span class="lookUserSubBox" :style="{background:look.operationStatus==='look'?'#7ed321':'#d0021b'}">
+                                    <i class="lookUserSub">
+                                        {{look.operationStatus==='look'?'已':'未'}}
+                                    </i>
+                                </span>
+                            </span>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+
+
+            <div class="allCrntent">
+                <div class="allCrntentTitleBox pad20">
                     <div class="detailTitle fl">留痕记录单</div>
                 </div>
 
@@ -305,6 +347,7 @@ import {
 import { mapState } from "vuex";
 import { videoPlayer } from "vue-video-player";
 import ImgSwiper from "../../../components/ImgSwiper.vue";
+import FriendsList from "../../../components/FriendsList.vue";
 import router from "../../../router";
 export default {
   name: "mytext",
@@ -335,7 +378,8 @@ export default {
         //          fullscreenToggle: true  //全屏按钮
         //        }
       },
-
+      FriendsVisible: false,
+      FriendArr: [],
       loading: true,
       detailList: {},
       activeIndex: true,
@@ -362,7 +406,8 @@ export default {
       lookUserLength: 0,
       CommentListLength: 0,
       userLogLength: 0,
-      resouLength:0,
+      resouLength: 0,
+      lookUserListLength: 0
     };
   },
   computed: {
@@ -373,9 +418,42 @@ export default {
   },
   components: {
     videoPlayer,
-    ImgSwiper
+    ImgSwiper,
+    FriendsList
   },
   methods: {
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          this.FriendsVisible = false;
+          done();
+        })
+        .catch(_ => {});
+    },
+    handFriendArr(data) {
+      this.FriendsVisible = false;
+      let ResouceObj = {
+        userId: getStorage("userInfo").id,
+        projectId: this.proTitle.proId,
+        receivePeople: data.join(","),
+        resourceId: this.$route.query.diaryId,
+        resourceType: "diary"
+      };
+
+      //分享可见人
+      let _that = this;
+      getPostInfo("yq_api/userResource/shareMyResouce", ResouceObj).then(
+        resInfo => {
+          if (resInfo.data.code === 200) {
+            this.open2("日志分享成功！");
+            setTimeout(function() {
+              _that.$router.go(0);
+            }, 500);
+          }
+        }
+      );
+    },
+
     onPlayerPlay(player) {
       //   alert("play");
     },
@@ -412,7 +490,7 @@ export default {
 
     handTitleBlur(value, id) {
       this.activeIndex = true;
-      // console.log(value,id,getStorage("userInfo").id)
+   
       let titleObj = {
         diaryId: id,
         userId: getStorage("userInfo").id,
@@ -441,7 +519,7 @@ export default {
           .then(() => {
             getPostInfo("yq_api/projectDiary/delete", obj).then(res => {
               if (res.data.code === 200) {
-                // this.open2(res.data.msg);
+              
                 this.$message({
                   type: "success",
                   message: "删除成功!"
@@ -456,7 +534,7 @@ export default {
               message: "已取消删除"
             });
           });
-        // console.log("直接删除");
+       
       } else {
         if (this.isEdit) {
           this.$confirm("您确定要删除这篇日志吗?删除后不可恢复", "提示", {
@@ -481,40 +559,31 @@ export default {
                 message: "已取消删除"
               });
             });
-          // console.log("可以删除！！");
+         
         }
       }
     },
-    EditLog(did,pid){
-      if(this.lookUserLength == 0){
-
+    EditLog(did, pid) {
+      if (this.lookUserLength == 0) {
+        router.push({
+          path: "/diary/EditDiary",
+          query: {
+            did: did,
+            pid: pid
+          }
+        });
+      } else {
+        if (this.isEdit) {
           router.push({
-           path:'/diary/EditDiary',
-           query:{
-               did:did,
-               pid:pid
-           }
+            path: "/diary/EditDiary",
+            query: {
+              did: did,
+              pid: pid
+            }
+          });
          
-           });
-
-      }else{
-  if(this.isEdit){
-         router.push({
-           path:'/diary/EditDiary',
-           query:{
-               did:did,
-               pid:pid
-           }
-         
-           });
-        // console.log('可以编辑')
-        //  console.log(did,pid)
+        }
       }
-
-      }
-    
-     
-
     },
     getOperationType(typeStr) {
       let HtmlStr = "";
@@ -576,14 +645,14 @@ export default {
       this.commentType = "reply";
       this.ToUserId = ToUserId;
       this.ToUserName = ToUserName;
-      // console.log(ToUserId,ToUserName,this.ToUserId)
+     
     },
 
     submitForm(formName) {
       let _that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // console.log(this.ruleForm.commentDesc)
+         
           if (!this.ruleForm.commentDesc) {
             this.open4("请填写评论内容");
           } else {
@@ -599,7 +668,9 @@ export default {
               commentType: this.commentType,
               isTop: "0"
             };
- this.detailList.projectDiaryCommentList==null?this.detailList.projectDiaryCommentList=[]:this.detailList.projectDiaryCommentList;
+            this.detailList.projectDiaryCommentList == null
+              ? (this.detailList.projectDiaryCommentList = [])
+              : this.detailList.projectDiaryCommentList;
             getPostInfo("yq_api/projectDiary/addProjectDiaryComment", obj).then(
               res => {
                 if (res.data.code === 200) {
@@ -621,8 +692,7 @@ export default {
               }
             );
 
-            // console.log(obj)
-            // alert("submit!");
+           
           }
         } else {
           console.log("error submit!!");
@@ -654,7 +724,7 @@ export default {
 
     getPostInfo("yq_api/projectDiary/detail", obj).then(res => {
       if (res.data.code === 200) {
-        // console.log(res.data.data)
+       
         this.detailList =
           res.data.data == null ? (res.data.data = []) : res.data.data;
         this.isLike =
@@ -662,9 +732,9 @@ export default {
             ? (this.isLike = true)
             : (this.isLike = false);
         this.isEdit = getDayNewTime(this.detailList.createTime);
-        // console.log(this.detailList)
+   
       }
-      // console.log(this.detailList);
+    
 
       this.loading = false;
     });
@@ -679,6 +749,7 @@ export default {
         this.locationLength = newValue.locationList.length;
         this.lookUserLength = newValue.lookUserList.length;
         this.userLogLength = newValue.userLogList.length;
+        this.lookUserListLength = newValue.lookUserList.length;
         this.CommentListLength = newValue.projectDiaryCommentList
           ? newValue.projectDiaryCommentList.length
           : 0;
