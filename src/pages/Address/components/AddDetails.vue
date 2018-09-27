@@ -2,6 +2,7 @@
 
     <div class="userDataDetil" :style="{height:sWHeight}">
       <!-- {{userData}} -->
+   
 <div v-if="userData.id">
         <div v-if="userData.isMySelf">
             <el-form :model="userData" :rules="rules" ref="ruleForm" label-width="90px" class="demo-ruleForm">
@@ -142,11 +143,85 @@
 
                         <div class="addDet_textInfoBox">
                             <span>角色：</span>
-                            <span>{{userData.levelName}}</span>
+                            <span>{{userData.level===3?'部门负责人':userData.level===4?'单位成员':'单位成员'}}</span>
+                            <span class="RoleCBtn iconfont" @click="outerVisible = true">&#xe661; 角色转换</span>
                         </div>
                     </el-col>
 
                 </el-row>
+
+
+
+
+
+
+
+
+
+
+
+
+<el-dialog title="角色转换" width="30%" :visible.sync="outerVisible">
+    <div class="RoleInfoRemind">
+      · 您当前的角色是<br />
+      <span class="spanff6700">
+        {{userData.shortName}}{{userData.departmentName}}{{userData.level===3?'部门负责人':userData.level===4?'单位成员':'单位成员'}}</span><br />
+      · 如需将角色转换,请指导转换人<br />
+      · 转换您的角色后将不再是<br />
+      <span class="spanff6700">
+        {{userData.shortName}}{{userData.departmentName}}{{userData.level===3?'部门负责人':userData.level===4?'单位成员':'单位成员'}}</span><br />
+      · 被指定人代替您的角色
+    </div>
+
+
+    <el-dialog width="30%" title="指定角色转换代替人" :visible.sync="innerVisible" append-to-body>
+      <div>
+        <div class="FriendDataBox">
+          <div style="padding:10px 10px;">
+            <el-input placeholder="搜索好友..." v-model="filterText">
+            </el-input>
+          </div>
+          <el-tree :data="FriendData"
+           show-checkbox
+           :default-expand-all="true"
+           :default-expanded-keys="[1, 2, 3]" 
+           :default-checked-keys="[5]"
+            ref="tree2"
+            accordion
+             check-strictly node-key="id" 
+            :expand-on-click-node="false"
+             @check-change="handleCheckChange"
+            :filter-node-method="filterNode" 
+            :props="defaultProps">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span class="custom-treeImgBox" :style="titleColor(data.pid)">
+                <i v-if="data.pid==1" class="GPid1Cl">
+                  D{{data.serNum}}
+                </i>
+                <i v-else-if="data.pid==2" class="DPid2Cl">
+                  B{{data.serNum}}
+                </i>
+                <img :src="data.mainPic" v-if="data.mainPic" />{{ node.label }}
+                <span v-if="data.level==1 || data.level==3" class="LeveTag" :style="{background:data.level==1?'#07a816':data.level==3?'#fd7100':'',}">{{levelChange(data.level)}}</span>
+                {{data.peopleNum?'('+data.peopleNum+')人':''}}
+              </span>
+            </span>
+          </el-tree>
+        </div>
+      </div>
+       <el-button type="primary" @click="handInnerChange">确定</el-button>
+    </el-dialog>
+
+
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="outerVisible = false">取 消</el-button>
+      <el-button type="primary" @click="innerVisible = true">指定代替人</el-button>
+    </div>
+  </el-dialog>
+
+
+
+
 
 
                 <el-row :gutter="20">
@@ -459,10 +534,12 @@
     </div>
 </template>
 <script>
-    import {getPostInfo} from "../../../assets/lib/myStorage.js";
+    import {getPostInfo,getStorage} from "../../../assets/lib/myStorage.js";
     import { mapState } from "vuex";
     import ShowbaiduMap from "../../../components/ShowbaiduMap.vue";
-        import EditbaiduMap from "../../../components/EditbaiduMap.vue";
+    import EditbaiduMap from "../../../components/EditbaiduMap.vue";
+
+
     export default {
         name: "AddDetails",
         props: ["userData"],
@@ -470,6 +547,24 @@
             return {
                 inputVisible: false,
                 inputValue: "",
+                  outerVisible: false,
+                 innerVisible: false,
+                 filterText:'',
+                 FriendData:[],
+                 i:0,
+                 userIdChecked:'',
+                   defaultProps: {
+          children: "children",
+          label: "label",
+          id: "id",
+          mainPic: "mainPic",
+          level: "level",
+          projectId: "projectId",
+          peopleNum: "peopleNum",
+          serNum: "serNum",
+          creator: "creator",
+          orgIsMe: "orgIsMe"
+        },
                 ruleForm: {
                     sex:'1',
                     mobileSecrecy:false,
@@ -501,15 +596,116 @@
             };
         },
         computed: {
-            ...mapState(["sWHeight"]),
+            ...mapState(["sWHeight","proTitle"]),
 
          
         },
         components: {
             ShowbaiduMap,
-              EditbaiduMap
+              EditbaiduMap,
+          
         },
         methods: {
+
+            handInnerChange(){
+             
+                 this.innerVisible = false;
+                this.outerVisible = false;
+                if(this.userIdChecked){
+                    let forObj ={
+                       userId:this.userData.userId,
+                       forUser:this.userIdChecked,
+                         projectId:this.userData.projectId,
+
+                    }
+                     getPostInfo("/yq_api/authority/roleConversion", forObj).then(res => {
+                         if(res.data.code===200){
+                             this.open2('角色转换成功！等待转换人审核')
+                         }
+                     })
+                }
+               
+
+            },
+  filterNode(value, data) {
+        if (!value) return true;
+        return data.label.indexOf(value) !== -1;
+      },
+    handleCheckChange(data, checked, indeterminate) {
+         
+            // this.userIdChecked = data.userId;
+        this.i++;
+         if (this.i % 2 === 0) {
+             if(checked){
+                  this.$refs.tree2.setCheckedNodes([]);
+              this.$refs.tree2.setCheckedNodes([data]);
+             }else{
+                 this.userIdChecked = '';
+                 this.$refs.tree2.setCheckedNodes([]);
+             }
+         }
+         if(checked){
+              this.userIdChecked = data.userId
+         }
+         if(this.$refs.tree2.getCheckedNodes().length===0){
+              this.userIdChecked = ''
+         }
+
+         
+
+     
+         
+
+
+        //  console.log(this.i,data.userId)
+        // if (data.pid === 3) {
+        //   if (this.i % 2 === 0) {
+        //     if (checked) {
+        //         console.log(data.userId)
+               
+        //       this.$refs.tree2.setCheckedNodes([]);
+        //       this.$refs.tree2.setCheckedNodes([data]);
+        //       //交叉点击节点
+        //     } else {
+        //         //  var index = this.userIdChecked.indexOf(data.userId);
+        //          this.userIdChecked = '';
+        //       this.$refs.tree2.setCheckedNodes([]);
+        //       //点击已经选中的节点，置空
+        //     }
+        //   }
+        // }
+
+        // if (data.pid === 3) {
+        //   if (checked) {
+        //     this.userIdChecked.push(data.userId);
+        //   } else {
+        //     var index = this.userIdChecked.indexOf(data.userId);
+        //     this.userIdChecked.splice(index, 1);
+        //   }
+        // }
+      },
+
+   levelChange(level) {
+        switch (level) {
+          case 1:
+            return "代表人";
+            break;
+          case 3:
+            return "负责人";
+            break;
+        }
+      },
+      titleColor(pid) {
+        switch (pid) {
+          case 1:
+            return { color: "#ff6700" };
+            break;
+          case 2:
+            return { color: "#029cff" };
+            break;
+        }
+      },
+
                 baiduMapFromChild(data) {
                     this.userData.positionDesc =data.name;
                     this.userData.positionBdLatitude = data.lat+'';
@@ -626,6 +822,118 @@
 
                 }
             },
+              getFriendList() {
+        let addObj = {
+          userId: getStorage("userInfo").id,
+          projectId: this.proTitle.proId
+        };
+        getPostInfo("/yq_api/orgDepartment/searchLinkmanList", addObj).then(
+          res => {
+            if (res.data.code === 200) {
+              let data = res.data.data.orgList;
+              let newData = [];
+              data.forEach((e, index) => {
+                //第一层循环（循环获取单位）
+                let pObj = {
+                  label:
+                    e.shortName + (e.typeName ? "-(" + e.typeName + ")" : ""),
+                  children: [],
+                  projectId: e.projectId,
+                  peopleNum: 1,
+                  id: e.id,
+                  serNum: index + 1,
+                  orgId: e.orgId,
+                  pid: 1,
+                  orgIsMe: false,
+                  disabled:true,
+                };
+                //代表人循环
+                let creUserObj = {
+                  label: e.orgLeader[0].userName,
+                  mainPic: e.orgLeader[0].mainPic,
+                  level: e.orgLeader[0].level,
+                  userId: e.orgLeader[0].userId,
+                  projectId: e.orgLeader[0].projectId,
+                  pid: 3,
+                  id: e.orgLeader[0].id,
+                  creator: e.orgLeader[0].creator,
+                  orgId: e.orgLeader[0].orgId
+                };
+                if (e.orgLeader[0].userId === getStorage("userInfo").id) {
+                  creUserObj.disabled = true;
+                }
+
+                pObj.children.push(creUserObj);
+
+                //部门循环
+                e.departmentList.forEach((el, index) => {
+                  let cobj = {
+                    label: el.departmentName,
+                    children: [],
+                    id: el.id,
+                    peopleNum: el.purList.length != 0 ? el.purList.length : "0",
+                    serNum: index + 1,
+                    pid: 2,
+                     disabled:true,
+                  };
+
+                  //部门内用户循环
+                  el.purList.forEach(ele => {
+                    pObj.peopleNum++;
+                    let eleObj = {
+                      label: ele.userName,
+                      mainPic: ele.mainPic,
+                      level: ele.level,
+                      userId: ele.userId,
+                      projectId: ele.projectId,
+                      id: ele.id,
+                      pid: 3,
+                      orgId: ele.orgId,
+                      creator: ele.creator,
+                      isMySelf: false
+                    };
+                    if (ele.userId === getStorage("userInfo").id) {
+                      eleObj.disabled = true;
+                    }
+
+                    cobj.children.push(eleObj);
+                    cobj.children.sort(function (a, b) {
+                      return a.level - b.level;
+                    });
+                  });
+
+                  pObj.children.push(cobj);
+                });
+
+                //无部门用户遍历
+
+                e.orgMember.forEach(ue => {
+                  pObj.peopleNum++;
+                  let ueObj = {
+                    label: ue.userName,
+                    mainPic: ue.mainPic,
+                    level: ue.level,
+                    userId: ue.userId,
+                    projectId: ue.projectId,
+                    id: ue.id,
+                    creator: ue.creator,
+                    orgId: ue.orgId,
+                    pid: 3,
+                    isMySelf: false
+                  };
+                  if (ue.userId === getStorage("userInfo").id) {
+                    ueObj.disabled = true;
+                  }
+                  pObj.children.push(ueObj);
+                });
+
+                newData.push(pObj);
+              });
+              this.FriendData = newData;
+            }
+          }
+        );
+      },
                 open2(msg) {
                   this.$message({
                 message: msg,
@@ -648,7 +956,17 @@
 
                   },
                   deep:true,
-              }
+              },
+               filterText(val) {
+        // console.log(this.$refs.tree2.filter(val))
+        this.$refs.tree2.filter(val);
+      },
+      innerVisible(n,o){
+          if(n){
+              this.getFriendList()
+          }
+         
+      }
         },
         mounted() {
          

@@ -10,19 +10,11 @@
 
 <friends-list :FriendsVisible="FriendsVisible" @handleClose="handleClose" @handFriendArr="handFriendArr" >
 
-
-
 </friends-list>
 </el-dialog>
-
         <div v-loading="loading" element-loading-text="拼命加载中">
-
-
-
             <ul class="diaryListUlBox">
                 <li class="resourceList pad20">
-
-
                     <div class="diaryListTop">
 
                         <div class="diary-left-pic fl">
@@ -50,22 +42,12 @@
                                 </div>
                             </div>
                         </div>
-
-
-                   <!-- {{detailList.resourceList}} -->
-
                         <div class="diary-right-icons fr">
-
                             <div class="DarftDelet fl">
-                            <!-- {{detailList.lookUserList.length}} -->
-
-                         
                               <span :style="{color:isEdit?'#4c91e2':'#afafaf'}" @click="EditLog(detailList.diaryId,detailList.projectId)">
                                     <i class="el-icon-edit" ></i>
                                    {{lookUserLength===0?'编辑':'当日编辑'}}
-                                  
                                 </span> 
-
                                 <span @click="deleteDiary(detailList.diaryId)" :style="{color:isEdit?'#4c91e2':'#afafaf'}">
                              <i class="el-icon-delete"></i>
                             
@@ -119,7 +101,6 @@
                                 </div>
                             </el-col>
                         </el-row>
-
                         <el-dialog :visible.sync="dialogVisible">
                           <img-swiper :imagesUrl="detailList.imageList">
                           </img-swiper>

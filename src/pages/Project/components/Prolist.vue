@@ -289,8 +289,7 @@ export default {
       return index * 1 + 1;
     },
 
-    handleCommand(command) {
-      // console.log(command)
+    handleCommand(command) {    
       this.loading = true;
       let obj = {
         page: "1",

@@ -162,6 +162,9 @@ export default {
                 creator: e.orgLeader[0].creator,
                 orgId: e.orgLeader[0].orgId
               };
+               if(e.orgLeader[0].userId===getStorage("userInfo").id){
+                    creUserObj.disabled =true;
+                  }
 
               pObj.children.push(creUserObj);
 
@@ -188,8 +191,13 @@ export default {
                     id: ele.id,
                     pid: 3,
                     orgId: ele.orgId,
-                    creator: ele.creator
+                    creator: ele.creator,
+                    isMySelf:false,
                   };
+                  if(ele.userId===getStorage("userInfo").id){
+                    eleObj.disabled =true;
+                  }
+              
 
                   cobj.children.push(eleObj);
                   cobj.children.sort(function(a, b) {
@@ -213,14 +221,19 @@ export default {
                   id: ue.id,
                   creator: ue.creator,
                   orgId: ue.orgId,
-                  pid: 3
+                  pid: 3,
+                   isMySelf:false,
                 };
+                 if(ue.userId===getStorage("userInfo").id){
+                    ueObj.disabled =true;
+                  }
                 pObj.children.push(ueObj);
               });
 
               newData.push(pObj);
             });
             this.FriendData = newData;
+           
           }
         }
       );

@@ -15,7 +15,7 @@
               <span class="el-icon-bell"></span> 
 
      邀请审批
-      <el-badge v-if="inveUnlook!=0" class="mark" :value="inveUnlook" />
+      <el-badge v-if="inveUnlook+RoleUnlook!=0" class="mark" :value="inveUnlook+RoleUnlook" />
 
             </div>
              
@@ -112,7 +112,13 @@
             
 
                 <!-- {{data}} -->
-                <img :src="data.mainPic" v-if="data.mainPic" />{{ node.label }}
+                <span class="deleteUserMakbox">
+                  <span v-if="data.status==='2'" class="deleteUserMak iconfont">
+                   &#xe64b;
+                  </span>
+                   <span v-if="data.status==='1'" class="deleteUserMak"></span>
+                  <img :src="data.mainPic" v-if="data.mainPic" />
+                  </span> <span :class="data.status==='2'?'deleteColor':data.status==='1'?'deleteColor':''">{{ node.label }}</span>
                
                 <span v-if="data.level==1 || data.level==3" class="LeveTag" :style="{background:data.level==1?'#07a816':data.level==3?'#fd7100':'',}">{{levelChange(data.level)}}</span>
                 {{data.peopleNum?'('+data.peopleNum+')人':''}}
@@ -236,6 +242,7 @@
           serNum: "serNum",
           creator: "creator",
           orgIsMe:"orgIsMe",
+          status:'status',
         }
       };
     },
@@ -467,6 +474,7 @@
               id: e.orgLeader[0].id,
               creator: e.orgLeader[0].creator,
               orgId: e.orgLeader[0].orgId,
+               status:e.orgLeader[0].status,
             };
 
             if(e.orgLeader[0].userId===getStorage("userInfo").id){              
@@ -545,7 +553,8 @@
                   id: ele.id,
                   pid: 3,
                   orgId: ele.orgId,
-                  creator: ele.creator
+                  creator: ele.creator,
+                  status:ele.status,
                 };
                 //  console.log(ele.userId === e.orgLeader[0].userId )
                
@@ -612,7 +621,8 @@
                 id: ue.id,
                 creator: ue.creator,
                 orgId: ue.orgId,
-                pid: 3
+                pid: 3,
+                 status:ue.status,
               };
             // console.log(ue.orgId===e.orgLeader[0].orgId&&ue.userId===e.orgLeader[0].userId)
         

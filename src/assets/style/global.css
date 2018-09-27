@@ -1085,7 +1085,8 @@ height: 44px;}
       height:45px;
   }
   .fontH15 .iconfont{
-      font-size: 16px;
+      /* font-size: 16px; */
+      font-size: 22px;
   }
   .fontH15 .annexListBox{
        margin-top: 20px;
@@ -2069,4 +2070,32 @@ font-size: 16px;
     }
     .TypeSelectBtn{
       
+    }
+
+    .addDet_textInfoBox .RoleCBtn{
+        color: #ff6700;
+        margin-left:20px;
+        font-size: 14px; 
+        cursor: pointer;
+    }
+    .spanff6700{
+        color: #ff6700;
+    }
+    .deleteColor{
+        color: #ccc;
+
+    }
+    .deleteUserMakbox{
+        position: relative;
+        overflow: hidden;
+    }
+    .deleteUserMak{
+        background: rgba(255,255,255,.6);
+        width: 23px;
+        height: 23px;
+        position: absolute;
+        text-align: center;
+        line-height: 23px;
+        color: red;
+
     }

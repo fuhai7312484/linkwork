@@ -107,7 +107,24 @@
 
 
 
+  <div class="editDiaryShow fontH15" v-if="voiceListLength !=0">
+                        <div class="editDiaryType maxFont iconfont">
+                           &#xe677;
+                        </div>
 
+                        <el-row :gutter="12" class="annexListBox">
+                            <el-col :span="12" class="annexList" v-for="(voice,j) in detailList.voiceList" :key="j">
+                                <el-card shadow="always">
+                                    <div class="annexTypeImg fl">
+                                        <img :src="fileTypeImgChange(voice.name)" />
+                                    </div>
+                                    <div class="annexTitle fl">
+                                        {{voice.name}} {{voice.size}}
+                                    </div>
+                                </el-card>
+                            </el-col>
+                        </el-row>
+                    </div>
 
 
 
@@ -403,7 +420,8 @@
                 lookUserLength: 0,
                 CommentListLength: 0,
                 userLogLength: 0,
-                lookUserListLength: 0
+                lookUserListLength: 0,
+                voiceListLength:0,
             };
         },
          components: {
@@ -644,6 +662,7 @@
                     this.lookUserLength = newValue.lookUserList.length;
                     this.userLogLength = newValue.userLogList.length;
                     this.lookUserListLength = newValue.lookUserList.length;
+                    this.voiceListLength = newValue.voiceList.length;
 
                     this.CommentListLength = newValue.projectDiaryCommentList
                         ? newValue.projectDiaryCommentList.length

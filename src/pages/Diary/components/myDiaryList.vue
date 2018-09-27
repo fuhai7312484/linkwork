@@ -11,41 +11,27 @@
     type="success">
   </el-alert>
 </div>
-
-
-
  <div class="myDiaryInfoCountBox" v-else-if="myDiaryList.length==0">
                     <div class="DiaryMsg">
                     您当前没有发布任何日志！<span @click="goToEdit">去发布日志</span>
                     </div>
          </div>
          
-         <div class="conditionFilterBox pad20">
+         <div class="conditionFilterBox pad20" v-if="myDiaryList.length!=0">
              <el-form :model="numberValidateForm" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
-             <div class="fl">
-    <el-date-picker
-    :style="{width:'130px'}"
-    size="small"
-      v-model="value4"
-      type="month"
-      placeholder="开始时间">
-    </el-date-picker>
-  </div>
-<div class="el-icon-minus fl">
-
-</div>
     <div class="fl">
     <el-date-picker
     :style="{width:'130px'}"
+    format="yyyy-MM"
       size="small"
-      v-model="value5"
+      v-model="numberValidateForm.value5"
       type="month"
-      placeholder="结束时间">
+      placeholder="查询时间">
     </el-date-picker>
   </div>
   <div class="TypeScreening fl">
       <div class="fl">
-          <el-select v-model="value" 
+          <el-select v-model="numberValidateForm.value" 
           class="TypeSelect"
           placeholder="请选择" 
            :style="{width:'130px'}"
@@ -211,27 +197,27 @@ export default {
     name:'MyDiary',
     data(){
         return {
-              value4: '',
-              value5:'',
+             
               options: [{
-          value: '选项1',
+          value: 'text',
           label: '文本'
         }, {
-          value: '选项2',
+          value: 'img',
           label: '图片'
         }, {
-          value: '选项3',
+          value: 'mv',
           label: '视频'
         }, {
-          value: '选项4',
-          label: '龙须面'
+          value: 'file',
+          label: '附件'
         }, {
-          value: '选项5',
-          label: '北京烤鸭'
+          value: 'position',
+          label: '位置'
         }],
-        value: '',
+       
          numberValidateForm: {
-        
+          value: '',
+           value5:'',
         },
 
             loading:true,
@@ -257,7 +243,31 @@ export default {
  submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            //   console.log(this.numberValidateForm)
+
+// 类型筛选
+    let searchObj={
+        page:'1',
+        size:'999',
+       userId:getStorage("userInfo").id,
+        projectId:this.proTitle.proId,
+        createTime:this.numberValidateForm.value5,
+        type:this.numberValidateForm.value,
+    }
+    // console.log(searchObj)
+
+    //    getPostInfo('yq_api/projectDiary/searchMyDariyList',searchObj)
+    //         .then(res=>{
+    //             if(res.data.code===200){
+    //                 console.log(res.data.data)
+    //                 this.myDiaryList = res.data.data;
+    //                 this.loading = false;
+                
+    //             }
+               
+    //         })
+
+            // alert('submit!');
           } else {
             console.log('error submit!!');
             return false;
@@ -335,28 +345,7 @@ export default {
            
     this.loading = true;
 
-//类型筛选
-    // let searchObj={
-    //     page:'1',
-    //     size:'999',
-    //    userId:getStorage("userInfo").id,
-    //     projectId:this.proTitle.proId,
-    //     createTime:'2018-08',
-    //     bigTime:'2018-10',
-    //     type:'position'
-    // }
-    // console.log(searchObj)
 
-    //    getPostInfo('yq_api/projectDiary/searchMyDariyList',searchObj)
-    //         .then(res=>{
-    //             if(res.data.code===200){
-    //                 console.log(res.data.data)
-    //                 this.myDiaryList = res.data.data;
-    //                 this.loading = false;
-                
-    //             }
-               
-    //         })
 
 // 删除日志接口
 //   let delObj = {
@@ -380,6 +369,7 @@ export default {
       }
       getPostInfo('yq_api/projectDiary/searchMyDariyList',obj)
       .then(res=>{
+         
         this.myDiaryList =res.data.data==null?res.data.data=[]:res.data.data;
        
         this.loading = false;

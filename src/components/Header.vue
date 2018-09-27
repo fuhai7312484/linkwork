@@ -196,7 +196,7 @@ export default {
       url: "yq_api/project/listByCondition",
       objs: {
         page: "1",
-        size: "1",
+        size: "999",
         userId: getStorage("userInfo").id,
         type: "10"
       }
