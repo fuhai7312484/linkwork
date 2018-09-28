@@ -276,6 +276,7 @@
           userId:getStorage("userInfo").id,
           isAuthority:'0,1',
                  }
+               
               // console.log(RoleObj)
                  getPostInfo("/yq_api/mail/getMailListForType", RoleObj).then(res => {
                   //  console.log(res)

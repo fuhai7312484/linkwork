@@ -1,5 +1,6 @@
 <template>
     <div class="userDataDetil" :style="{height:sWHeight}">
+  
           <div class="inviteListBox">
               <div class="Role-Info-box">
                <h2 class="Role-title" @click="PendingShow=!PendingShow">
@@ -164,6 +165,7 @@ export default {
                     mailId:id,
                     agree:type,
                 }
+                console.log(AuthorizedObj)
            
                    getPostInfo("yq_api/authority/agreeOrRefuseRoleConversion", AuthorizedObj).then(res=>{
                    

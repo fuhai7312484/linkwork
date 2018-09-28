@@ -145,7 +145,7 @@ export default {
   },
   methods: {
     getValue(value) {
-      console.log(value)
+      // console.log(value)
      
       if (this.options.length === value * 1) {
         this.addDepartment();
@@ -156,7 +156,7 @@ export default {
         confirmButtonText: "确定"
       })
         .then(({ value }) => {
-          console.log("这里调用新创建部门", value);
+          // console.log("这里调用新创建部门", value);
 
           let obj = {
             projectId: this.proTitle.proId,
@@ -279,7 +279,7 @@ export default {
           if(this.radio==='3'){
             addFrindObj.departmentId=this.options[this.value * 1].departmentId;
           }
-          console.log(addFrindObj)
+          // console.log(addFrindObj)
           getPostInfo(
             "yq_api/authority/inviteJoinProjectForAugust",
             addFrindObj

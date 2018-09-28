@@ -243,7 +243,7 @@
                 .then(res => {
 
                     this.TaDiaryList = res.data.data == null ? res.data.data = [] : res.data.data;
-                        console.log(this.TaDiaryList)   
+                  
                     this.loading = false;
                 })
 

@@ -34,7 +34,16 @@
                 <i v-else-if="data.pid==2" class="DPid2Cl">
                   B{{data.serNum}}
                 </i>
-                <img :src="data.mainPic" v-if="data.mainPic" />{{ node.label }}
+                
+                 <span class="deleteUserMakbox">
+                  <span v-if="data.status==='2'" class="deleteUserMak iconfont">
+                   &#xe64b;
+                  </span>
+                   <span v-if="data.status==='1'" class="deleteUserMak"></span>
+                  <img :src="data.mainPic" v-if="data.mainPic" />
+                  </span> <span :class="data.status==='2'?'deleteColor':data.status==='1'?'deleteColor':''">{{ node.label }}</span>
+
+                <!-- <img :src="data.mainPic" v-if="data.mainPic" />{{ node.label }} -->
                 <span v-if="data.level==1 || data.level==3" class="LeveTag" :style="{background:data.level==1?'#07a816':data.level==3?'#fd7100':'',}">{{levelChange(data.level)}}</span>
                 {{data.peopleNum?'('+data.peopleNum+')人':''}}
               </span>
@@ -76,7 +85,8 @@ export default {
         peopleNum: "peopleNum",
         serNum: "serNum",
         creator: "creator",
-        orgIsMe: "orgIsMe"
+        orgIsMe: "orgIsMe",
+         status:'status',
       }
     };
   },
@@ -160,12 +170,13 @@ export default {
                 pid: 3,
                 id: e.orgLeader[0].id,
                 creator: e.orgLeader[0].creator,
-                orgId: e.orgLeader[0].orgId
+                orgId: e.orgLeader[0].orgId,
+                  status:e.orgLeader[0].status,
               };
-               if(e.orgLeader[0].userId===getStorage("userInfo").id){
+               if(e.orgLeader[0].userId===getStorage("userInfo").id || e.orgLeader[0].status ==='2'|| e.orgLeader[0].status==='1'){
                     creUserObj.disabled =true;
                   }
-
+               
               pObj.children.push(creUserObj);
 
               //部门循环
@@ -193,11 +204,13 @@ export default {
                     orgId: ele.orgId,
                     creator: ele.creator,
                     isMySelf:false,
+                     status:ele.status,
                   };
-                  if(ele.userId===getStorage("userInfo").id){
+                  if(ele.userId===getStorage("userInfo").id || ele.status ==='2'|| ele.status==='1'){
                     eleObj.disabled =true;
                   }
-              
+
+               
 
                   cobj.children.push(eleObj);
                   cobj.children.sort(function(a, b) {
@@ -223,8 +236,9 @@ export default {
                   orgId: ue.orgId,
                   pid: 3,
                    isMySelf:false,
+                   status:ue.status,
                 };
-                 if(ue.userId===getStorage("userInfo").id){
+                 if(ue.userId===getStorage("userInfo").id || ue.status ==='2'|| ue.status==='1' ){
                     ueObj.disabled =true;
                   }
                 pObj.children.push(ueObj);

@@ -143,8 +143,8 @@
 
                         <div class="addDet_textInfoBox">
                             <span>角色：</span>
-                            <span>{{userData.level===3?'部门负责人':userData.level===4?'单位成员':'单位成员'}}</span>
-                            <span class="RoleCBtn iconfont" @click="outerVisible = true">&#xe661; 角色转换</span>
+                            <span>{{userData.level===1?'单位代表人':userData.level===3?'部门负责人':userData.level===4?'单位成员':'单位成员'}}</span>
+                            <span v-if="userData.level===1 || userData.level===3" class="RoleCBtn iconfont" @click="outerVisible = true">&#xe661; 角色转换</span>
                         </div>
                     </el-col>
 
@@ -454,7 +454,7 @@
 
                     <div class="addDet_textInfoBox">
                         <span>Ta的角色：</span>
-                        <span>{{userData.levelName}}</span>
+                        <span>{{userData.level===1?'单位代表人':userData.level===3?'部门负责人':userData.level===4?'单位成员':'单位成员'}}</span>
                     </div>
                 </el-col>
             </el-row>
@@ -597,18 +597,13 @@
         },
         computed: {
             ...mapState(["sWHeight","proTitle"]),
-
-         
         },
         components: {
             ShowbaiduMap,
               EditbaiduMap,
-          
         },
         methods: {
-
             handInnerChange(){
-             
                  this.innerVisible = false;
                 this.outerVisible = false;
                 if(this.userIdChecked){
@@ -616,7 +611,6 @@
                        userId:this.userData.userId,
                        forUser:this.userIdChecked,
                          projectId:this.userData.projectId,
-
                     }
                      getPostInfo("/yq_api/authority/roleConversion", forObj).then(res => {
                          if(res.data.code===200){
@@ -859,9 +853,9 @@
                   creator: e.orgLeader[0].creator,
                   orgId: e.orgLeader[0].orgId
                 };
-                if (e.orgLeader[0].userId === getStorage("userInfo").id) {
-                  creUserObj.disabled = true;
-                }
+                if(e.orgLeader[0].userId===getStorage("userInfo").id || e.orgLeader[0].status ==='2'|| e.orgLeader[0].status==='1' || e.orgLeader[0].level===1 || e.orgLeader[0].level ===3){
+                    creUserObj.disabled =true;
+                  }
 
                 pObj.children.push(creUserObj);
 
@@ -892,9 +886,9 @@
                       creator: ele.creator,
                       isMySelf: false
                     };
-                    if (ele.userId === getStorage("userInfo").id) {
-                      eleObj.disabled = true;
-                    }
+                    if(ele.userId===getStorage("userInfo").id || ele.status ==='2'|| ele.status==='1' ||  ele.level===1 || ele.level===3){
+                    eleObj.disabled =true;
+                  }
 
                     cobj.children.push(eleObj);
                     cobj.children.sort(function (a, b) {
@@ -921,8 +915,8 @@
                     pid: 3,
                     isMySelf: false
                   };
-                  if (ue.userId === getStorage("userInfo").id) {
-                    ueObj.disabled = true;
+                   if(ue.userId===getStorage("userInfo").id || ue.status ==='2'|| ue.status==='1' || ue.level===1 || ue.level===3 ){
+                    ueObj.disabled =true;
                   }
                   pObj.children.push(ueObj);
                 });
