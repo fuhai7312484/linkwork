@@ -170,6 +170,7 @@
                         <div class="iconfont">&#xe615;</div>
                         文本
                     </li>
+                    {{getAnnexUrl}}
                     <li>
                         <el-upload ref="upload" class="upload-demo" action="http://39.107.254.60:8081/yq_api/image/upload" :data="{userId}" :on-preview="handlePreview"
                             accept="image/jpeg,image/gif,image/png,image/jpg,image/bmp" :on-remove="handleRemove" :on-success="imageSuccess"
@@ -215,7 +216,8 @@
         getNewDataTime,
         getFileType,
         setFileTyleImge,
-        setStorage
+        setStorage,
+        getAnnexUrl
     } from "../../../assets/lib/myStorage.js";
     import BaiduMap from "../../../components/BaiduMap.vue";
     import FriendsList from "../../../components/FriendsList.vue";

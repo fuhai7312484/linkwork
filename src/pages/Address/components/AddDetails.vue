@@ -2,7 +2,7 @@
 
     <div class="userDataDetil" :style="{height:sWHeight}">
       <!-- {{userData}} -->
-   
+ 
 <div v-if="userData.id">
         <div v-if="userData.isMySelf">
             <el-form :model="userData" :rules="rules" ref="ruleForm" label-width="90px" class="demo-ruleForm">
@@ -11,7 +11,8 @@
 
                     <el-row :gutter="20">
                         <el-col :span="6" class="addDet_avatarBox">
-                            <img :src="userData.mainPic" />
+                            <img :src="userData.mainPic?userData.mainPic:require('../../../assets/images/mainpic.jpg')" />
+                            <!-- <img :src="userData.mainPic" /> -->
 
                         </el-col>
                         <el-col :span="18">
@@ -201,7 +202,7 @@
                 <i v-else-if="data.pid==2" class="DPid2Cl">
                   B{{data.serNum}}
                 </i>
-                <img :src="data.mainPic" v-if="data.mainPic" />{{ node.label }}
+                 <img :src="data.mainPic?data.mainPic:require('../../../assets/images/mainpic.jpg')" v-if="data.pid===3" />{{ node.label }}
                 <span v-if="data.level==1 || data.level==3" class="LeveTag" :style="{background:data.level==1?'#07a816':data.level==3?'#fd7100':'',}">{{levelChange(data.level)}}</span>
                 {{data.peopleNum?'('+data.peopleNum+')人':''}}
               </span>
@@ -374,7 +375,7 @@
             <div class="proUserInfoBox">
                 <el-row :gutter="20">
                     <el-col :span="6" class="addDet_avatarBox">
-                        <img :src="userData.mainPic" />
+                        <img :src="userData.mainPic?userData.mainPic:require('../../../assets/images/mainpic.jpg')" />
 
                     </el-col>
                     <el-col :span="18">

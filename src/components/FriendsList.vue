@@ -40,7 +40,8 @@
                    &#xe64b;
                   </span>
                    <span v-if="data.status==='1'" class="deleteUserMak"></span>
-                  <img :src="data.mainPic" v-if="data.mainPic" />
+                  <!-- <img :src="data.mainPic" v-if="data.mainPic" /> -->
+                  <img :src="data.mainPic?data.mainPic:require('../assets/images/mainpic.jpg')" v-if="data.pid===3" />
                   </span> <span :class="data.status==='2'?'deleteColor':data.status==='1'?'deleteColor':''">{{ node.label }}</span>
 
                 <!-- <img :src="data.mainPic" v-if="data.mainPic" />{{ node.label }} -->

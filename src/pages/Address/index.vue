@@ -117,7 +117,8 @@
                    &#xe64b;
                   </span>
                    <span v-if="data.status==='1'" class="deleteUserMak"></span>
-                  <img :src="data.mainPic" v-if="data.mainPic" />
+                
+                  <img :src="data.mainPic?data.mainPic:require('../../assets/images/mainpic.jpg')" v-if="data.pid===3"/>
                   </span> <span :class="data.status==='2'?'deleteColor':data.status==='1'?'deleteColor':''">{{ node.label }}</span>
                
                 <span v-if="data.level==1 || data.level==3" class="LeveTag" :style="{background:data.level==1?'#07a816':data.level==3?'#fd7100':'',}">{{levelChange(data.level)}}</span>
@@ -572,7 +573,7 @@
                   let data = res.data.data;
                   this.userData = data
                   if (data.userId === getStorage("userInfo").id) {
-                   console.log(data)
+                  //  console.log(data)
                       this.userData.isMySelf = true;
                     }
                 

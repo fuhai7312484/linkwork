@@ -27,6 +27,10 @@
     margin-top: 196px;
     text-align: center;
   }
+  .logo img{
+    width: 156px;
+    height: 50px;
+  }
   .login {
     position: relative;
     width: 418px;

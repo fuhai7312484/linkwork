@@ -1,9 +1,17 @@
 import axios from "axios";
-//post接口请求公共调用
 
+//附件服务器url
+export function getAnnexUrl() {
+  return 'http://39.107.254.60:8081/yq_api/image/upload'
+}
+//post接口请求公共调用
 export function getPostInfo(url, obj) {
-  let ipUrl = "http://39.107.254.60:8081/";
-  // let ipUrl = "http://47.94.251.93:8080/";
+  //测试环境
+  // let ipUrl = "http://39.107.254.60:8081/";
+   //测试环境
+   let ipUrl = "http://47.94.251.93:8081/";
+  //正式环境
+  // let ipUrl = "http://59.110.95.211:8080/";
   var qs = require("qs");
   return axios.post(ipUrl + url, qs.stringify(obj));
 }
