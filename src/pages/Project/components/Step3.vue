@@ -3,12 +3,13 @@
     <div class="stepH1Title">
       <h1>我在项目中的个人信息</h1>
     </div>
+    {{UploadUrl()}}
     <!-- {{userInfo}}--- {{ruleForm.sex}} -->
     <!-- {{ruleForm.nickname}} -->
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
       <div class="proUserInfoBox">
         <div class="proUserAvatarBox">
-          <el-upload class="AvatImgBox" action="http://39.107.254.60:8081/yq_api/image/upload" :show-file-list="false" :on-success="handleAvatarSuccess"
+          <el-upload class="AvatImgBox" :action="UploadUrl()" :show-file-list="false" :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
             <img :src="ruleForm.AvatImageUrl" class="avatar">
             <div class="editAvatar">
@@ -145,7 +146,8 @@ import router from "../../../router";
 import {
   getStorage,
   setStorage,
-  getPostInfo
+  getPostInfo,
+  getAnnexUrl
 } from "../../../assets/lib/myStorage.js";
 import { mapState, mapMutations } from "vuex";
 export default {
@@ -211,6 +213,10 @@ export default {
       this.ruleForm.nickname
         ? this.ruleForm.nickname
         : (this.ruleForm.nickname = this.userInfo.name);
+    },
+          UploadUrl(){
+               return getAnnexUrl();
+        
     },
     open4(msg) {
       this.$message({

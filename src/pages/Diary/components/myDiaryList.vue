@@ -17,7 +17,7 @@
                     </div>
          </div>
          
-         <div class="conditionFilterBox pad20" v-if="myDiaryList.length!=0">
+         <!-- <div class="conditionFilterBox pad20" v-if="myDiaryList.length!=0">
              <el-form :model="numberValidateForm" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
     <div class="fl">
     <el-date-picker
@@ -53,7 +53,8 @@
   </div>
 
 </el-form>
-         </div>
+         </div> -->
+
          
 <ul class="diaryListUlBox" >
     

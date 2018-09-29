@@ -414,7 +414,7 @@
 
                     <div class="addDet_textInfoBox">
                         <span>性别：</span>
-                        <span>{{userData.sex==1?'男':'女'}}</span>
+                        <span>{{userData.sex==='1'?'男':userData.sex==="0"?'女':userData.sex}}</span>
                     </div>
 
                     <div class="addDet_textInfoBox">

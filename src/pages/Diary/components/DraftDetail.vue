@@ -127,7 +127,7 @@
                                         {{locat.isCurrentMap==='Y'?'&#xe6e7;':'&#xe633;'}}
                                     </span>
                                     <span>
-                                        实时地址-{{locat.name}}
+                                        当前地址-{{locat.name}}
                                     </span>
                                 </el-card>
                             </el-col>
@@ -165,7 +165,7 @@
                         文本
                     </li>
                     <li>
-                        <el-upload ref="upload" class="upload-demo" action="http://39.107.254.60:8081/yq_api/image/upload" :data="{userId}" :on-preview="handlePreview"
+                        <el-upload ref="upload" class="upload-demo" :action="UploadUrl()" :data="{userId}" :on-preview="handlePreview"
                             accept="image/jpeg,image/gif,image/png,image/jpg,image/bmp" :on-remove="handleRemove" :on-success="imageSuccess"
                             :before-upload="handleBeforeUpload" :on-progress="uploadImgProcess" :file-list="ruleForm.imgList"
                             :haeders="upHeaders" :auto-upload="true" multiple :show-file-list="false" list-type="picture">
@@ -174,7 +174,7 @@
                         图片
                     </li>
                     <li>
-                        <el-upload ref="upload2" class="upload-demo" action="http://39.107.254.60:8081/yq_api/image/upload" :show-file-list="false"
+                        <el-upload ref="upload2" class="upload-demo" :action="UploadUrl()" :show-file-list="false"
                             :on-success="handleVideoSuccess" :before-upload="beforeUploadVideo" :on-progress="uploadVideoProcess"
                             :data="{userId}" accept="video/mp4" :on-remove="handleRemove" :file-list="ruleForm.videoList" :haeders="upHeaders"
                             :auto-upload="true" multiple list-type="picture">
@@ -187,7 +187,7 @@
                         位置
                     </li>
                     <li>
-                        <el-upload ref="upload2" class="upload-demo" action="http://39.107.254.60:8081/yq_api/image/upload" :data="{userId}" :on-preview="handlePreview"
+                        <el-upload ref="upload2" class="upload-demo" :action="UploadUrl()" :data="{userId}" :on-preview="handlePreview"
                             :on-remove="handleRemove" :on-success="imageSuccess" :before-upload="annexBeforeUpload" :file-list="ruleForm.annexList"
                             :haeders="upHeaders" :auto-upload="true" multiple :show-file-list="false" list-type="picture">
                             <div class="iconfont" size="small" type="primary">&#xe732;</div>
@@ -207,7 +207,8 @@
         getNewDataTime,
         getFileType,
         setFileTyleImge,
-        setStorage
+        setStorage,
+        getAnnexUrl
     } from "../../../assets/lib/myStorage.js";
     import BaiduMap from "../../../components/BaiduMap.vue";
     import FriendsList from "../../../components/FriendsList.vue";
@@ -293,6 +294,10 @@
             ...mapState(["sWHeight", "proTitle", "userInfo"])
         },
         methods: {
+              UploadUrl(){
+               return getAnnexUrl();
+        
+    },
               handleClose(done) {
     
         this.$confirm('确认关闭？')
@@ -693,12 +698,22 @@
                                         resourceType:'diary',
                                     }
                                    
-                                    //分享可见人
+                                  if(ResouceObj.receivePeople){
+                                          //分享可见人
                                      getPostInfo("yq_api/userResource/shareMyResouce", ResouceObj).then(resInfo => {
                                          if(resInfo.data.code ===200){
-                                             _that.$router.push("/diary/MyDiary");
+                                             
+                                              setTimeout(function(){
+                                                   _that.$router.go(0)
+                                              },500)
+                                           _that.$router.push("/diary/MyDiary");
+                                          
+                                           
                                          }
                                      })
+                                    }else{
+                                         _that.$router.push("/diary/MyDiary");
+                                    }
                                      
                                     let rep = getStorage("DraftBox").filter(e => {
                                         return e.DraftBoxId != this.DraftBoxId;

@@ -127,6 +127,23 @@
               <el-button v-if="data.pid==1" type="text" size="mini" @click="() => gotoDetil(node, data)">
                 查看
               </el-button>
+           
+              <span v-if="data.pid===3&&data.level!=1&&data.orgId===isMeOrgId&&isMeOrgLeader">
+
+                <el-dropdown>
+  <span class="el-dropdown-link" >
+    操作<i class="el-icon-arrow-down el-icon--right"></i>
+  </span>
+  <el-dropdown-menu slot="dropdown" class="Archive-dropdown">
+    <div @click="ArchiveChange('1',{userId:data.userId,orgId:data.orgId,level:data.level})">归档</div>
+    <div @click="ArchiveChange('2',{userId:data.userId,orgId:data.orgId,level:data.level})">调整到其他部门</div>
+    
+  </el-dropdown-menu>
+</el-dropdown>
+
+
+
+              </span>
 
               <!-- <span>
           <el-button type="text" size="mini" @click="() => append(data)">
@@ -220,6 +237,7 @@
         filterText: '',
         isMeOrgId:'',
         isMeShortName:'',
+        isMeOrgLeader:false,
         orgInfoObj:{},
         InvitePeople:{},
         UserShow: '1',
@@ -268,6 +286,41 @@
     },
     methods: {
       ...mapMutations(["changeLogin", "getScrllH", "setAddressUid"]),
+
+      //归档
+      ArchiveChange(command,obj){
+        if(command==='1'){
+          let QuiteObj={
+          userId:obj.userId,
+           projectId:this.proTitle.proId ,
+           operationPeople:getStorage("userInfo").id,
+           operationType:'1',
+          }
+          if(obj.level===3){
+              console.log('负责人',obj.userId)
+          }else if(obj.level===4 || obj.level===6){
+            console.log(QuiteObj)
+             getPostInfo("yq_api/projectUserRef/operationQuite", QuiteObj).then(res => {
+              if(res.data.code===200){
+     
+                this.open2('成员归档成功！')
+                let _that = this;
+                setTimeout(function(){
+                  _that.$router.go(0)
+                },500)
+              }
+
+             })
+
+        
+          }
+        
+        }else if(command==='2'){
+          
+           console.log(obj)
+        }
+       
+      },
       //获取角色转换通知列表
       getRoleList(){
         let RoleObj={
@@ -322,7 +375,12 @@
         this.UserShow = '3';
         // this.getInveList()
       },
-    
+    open2(msg) {
+        this.$message({
+          message: msg,
+          type: 'success'
+        });
+      },
       RoleConver(){
          this.UserShow = '4';
       },
@@ -479,7 +537,8 @@
                status:e.orgLeader[0].status,
             };
 
-            if(e.orgLeader[0].userId===getStorage("userInfo").id){              
+            if(e.orgLeader[0].userId===getStorage("userInfo").id){  
+              this.isMeOrgLeader =true;
                      let addDe = {
                 lookUserId:e.orgLeader[0].userId,
                 projectId: this.proTitle.proId,
@@ -674,6 +733,7 @@
             newData.push(pObj);
           });
           this.data = newData;
+          // console.log(this.data)
         }
       });
     }

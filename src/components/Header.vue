@@ -49,25 +49,25 @@
     width="400"
     trigger="hover">
 <div>
-        这里是登录成功后跳转到首页
+      
         <div>
             当前登录的用户信息：
-             <p>
+             <!-- <p>
                 用户ID：{{userData.id}}
-            </p>
+            </p> -->
             <p>
                 用户名称：{{userData.name}}
             </p>
-              <p>
+              <!-- <p>
                 手机号：{{userData.mobile}}
-            </p>
-              <p>
+            </p> -->
+              <!-- <p>
                 accessToken：{{userData.accessToken}}
-            </p>
-               <p>
+            </p> -->
+               <!-- <p>
                邮箱：{{userData.email}}
-            </p>
-            头像：<img :src="userData.mainPic" :style="{width:'50px',height:'50px'}"/>
+            </p> -->
+            <img :src="userData.mainPic" :style="{width:'50px',height:'50px'}"/>
                  <el-row>
                 <el-button size="mini" @click="signOut">退出登录</el-button>
                 </el-row>

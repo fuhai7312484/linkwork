@@ -3,11 +3,12 @@
     <div class="stepH1Title">
       <h1>项目信息填写</h1>
     </div>
+    
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
 
       <el-form-item label="项目图片">
         <el-upload 
-        ref="uploadimgs" action="http://39.107.254.60:8081/yq_api/image/upload" list-type="picture-card"
+        ref="uploadimgs" :action="UploadUrl()" list-type="picture-card"
          accept="image/jpeg,image/gif,image/png,image/bmp,video/mp4"
           :limit="9" multiple :on-exceed="handLimitChange" :on-preview="handlePictureCardPreview" 
           :on-success="successUpload"
@@ -155,7 +156,7 @@
   </div>
 </template>
 <script>
-import { getTimestamp, getToTime,getPostInfo,getStorage } from "../../../assets/lib/myStorage.js";
+import { getTimestamp, getToTime,getPostInfo,getStorage,getAnnexUrl } from "../../../assets/lib/myStorage.js";
 import router from "../../../router";
 import { mapState,mapMutations } from "vuex";
 export default {
@@ -276,6 +277,10 @@ export default {
   },
   methods: {
      ...mapMutations(["setcreate1proId"]),
+       UploadUrl(){
+               return getAnnexUrl();
+        
+    },
     scaleFocus(ev) {
       ev.currentTarget.select();
       if (ev.target.value.length >= 6) this.scaleVisible = true;

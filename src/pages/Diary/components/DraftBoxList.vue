@@ -236,7 +236,7 @@
         },
         mounted() {
             if (getStorage("DraftBox")) {
-                console.log(getStorage("DraftBox"))
+             
                 let arr = getStorage("DraftBox").filter(e => {
                     return (
                         e.projectId == this.proTitle.proId &&

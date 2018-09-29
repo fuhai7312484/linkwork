@@ -130,7 +130,7 @@
                                         {{locat.isCurrentMap==='Y'?'&#xe6e7;':'&#xe633;'}}
                                     </span>
                                     <span>
-                                        实时地址-{{locat.name}}
+                                        当前地址-{{locat.name}}
                                     </span>
                                 </el-card>
                             </el-col>
@@ -170,9 +170,10 @@
                         <div class="iconfont">&#xe615;</div>
                         文本
                     </li>
-                    {{getAnnexUrl}}
+              
                     <li>
-                        <el-upload ref="upload" class="upload-demo" action="http://39.107.254.60:8081/yq_api/image/upload" :data="{userId}" :on-preview="handlePreview"
+                        <!-- :action="UploadUrl()"  -->
+                        <el-upload ref="upload" class="upload-demo" :action="UploadUrl()" :data="{userId}" :on-preview="handlePreview"
                             accept="image/jpeg,image/gif,image/png,image/jpg,image/bmp" :on-remove="handleRemove" :on-success="imageSuccess"
                             :before-upload="handleBeforeUpload" :on-progress="uploadImgProcess" :file-list="ruleForm.imgList"
                             :haeders="upHeaders" :auto-upload="true" multiple :show-file-list="false" list-type="picture">
@@ -181,7 +182,7 @@
                         图片
                     </li>
                     <li>
-                        <el-upload ref="upload2" class="upload-demo" action="http://39.107.254.60:8081/yq_api/image/upload" :show-file-list="false"
+                        <el-upload ref="upload2" class="upload-demo" :action="UploadUrl()" :show-file-list="false"
                             :on-success="handleVideoSuccess" :before-upload="beforeUploadVideo" :on-progress="uploadVideoProcess"
                             :data="{userId}" accept="video/mp4" :on-remove="handleRemove" :file-list="ruleForm.videoList" :haeders="upHeaders"
                             :auto-upload="true" multiple list-type="picture">
@@ -194,7 +195,7 @@
                         位置
                     </li>
                     <li>
-                        <el-upload ref="upload2" class="upload-demo" action="http://39.107.254.60:8081/yq_api/image/upload" :data="{userId}" 
+                        <el-upload ref="upload2" class="upload-demo" :action="UploadUrl()" :data="{userId}" 
                         :on-preview="handlePreview"
                             :on-remove="handleRemove" :on-success="annexSuccess" :before-upload="annexBeforeUpload" :file-list="ruleForm.annexList"
                             :on-progress="uploadAnnexProcess"
@@ -303,6 +304,11 @@
             ...mapState(["sWHeight", "proTitle", "userInfo"])
         },
         methods: {
+
+            UploadUrl(){
+               return getAnnexUrl();
+        
+    },
             onPlayerPlay(player) {
                 //   alert("play");
             },
@@ -694,6 +700,7 @@
                                 getPostInfo("yq_api/projectDiary/updateProjectDiary", uploadInfo).then(res => {
                                     if(res.data.code){
                                         this.open2(res.data.msg); 
+                                       
                                          this.$router.push("/diary/MyDiary");
                                     }
                                 
@@ -703,12 +710,14 @@
                                 uploadInfo.status = '0';
                                 uploadInfo.diaryType = 'diary';
                                 uploadInfo.diaryLookType = "";
+                                // console.log(uploadInfo)
                                
 
                      getPostInfo("yq_api/projectDiary/add", uploadInfo).then(res => {
                                 if (res.data.code === 200) {
                                     let _that = this;
-                                 
+                                    // console.log(111111)
+                                
                                     this.open2("日志上传成功！");
                                     this.isDraftBox = false;
                                     let ResouceObj={
@@ -718,13 +727,27 @@
                                         resourceId:res.data.data,
                                         resourceType:'diary',
                                     }
-                                
-                                    //分享可见人
+                                  
+                                    if(ResouceObj.receivePeople){
+                                          //分享可见人
                                      getPostInfo("yq_api/userResource/shareMyResouce", ResouceObj).then(resInfo => {
                                          if(resInfo.data.code ===200){
-                                             _that.$router.push("/diary/MyDiary");
+                                             
+                                              setTimeout(function(){
+                                                   _that.$router.go(0)
+                                              },500)
+                                           _that.$router.push("/diary/MyDiary");
+                                          
+                                           
                                          }
                                      })
+                                    }else{
+                                         _that.$router.push("/diary/MyDiary");
+                                    }
+                                  
+                                
+                                  
+                                    
                                      
                                     let rep = getStorage("DraftBox").filter(e => {
                                         return e.DraftBoxId != this.DraftBoxId;
