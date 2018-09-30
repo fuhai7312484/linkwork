@@ -124,7 +124,7 @@
               </el-col>
               <el-col :span="2" class="porListTitle">
 
-                <el-dropdown trigger="click">
+                <!-- <el-dropdown trigger="click">
                   <span class="el-dropdown-link">
                     设置
                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -135,7 +135,7 @@
                     <el-dropdown-item>
                       <i class="el-icon-star-off"></i>关注</el-dropdown-item>
                   </el-dropdown-menu>
-                </el-dropdown>
+                </el-dropdown> -->
               </el-col>
             </div>
             <div class="porDatesBox">

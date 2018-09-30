@@ -111,7 +111,7 @@
                 </i>
             
 
-                <!-- {{data}} -->
+                <!-- {{data.id}} -->
                 <span class="deleteUserMakbox">
                   <span v-if="data.status==='2'" class="deleteUserMak iconfont">
                    &#xe64b;
@@ -135,8 +135,8 @@
     操作<i class="el-icon-arrow-down el-icon--right"></i>
   </span>
   <el-dropdown-menu slot="dropdown" class="Archive-dropdown">
-    <div @click="ArchiveChange('1',{userId:data.userId,orgId:data.orgId,level:data.level})">归档</div>
-    <div @click="ArchiveChange('2',{userId:data.userId,orgId:data.orgId,level:data.level})">调整到其他部门</div>
+    <div @click="ArchiveChange('1',{userId:data.userId,orgId:data.orgId,level:data.level,departmentId:data.departmentId})">归档</div>
+    <div @click="ArchiveChange('2',{userId:data.userId,orgId:data.orgId,level:data.level,departmentId:data.departmentId})">调整到其他部门</div>
     
   </el-dropdown-menu>
 </el-dropdown>
@@ -155,6 +155,59 @@
         </span>  -->
             </span>
           </el-tree>
+
+
+
+
+
+
+<el-dialog title="当前归档人员有职位请选择替代人" :visible.sync="dialogFormVisible" width="30%">
+  
+      <ul v-for="(ulItme,index) in userdepartArr" :key="index">
+        <li v-for="(Itme,index) in ulItme.children" :key="index" class="ConversionList" @click="ConversionChange(Itme)">
+        <img :src="Itme.mainPic" />  {{Itme.label}}
+        </li>
+      </ul>
+
+
+  <!-- <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+  </div> -->
+</el-dialog>
+
+
+
+
+
+<el-dialog title="调整到部门" :visible.sync="TransferVisible" width="30%">
+
+  <!-- {{TransUser}} -->
+  
+    <ul v-for="(TransItme,index) in TransUser" :key="index"> 
+      <!-- {{TransItme.children}} -->
+     
+        <li v-for="(TrItme,index) in TransItme.children" :key="index" v-if="TrItme.pid===2" class="ConversionList" @click="TransItmeChange(TrItme)">
+        {{TrItme.label}}
+        </li>
+      </ul> 
+
+
+</el-dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           <div class="clear" style=" background: #f5f5f8;"></div>
 
         </div>
@@ -246,10 +299,16 @@
         addInv: false,
         approval:false,
         data: [],
+        userdepartArr:[],
+        TransUser:[],
         unReadList:[],
         RoleConsentList:[],
         RoleList:[],
         orgLeaderIsMe:false,
+        dialogFormVisible: false,
+        TransferVisible:false,
+        commandUserId:'',
+        commandDepartmentId:'',
         defaultProps: {
           children: "children",
           label: "label",
@@ -262,6 +321,7 @@
           creator: "creator",
           orgIsMe:"orgIsMe",
           status:'status',
+          departmentId:'departmentId'
         }
       };
     },
@@ -286,9 +346,63 @@
     },
     methods: {
       ...mapMutations(["changeLogin", "getScrllH", "setAddressUid"]),
+    ConversionChange(obj){
+      if(obj.userId===this.commandUserId){
+        this.open4('不能选择归档人为替代人')
+      }else{
+       let QuiteObj={
+          userId:this.commandUserId,
+           projectId:this.proTitle.proId ,
+           operationPeople:getStorage("userInfo").id,
+           operationType:'1',
+           replaceDepartmentPeople:obj.userId,
+          }
+          getPostInfo("yq_api/projectUserRef/operationQuite", QuiteObj).then(res => {
+              if(res.data.code===200){
+                  this.open2('归档成功！')
+                  this.dialogFormVisible =false;
+                    let _that = this;
+                setTimeout(function(){
+                  _that.$router.go(0)
+                },500)
+              }
+          })
+      }
+    },
 
+    TransItmeChange(obj){
+      // console.log(obj.id,this.commandDepartmentId)
+      if(obj.id==this.commandDepartmentId){
+        this.open4('当前用户已在本部门！')
+      }else{
+          let TranObj={
+           userId:getStorage("userInfo").id,
+           orgId:obj.orgId,
+           projectId:this.proTitle.proId,
+            departmentId:obj.id,
+           forUser:this.commandUserId,
+      }
+    
+       getPostInfo("yq_api/orgDepartment/editOrgMember", TranObj).then(res => {
+         if(res.data.code===200){
+           this.open2(res.data.msg)
+            this.TransferVisible = false
+           let _that = this;
+                setTimeout(function(){
+                  _that.$router.go(0)
+                },300)
+         }
+       })
+
+      }
+      
+    
+    },
+    
       //归档
       ArchiveChange(command,obj){
+          this.commandUserId = obj.userId
+          this.commandDepartmentId = obj.departmentId
         if(command==='1'){
           let QuiteObj={
           userId:obj.userId,
@@ -297,12 +411,23 @@
            operationType:'1',
           }
           if(obj.level===3){
-              console.log('负责人',obj.userId)
+                this.dialogFormVisible =true;
+                  let newArr = this.data.filter((e,index)=>{
+                  return e.orgId === obj.orgId
+                     })
+                     let departArr = newArr[0].children.filter(el=>{
+                      return el;
+                     })
+                     this.userdepartArr = departArr.filter(ue=>{
+                       return ue.id === obj.departmentId
+                     })
+                    //  this.commandUserId = obj.userId
+                     
+              // console.log('负责人',obj.userId,obj.departmentId)
           }else if(obj.level===4 || obj.level===6){
-            console.log(QuiteObj)
+            // console.log(QuiteObj)
              getPostInfo("yq_api/projectUserRef/operationQuite", QuiteObj).then(res => {
               if(res.data.code===200){
-     
                 this.open2('成员归档成功！')
                 let _that = this;
                 setTimeout(function(){
@@ -316,8 +441,18 @@
           }
         
         }else if(command==='2'){
-          
-           console.log(obj)
+          // this.commandUserId = obj.userId
+          this.TransferVisible = true
+          let TransObj={
+            
+          }
+          let newArr = this.data.filter((e,index)=>{
+                  return e.orgId === obj.orgId
+                     })
+                     this.TransUser = newArr;
+
+          // console.log(newArr,'转换部门',this.commandUserId)
+          //  console.log(obj.userId)
         }
        
       },
@@ -374,6 +509,9 @@
       inviteChange(){
         this.UserShow = '3';
         // this.getInveList()
+      },
+      open4(msg) {
+        this.$message.error(msg);
       },
     open2(msg) {
         this.$message({
@@ -488,8 +626,6 @@
           let newData = [];
           //第一层循环
           data.forEach((e, index) => {
-            // console.log(e)
-           
             // if(e.orgLeader[0].userId===getStorage("userInfo").id){
             //   let addDe = {
             //     lookUserId: e.orgLeader[0].userId,
@@ -535,6 +671,7 @@
               creator: e.orgLeader[0].creator,
               orgId: e.orgLeader[0].orgId,
                status:e.orgLeader[0].status,
+               departmentId:e.orgLeader[0].departmentId,
             };
 
             if(e.orgLeader[0].userId===getStorage("userInfo").id){  
@@ -592,7 +729,7 @@
 
             //部门循环
             e.departmentList.forEach((el, index) => {
-           
+          //  console.log(el)
             
               let cobj = {
                 label: el.departmentName,
@@ -600,7 +737,8 @@
                 id: el.id,
                 peopleNum: el.purList.length != 0 ? el.purList.length : "0",
                 serNum: index + 1,
-                pid: 2
+                pid: 2,
+                orgId:el.orgId,
               };
               // 用户循环
               el.purList.forEach(ele => {
@@ -616,6 +754,7 @@
                   orgId: ele.orgId,
                   creator: ele.creator,
                   status:ele.status,
+                  departmentId:ele.departmentId,
                 };
                 //  console.log(ele.userId === e.orgLeader[0].userId )
                
@@ -684,6 +823,7 @@
                 orgId: ue.orgId,
                 pid: 3,
                  status:ue.status,
+                 departmentId:ue.departmentId,
               };
             // console.log(ue.orgId===e.orgLeader[0].orgId&&ue.userId===e.orgLeader[0].userId)
         

@@ -2,8 +2,10 @@ import axios from "axios";
 
 //附件服务器url
 export function getAnnexUrl() {
-  
+  //测试环境
   return 'http://39.107.254.60:8081/yq_api/image/upload'
+//正式打包环境
+  // return 'http://59.110.95.211:8080/yq_api/image/upload'
 }
 //post接口请求公共调用
 export function getPostInfo(url, obj) {
