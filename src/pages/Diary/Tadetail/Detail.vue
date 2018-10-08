@@ -67,7 +67,7 @@
                             &#xe615;
                         </div>
                         <p class="diaryText" v-for="(contents,i) in detailList.resourceList" :key="i">
-                            {{contents.content}}
+                           <span v-html="Trim(contents.content)"></span>
                         </p>
                     </div>
 
@@ -436,7 +436,9 @@
         },
         methods: {
 
-
+    Trim(str){
+return str.replace(/\n|\r\n/g,"<br/>")
+        },
 
              backTop() {
                   console.log(this.$refs.gotoback)

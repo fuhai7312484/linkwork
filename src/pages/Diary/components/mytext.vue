@@ -79,7 +79,7 @@
                             &#xe615;
                         </div>
                         <p class="diaryText" v-for="(contents,i) in detailList.resourceList" :key="i">
-                            {{contents.content}}
+                           <span v-html="Trim(contents.content)"></span>
                         </p>
                     </div>
 
@@ -403,6 +403,9 @@ export default {
     FriendsList
   },
   methods: {
+      Trim(str){
+return str.replace(/\n|\r\n/g,"<br/>")
+        },
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then(_ => {

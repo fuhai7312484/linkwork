@@ -71,7 +71,7 @@
                         </el-dialog>
 
                         <p class="diaryText" v-for="(contents,i) in itme.resourceList" :key="i">
-                            {{contents.content}}
+                           <span v-html="Trim(contents.content)"></span>
                         </p>
                         <span v-show="lengthShow">
 
@@ -204,6 +204,9 @@
             ),
         },
         methods: {
+             Trim(str){
+return str.replace(/\n|\r\n/g,"<br/>")
+        },
             open2(msg) {
                 this.$message({
                     message: msg,

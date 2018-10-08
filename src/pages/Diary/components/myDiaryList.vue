@@ -113,7 +113,7 @@
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
 <p class="diaryText" v-for="(contents,i) in itme.resourceList" :key="i">
-   {{contents.content}}
+   <span v-html="Trim(contents.content)"></span>
 </p>
 
 <el-row :gutter="20" class="flexibleUlBox" v-if="itme.imageList.length">
@@ -241,6 +241,9 @@ export default {
 
     },
     methods: {
+        Trim(str){
+return str.replace(/\n|\r\n/g,"<br/>")
+        },
  submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -370,8 +373,9 @@ export default {
       }
       getPostInfo('yq_api/projectDiary/searchMyDariyList',obj)
       .then(res=>{
-         
+       
         this.myDiaryList =res.data.data==null?res.data.data=[]:res.data.data;
+      
        
         this.loading = false;
       })

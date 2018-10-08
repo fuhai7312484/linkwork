@@ -104,17 +104,22 @@ export default {
             this.$emit('handFriendArr',this.userIdChecked);
       },
     handleCheckChange(data, checked, indeterminate) {
-      // console.log(data)
-      
-        if (checked) {
-          if (data.pid === 3) {
-          this.userIdChecked.push(data.userId);
-          
-          }
-        } else {
-          var index = this.userIdChecked.indexOf(data.userId);
-          this.userIdChecked.splice(index, 1);
+     
+      if(checked){
+        if(data.pid===3){
+           this.userIdChecked.push(data.userId);
+        }else if(data.pid===2){
+          data.children.forEach(e=>{
+             this.userIdChecked.push(e.userId)
+          })
+         
         }
+       
+      }else{
+        var index = this.userIdChecked.indexOf(data.userId);
+          this.userIdChecked.splice(index, 1);
+      }
+  
       
     },
     levelChange(level) {
