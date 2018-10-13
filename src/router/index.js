@@ -35,6 +35,10 @@ import Step3 from '../pages/Project/components/Step3.vue'
 import router from '../router'
 import store from '../store'
 
+
+import messageIndex from '../pages/message/index'
+
+
 import AddressIndex from '../pages/Address/index'
 // import addDetails from '../pages/Address/AddDetails.vue'
 Vue.use(Router);
@@ -162,8 +166,17 @@ export default new Router({
        
       ]
     },
-    //通讯录
 
+     //消息
+     {
+      path: "/message",
+      name: "messageIndex",
+      meta: {
+        requireAuth: true 
+      },
+      component: messageIndex,
+    },
+    //通讯录
     {
       path: "/address",
       name: "AddressIndex",

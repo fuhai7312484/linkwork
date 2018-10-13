@@ -12,12 +12,13 @@
     </router-link> -->
 
 
-  <!-- <router-link tag="li" class="leftMenuList" to="/a" >
+  <router-link tag="li" class="leftMenuList" to="/message" >
 <span class="iconfont LeftIcon">&#xe626;</span>
 <span class="LeftMenuTitle">
 消息
 </span>
-    </router-link> -->
+    </router-link>
+
 <router-link tag="li" class="leftMenuList" to="/diary" >
 <span class="iconfont LeftIcon">&#xe636;</span>
 <span class="LeftMenuTitle">

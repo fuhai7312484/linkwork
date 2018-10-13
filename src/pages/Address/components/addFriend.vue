@@ -4,7 +4,7 @@
        <!-- {{orgInfoObj}} -->
 
       
-      <div class="proMeOrgBox">
+      <!-- <div class="proMeOrgBox">
         <div class="proMeOrgMainPicImg fl">
   <img :src="InvitePeople.mainPic"/>
         </div>
@@ -18,11 +18,11 @@
       {{InvitePeople.orgName}}(单位)-{{InvitePeople.departmentName}}(部门)-{{InvitePeople.levelName}}
       
      </div>
-
      </div>   
-        
+      </div> -->
 
-      </div>
+
+      {{InvitePeople.mobile}}
       <el-form :model="dynamicValidateForm" ref="ruleForm" label-width="100px" class="demo-dynamic">
         <div class="addFriendTitle">邀请Ta:</div>
          <div class="addFriendPad addFriendPro" v-if="orgLeaderIsMe" >
@@ -87,11 +87,50 @@
   </el-col>
 </el-row>
 
+
+ 
+
 <div class="stepBtnStyle" v-if="dynamicValidateForm.domains.length!=0">
-  <el-button tag="el-button" @click="submitForm('ruleForm')" type="primary">
+  <el-button tag="el-button" @click="submitForm('ruleForm')" type="primary" size="small">
        完成
       </el-button>
 </div>
+
+
+ <Divider>未邀请成功用户</Divider>
+
+ <el-row :gutter="12" class="FriendList" v-if="failPhone.length!=0">
+<el-col :span="24"  v-for="(unfaiPhone, index) in failPhone" :key="index" >
+    <el-card shadow="hover" class="FriendListItme">
+<!-- {{unfaiPhone}} -->
+{{unfaiPhone.userd_phone}} {{unfaiPhone.userdName}}
+<br/>
+<!-- <div v-if="domain.code==200" :style="{color:'#009944'}" class="addFirendMsgInfo">
+  <span class="el-icon-success"></span>
+{{unfaiPhone.msg}}
+</div>
+
+<div v-if="domain.code==1008" :style="{color:'red'}" class="addFirendMsgInfo">
+  <span class="el-icon-question"></span>
+{{unfaiPhone.msg}}
+</div>
+
+<div v-if="domain.code==1009" class="addFirendMsgInfo" :style="{color:'red'}">
+  <span class="el-icon-success" :style="{color:'#009944'}"></span><span class="el-icon-question" :style="{color:'red'}"></span>
+{{unfaiPhone.msg}}
+</div> -->
+
+
+      <span class="el-icon-error removeFriend" @click="handleClose(index)"></span>
+    </el-card>
+  </el-col>
+</el-row>
+
+
+
+
+
+
        </el-form>
     </div>
 </template>
@@ -105,7 +144,8 @@ export default {
     "InvitePeople",
     "isMeOrgId",
     "isMeShortName",
-    "orgInfoObj"
+    "orgInfoObj",
+    "addInv"
   ],
   data() {
     return {
@@ -114,6 +154,7 @@ export default {
       //   inputValue: '',
 
       radio: "2",
+      failPhone:[],
       dynamicValidateForm: {
         domains: [
           // {
@@ -149,6 +190,49 @@ export default {
      
       if (this.options.length === value * 1) {
         this.addDepartment();
+      }
+    },
+    getUnInv(){
+      // if(this.addInv){
+      //   console.log(this.addInv)
+      //   let phoneMap = []
+      //    let phoneObj={
+      //          "userd_phone":this.InvitePeople.mobile,
+      //         "userdName":'',
+      //        }
+      //        phoneMap.push(phoneObj)
+      //        console.log(phoneMap)
+      // }
+      if(this.addInv){
+     let phoneMap = []
+    let phoneObj={
+               "userd_phone":this.InvitePeople.mobile,
+              "userdName":'',
+             }
+             phoneMap.push(phoneObj)
+
+        let addFrindObj = {
+            userId: getStorage("userInfo").id,
+            projectId: this.proTitle.proId,
+            mobile: this.InvitePeople.mobile,
+            operationType: 'member',
+            orgId:this.isMeOrgId,
+            person:JSON.stringify(phoneMap),
+          };
+          console.log(addFrindObj)
+          
+
+   getPostInfo(
+            "yq_api/authority/inviteJoinProjectForAugust",
+            addFrindObj
+          ).then(res => {
+            if(res.data.code===200){
+             console.log(res.data.failPhone)
+              this.failPhone = res.data.failPhone;
+            }
+          });
+
+
       }
     },
     addDepartment() {
@@ -248,10 +332,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let phoneMap =[];
           let mobiles=''
            this.dynamicValidateForm.domains.forEach(e => {
+             let phoneObj={
+               "userd_phone":e.phone,
+              "userdName":'',
+             }
+             phoneMap.push(phoneObj)
             mobiles +=  e.phone + ','
           });
+          console.log(mobiles)
         
           let opeType = "member";
           switch (this.radio) {
@@ -275,16 +366,18 @@ export default {
             mobile: mobiles,
             operationType: opeType,
             orgId:this.isMeOrgId,
+            person:JSON.stringify(phoneMap),
           };
           if(this.radio==='3'){
             addFrindObj.departmentId=this.options[this.value * 1].departmentId;
           }
-          // console.log(addFrindObj)
+       
           getPostInfo(
             "yq_api/authority/inviteJoinProjectForAugust",
             addFrindObj
           ).then(res => {
             if(res.data.code===200){
+             
               this.dynamicValidateForm.domains = res.data.bizList;
             }
           });
@@ -299,6 +392,7 @@ export default {
     }
   },
   mounted() {
+   
     let addObj = {
       orgId: this.isMeOrgId,
       projectId: this.proTitle.proId,
@@ -409,7 +503,11 @@ export default {
           ];
         }
       }
+    },
+    addInv(n,o){
+      this.getUnInv()
     }
+    
   }
 };
 </script>

@@ -25,7 +25,9 @@
 
                             <div class="diary-title-Box fl">
                                 <div class="diary-username">
-                                    {{detailList.orgName}}--{{detailList.userName}}
+                                   
+                                    {{detailList.userName}}<span class="diary-usernameOrgName">({{detailList.orgName}}{{detailList.departmentName?'-'+detailList.departmentName:''}})</span>
+                               
                                 </div>
                                 <div class="diary-title-input">
                                     <span class="iconfont fl" @click="handTitleChange">&#xe71f;</span>
@@ -76,7 +78,7 @@
 
                     <div class="editDiaryShow fontH15" v-if="detailList.resourceList">
                         <div class="editDiaryType iconfont">
-                            &#xe615;
+                            &#xe615;<span class="WordCount">({{detailList.resourceList[0].content.length}})</span>
                         </div>
                         <p class="diaryText" v-for="(contents,i) in detailList.resourceList" :key="i">
                            <span v-html="Trim(contents.content)"></span>
@@ -87,7 +89,7 @@
 
                     <div class="editDiaryShow fontH15" v-if="imgLength != 0">
                         <div class="editDiaryType maxFont iconfont">
-                            &#xe6a5;
+                            &#xe6a5; <span class="WordCount">({{imgLength}})</span>
                         </div>
                         <el-row :gutter="20" class="flexibleUlBox">
                             <el-col class="resourceImgList" :span="8" v-for="(images,k) in detailList.imageList" :key="k">
@@ -114,7 +116,7 @@
 
                     <div class="editDiaryShow fontH15" v-if="videoLength!=0">
                         <div class="editDiaryType maxFont iconfont">
-                            &#xe604;
+                            &#xe604; <span class="WordCount">({{videoLength}})</span>
                         </div>
                         <el-row :gutter="20" class="flexibleUlBox">
                             <el-col class="resourceImgList" :span="8" v-for="(video,k) in detailList.videoList" :key="k">
@@ -144,7 +146,7 @@
 
                     <div class="editDiaryShow fontH15" v-if="acceLength !=0">
                         <div class="editDiaryType maxFont iconfont">
-                            &#xe732;
+                            &#xe732; <span class="WordCount">({{acceLength}})</span>
                         </div>
 
                         <el-row :gutter="12" class="annexListBox">
@@ -165,7 +167,7 @@
 
                     <div class="editDiaryShow fontH15" v-if="locationLength != 0">
                         <div class="editDiaryType maxFont iconfont">
-                            &#xe633;
+                            &#xe633; <span class="WordCount">({{locationLength}})</span>
                         </div>
 
                         <el-row :gutter="12" class="annexListBox">
@@ -205,7 +207,7 @@
 
             <div class="allCrntent">
                 <div class="allCrntentTitleBox pad20">
-                    <div class="detailTitle fl">评论</div>
+                    <div class="detailTitle fl">评论 <span class="commentsNum">({{CommentListLength}}条评论)</span></div>
                 </div>
                 <div class="allCrntentText pad20">
                     <div class="noComment" v-if="CommentListLength==0">
@@ -249,7 +251,7 @@
 
             <div class="allCrntent">
                 <div class="allCrntentTitleBox pad20">
-                    <div class="detailTitle fl">可见人</div>
+                    <div class="detailTitle fl">可见人 <span class="commentsNum">(已见{{filterCont(detailList.lookUserList)}}人/共{{lookUserListLength}}人)</span></div>
                     <div class="allCrntentAddBtn fr" @click="FriendsVisible=true" >
                        <span class="el-icon-plus"></span> 添加可见人
                     </div>
@@ -278,7 +280,7 @@
 
             <div class="allCrntent">
                 <div class="allCrntentTitleBox pad20">
-                    <div class="detailTitle fl">留痕记录单</div>
+                    <div class="detailTitle fl">留痕记录单 <span class="commentsNum"> ({{userLogLength}}次)</span></div>
                 </div>
 
                 <div class="allCrntentText pad20" :style="{height:MaxHShow?'100%':'300px'}">
@@ -403,6 +405,14 @@ export default {
     FriendsList
   },
   methods: {
+            filterCont(arr){
+                if(arr){
+ return arr.filter(e=>{
+     return e.lookORunlook ==='look'
+  }).length
+                }
+              
+            },
       Trim(str){
 return str.replace(/\n|\r\n/g,"<br/>")
         },

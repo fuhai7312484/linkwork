@@ -66,7 +66,9 @@
         </div>
         <div class="diary-title-Box fl">
             <div class="diary-username">
-                {{itme.orgName}}--{{itme.userName}}
+                 
+                                   {{itme.userName}} <span class="diary-usernameOrgName"> ({{itme.orgName}}{{itme.departmentName?'-'+itme.departmentName:''}})</span>
+
             </div>
             <div class="diary-title-input">
                <span class="iconfont fl" @click="handTitleChange(index)">&#xe71f;</span> 
@@ -112,7 +114,7 @@
 <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
-<p class="diaryText" v-for="(contents,i) in itme.resourceList" :key="i">
+<p class="diaryText" style="max-height:60px;"  v-for="(contents,i) in itme.resourceList" :key="i">
    <span v-html="Trim(contents.content)"></span>
 </p>
 
