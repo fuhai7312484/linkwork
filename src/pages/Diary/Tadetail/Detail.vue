@@ -330,6 +330,7 @@
                         暂无留痕
                     </div>
                     <el-row v-for="(userLog,index) in detailList.userLogList" :key="index" class="mar5">
+                     
                         <el-col :span="8">
                             {{changeTime(userLog.time)}}
                           
@@ -553,6 +554,7 @@ return str.replace(/\n|\r\n/g,"<br/>")
                         projectId: this.proTitle.proId,
                         score: ev + ""
                     };
+                   
                     getPostInfo("yq_api/projectDiary/projectDiaryScore", obj).then(res => {
                         if (res.data.code === 200) {
                             this.open2(res.data.msg);
@@ -698,6 +700,7 @@ return str.replace(/\n|\r\n/g,"<br/>")
                 userId: getStorage("userInfo").id,
                 projectId: this.proTitle.proId
             };
+            // console.log(obj)
 
             getPostInfo("yq_api/projectDiary/detail", obj).then(res => {
                 if (res.data.code === 200) {

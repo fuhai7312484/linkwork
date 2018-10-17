@@ -260,18 +260,18 @@ return str.replace(/\n|\r\n/g,"<br/>")
         createTime:this.numberValidateForm.value5,
         type:this.numberValidateForm.value,
     }
-    // console.log(searchObj)
+    console.log(searchObj)
 
-    //    getPostInfo('yq_api/projectDiary/searchMyDariyList',searchObj)
-    //         .then(res=>{
-    //             if(res.data.code===200){
-    //                 console.log(res.data.data)
-    //                 this.myDiaryList = res.data.data;
-    //                 this.loading = false;
+       getPostInfo('yq_api/projectDiary/searchMyDariyList',searchObj)
+            .then(res=>{
+                if(res.data.code===200){
+                    console.log(res.data.data)
+                    this.myDiaryList = res.data.data;
+                    this.loading = false;
                 
-    //             }
+                }
                
-    //         })
+            })
 
             // alert('submit!');
           } else {

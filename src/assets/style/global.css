@@ -2273,3 +2273,53 @@ width: 90%;
 .x-message-TextBox{
     width: 80%;
 }
+.x-message-msgList{ position: relative;
+    overflow: hidden;
+    background: rgb(240, 240, 240);
+    border-radius:3px; 
+    border-bottom:1px #ccc dashed; 
+    cursor: pointer;
+padding:10px 10px ;}
+.x-message-msgList:hover{
+    background: rgb(219, 219, 219);
+}
+.x-message-msgList-box{
+    padding: 10px;
+    overflow: hidden;
+}
+.x-message-msgList span{
+    display: inline-block;
+}
+.x-message-msgImg{ margin-right:5px; 
+}
+.x-message-msgImg img{
+width:40px; 
+height: 40px;
+vertical-align: middle;
+border-radius:5px; 
+
+}
+.x-message-msgTime{
+    color: #ccc;
+
+}
+.x-message-msgList i{
+position: absolute;
+top: 15px;
+right: 10px;
+font-size: 12px;
+font-style: normal;
+}
+.x-message-msgName{
+    height: 25px;
+    line-height: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+    /* background: #000; */
+    overflow: hidden;
+    white-space:nowrap;
+}
+.x-message-msgInfo-box{
+    width: 70%;
+}

@@ -359,16 +359,16 @@ export default {
           replaceDepartmentPeople: obj.userId
         };
         console.log("选择代替人然后归档");
-        // getPostInfo("yq_api/projectUserRef/operationQuite", QuiteObj).then(res => {
-        //     if(res.data.code===200){
-        //         this.open2('归档成功！')
-        //         this.dialogFormVisible =false;
-        //           let _that = this;
-        //       setTimeout(function(){
-        //         _that.$router.go(0)
-        //       },500)
-        //     }
-        // })
+        getPostInfo("yq_api/projectUserRef/operationQuite", QuiteObj).then(res => {
+            if(res.data.code===200){
+                this.open2('归档成功！')
+                this.dialogFormVisible =false;
+                  let _that = this;
+              setTimeout(function(){
+                _that.$router.go(0)
+              },500)
+            }
+        })
       }
     },
 
@@ -552,6 +552,7 @@ export default {
       });
     },
     handleNodeClick(data) {
+      console.log(data)
       this.addInv = false;
       this.approval = false;
       if (data.pid === 3) {

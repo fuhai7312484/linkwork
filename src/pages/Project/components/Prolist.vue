@@ -97,7 +97,7 @@
           <li class="porList" v-for="(item, index) in tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" >
            <!-- {{item.shortName}} -->
 
-           {{item}}
+           <!-- {{item}} -->
             <div class="porListNameBox">
               <el-col :span="16" class="porListTitle">
                 <h2 :style="setTaskState(item.isMyProject,item.status,item.uStatus)" 

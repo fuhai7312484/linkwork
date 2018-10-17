@@ -234,6 +234,47 @@ return str.replace(/\n|\r\n/g,"<br/>")
 
         mounted() {
 
+
+
+
+
+// 类型筛选
+    let searchObj={
+        page:'1',
+        size:'999',
+        userId:'2C9136AE655B671001655B8122330012',
+        projectId:this.proTitle.proId,
+        createTime:'2018-08',
+        bigTime:'2018-11',
+        // type:'mv',
+        look:'look',
+    }
+    console.log(searchObj)
+
+       getPostInfo('yq_api/projectDiary/searchMyFriendsDariyList',searchObj)
+            .then(res=>{
+                if(res.data.code===200){
+                    console.log(res.data.data)
+                    // this.myDiaryList = res.data.data;
+                    // this.loading = false;
+                
+                }
+               
+            })
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
             this.loading = true;
 
             let obj = {

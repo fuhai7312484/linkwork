@@ -52,6 +52,7 @@
       
         <div>
             当前登录的用户信息：
+          <p>   用户ID：{{userData.id}}</p>
              <!-- <p>
                 用户ID：{{userData.id}}
             </p> -->

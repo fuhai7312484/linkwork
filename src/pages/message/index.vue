@@ -10,11 +10,50 @@
     <div class="demo-split" :style="{height:sWHeight}">
       <Split v-model="split1" min="190px" max="700px">
         <div slot="left" class="demo-split-pane splitLeft" :style="{height:sWHeight}">
-{{myOrgId}}<br/>
-{{myOrgName}}<br/>
-{{myProjectName}}<br/>
-{{myUserName}}<br/>
-{{myUserPortraitUri}}<br/> 
+<div class="x-message-msgList-box">
+
+  <div class="x-message-msgList" v-for="(msgList,index) in messageList" :key="index" @click="msgListChange(msgList.from)" v-if="msgList.isShow">
+    <i class="x-message-msgTime">{{msgList.time}}</i>
+    <div class="x-message-msgImg fl">
+      <img :src="msgList.mainPic"/>
+    </div>
+    <div class="x-message-msgInfo-box fl">
+      <div class="x-message-msgName">
+{{msgList.nickName}}
+      </div>
+      <div class="x-message-msgInfo">
+TA:{{msgList.sourceMsg}}
+
+ <el-badge class="mark" :value="msgList.count" v-if="msgList.count!=0" />
+
+      </div>
+
+      
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+  <!-- showMseList -->
+
+
+
+
+  
+
+
+
+
+
+</div>
+
 
           <div class="clear" style=" background: #f5f5f8;"></div>
 
@@ -26,15 +65,15 @@
       
       <div class="userDataDetil" :style="{height:sWHeight}">
         <div class="webim-chatwindow-msg" id="data-list-content" :style="{height:computeMessageHeight(sWHeight)}">
-         
+       
+<!-- v-if="item.projectId==proTitle.proId && item.from==proTitle.userId " -->
+<div v-for="(item,index) in chatHistory" :key="index" :class="item.from==from_username?' x-message-left':' x-message-right'"
 
-<div v-for="(item,index) in chatHistory" :key="index" :class="item.from==from_username?' x-message-left':' x-message-right'">
+>
 
 <div class="x-message-imgBox" :class="item.from==from_username?' x-message-left-img':' x-message-right-img'">
 <img :src="item.mainPic" width="40px" height="40px;" />
 </div>
-
-
 <div class="x-message-TextBox" :class="item.from==from_username?' fl':' fr'">
   <div class="x-message-nickBox">
     <div :class="item.from==from_username?' fl':' fr'">{{item.nickName}}</div>
@@ -46,15 +85,17 @@
  <div>
  <span class="x-message-text" :class="item.from==from_username?' fl':' fr'"  v-html="handleMsg(item.sourceMsg)"></span>
   </div>
-
-
-
 </div>
-
-
-
-
  </div>
+
+
+
+ 
+
+
+
+
+
 
         </div>
 
@@ -159,7 +200,8 @@ export default {
         chatHistory: [], // 聊天记录数组
         currentUserpwd: '123456', // 当前用户环信密码
         accence_token: '', // 权限token
-
+        messageList:[],
+        showMseList:{},
            myOrgId:'',
            myOrgName:'',
            myProjectName:'',
@@ -223,6 +265,12 @@ export default {
       }
   },
   methods: {
+    msgListChange(toId){
+      this.to_username = toId;
+      // console.log(toId)
+    
+
+    },
     //计算信息框的高度
     computeMessageHeight(str){
      return (parseInt(str)-250)+'px'
@@ -282,45 +330,126 @@ export default {
       //   }
       //   return theRequest
       // },
-  // 从localstroage获取聊天历史记录
+  
       getChatListDataFromLocal () {
-        var chatData = JSON.parse(localStorage.getItem('chatData'))
+       var chatData = JSON.parse(localStorage.getItem('chatData'))
         if (chatData) {
-          var currentChatData = chatData.chatHistoryData[this.to_username]
+          let ChatDataList = chatData.chatHistoryData;
+          let _that = this;
+          
+         let arr = []
+//从localstroage获取聊天列表
+          Object.keys(ChatDataList).forEach(function(key){
+           
+         let MesArr = ChatDataList[key].msgs.filter(e=>{
+           return e.from == key;
+         })
+            let showListObj={
+               from:MesArr[0].from,
+          sourceMsg: MesArr[MesArr.length-1].sourceMsg,
+          time: MesArr[MesArr.length-1].time,
+           nickName:MesArr[0].nickName,
+          mainPic:MesArr[0].mainPic,
+          count:ChatDataList[key].count,
+          isShow:ChatDataList[key].isShow,
+            }
+          arr.push(showListObj)
+            _that.messageList = arr
+
+             console.log(showListObj,_that.messageList)
+     console.log(key,ChatDataList[key]);
+      });
+     
+
+
+          this.showMseList = ChatDataList;
+          // 从localstroage获取聊天历史记录
+          var currentChatData = chatData.chatHistoryData[this.to_username.toUpperCase()].msgs
+          // console.log(currentChatData)
           if (currentChatData) {
+            currentChatData = currentChatData.filter(e=>{
+              return e.projectId == this.proTitle.proId
+            })
             this.chatHistory.push(...currentChatData)
+           
           }
         }
-        // console.log(chatData)
       },
 
 
          // 接受文本消息
       receiveTextMsg (message) {
         // message:{"id":"465540634703299052","type":"chat","from":"1","to":"2","data":"5共和国","ext":{"weichat":{"originType":"webim"}},"sourceMsg":"5共和国","error":false,"errorText":"","errorCode":"","time":"2018-05-10T12:55:27.432Z"}
-       console.log(message)
+      // console.log(message)
+       let TextMsg = message.from.toUpperCase()
+
        let sendTimeWZ = message.time ? new Date(message.time) : new Date()
         let sendTime = sendTimeWZ.getMonth() + 1 + '-' + sendTimeWZ.getDate() + ' ' + sendTimeWZ.getHours() + ':' + sendTimeWZ.getMinutes()
         let receiveMessage = {
-          from: message.from,
+          from: TextMsg,
           sourceMsg: message.sourceMsg,
           time: sendTime,
-          // nickName: this.receiveNickName,
            nickName:message.ext.userName,
           mainPic:message.ext.userPortraitUri,
+          projectId:message.ext.projectId,
+         
         }
         let to_username = this.to_username
         var chatData = JSON.parse(localStorage.getItem('chatData'))
-        if (chatData) {
-          chatData.chatHistoryData[to_username].push(receiveMessage)
-          localStorage.setItem('chatData', JSON.stringify(chatData))
+          if (chatData) {
+           
+         if(!chatData.chatHistoryData[TextMsg]){
+           chatData.chatHistoryData[TextMsg] = {
+             isShow:true,
+             count:1,
+             msgs:[receiveMessage],
+           }
+          }else{
+            chatData.chatHistoryData[TextMsg].isShow = true
+            chatData.chatHistoryData[TextMsg].count=chatData.chatHistoryData[TextMsg].count+1
+            chatData.chatHistoryData[TextMsg].msgs.push(receiveMessage)
+          }
+            localStorage.setItem('chatData', JSON.stringify(chatData))
         } else {
           let chatHistoryData = {}
-          chatHistoryData[to_username] = [receiveMessage]
-          localStorage.setItem('chatData', JSON.stringify({chatHistoryData}))
+          chatHistoryData[TextMsg] = {
+            count:1,
+             isShow:true,
+            msgs:[receiveMessage],
+          }
+         localStorage.setItem('chatData', JSON.stringify({chatHistoryData}))
         }
-        this.chatHistory.push(receiveMessage)
-        // console.log(this.chatHistory)
+      this.getChatListDataFromLocal()
+        if(receiveMessage.from == to_username){
+          this.chatHistory.push(receiveMessage)
+        }
+     
+       
+
+        if(this.messageList.length==0){
+      console.log(chatData.chatHistoryData[TextMsg])
+
+          // let listObj={
+            
+          // }
+          // console.log(chatData)
+          
+          // this.messageList.push(receiveMessage)
+          // console.log(this.messageList)
+        }else{
+
+
+
+
+          // this.messageList.forEach((e,index) => {
+          // if(e.from == receiveMessage.from){
+          //   this.messageList.splice(this.messageList[index],1,receiveMessage)
+          // }else{
+          //    this.messageList.push(receiveMessage)
+          // }
+          // })
+        }
+       
       },
        // 接受表情消息
       receiveEmojiMessage (message) {
@@ -346,13 +475,13 @@ export default {
         var id = this.$imconn.getUniqueId()
         var msg = new WebIM.message('txt', id)
         let fromUserName = this.from_username
-        let to_username = this.to_username
+        let to_username = this.to_username.toUpperCase()
         let _thisChatHistory = this.chatHistory
         let sendTime = this.getNowTime()
         let myNickName = this.getMyNickName
         let headimgurl = this.headimgurl
         let _that = this;
-       
+        console.log(to_username)
         msg.set({
           msg: text,
           action: 'action',                     //用户自定义，cmd消息必填
@@ -377,19 +506,28 @@ export default {
               time: sendTime,
               nickName: '我',
               mainPic:_that.myUserPortraitUri,
+              projectId:_that.proTitle.proId,
+              count:0,
             }
-            
             var chatData = JSON.parse(localStorage.getItem('chatData'))
-            if (chatData) {
-              if (chatData.chatHistoryData[to_username]) {
-                chatData.chatHistoryData[to_username].push(sendMessage)
+        if (chatData) {
+        if (chatData.chatHistoryData[to_username]) {
+               chatData.chatHistoryData[to_username].count = 0;
+                chatData.chatHistoryData[to_username].msgs.push(sendMessage)
               } else {
-                chatData.chatHistoryData[to_username] = [sendMessage]
+                chatData.chatHistoryData[to_username] ={
+                 count:0,
+                 msgs: [sendMessage],
+                }
+                
               }
               localStorage.setItem('chatData', JSON.stringify(chatData))
             } else {
-              let chatHistoryData = {}
-              chatHistoryData[to_username] = [sendMessage]
+                let chatHistoryData = {}
+              chatHistoryData[to_username] = {
+                count:0,
+                msgs:[sendMessage],
+              } 
               localStorage.setItem('chatData', JSON.stringify({chatHistoryData}))
             }
             _thisChatHistory.push(sendMessage)
@@ -462,9 +600,9 @@ export default {
 
     this.from_username = this.proTitle.userId;
     this.currentUserpwd = this.proTitle.userId;
-     this.to_username = '2C9136AE655B671001655B8122330012';
+     this.to_username = '2C9136AE65CB50170165CC5218B60068';
     //  this.receiveNickName = '中魁'
-      this.getChatListDataFromLocal()
+      // this.getChatListDataFromLocal()
         this.loginEasemob()
 
       // if (urlParams.from_username && urlParams.to_username) {
@@ -486,6 +624,10 @@ export default {
 watch:{
   chatHistory(){
     this.scrollToBottom()
+  },
+  to_username(n,o){
+    this.getChatListDataFromLocal()
+    // console.log('变了',n,o)
   }
 },
 };
