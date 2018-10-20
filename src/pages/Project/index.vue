@@ -3,7 +3,7 @@
       <g-header></g-header>
     <left-menu></left-menu>
      <router-view></router-view>
-    <right-menu></right-menu>
+    <!-- <right-menu></right-menu> -->
        <g-footer></g-footer>
   </el-row>
 

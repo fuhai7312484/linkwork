@@ -43,6 +43,8 @@
           <div class="userDataDetil" :style="{height:sWHeight}">
             <div class="webim-chatwindow-msg" id="data-list-content" :style="{height:computeMessageHeight(sWHeight)}">
               <div v-for="(item,index) in chatHistory" :key="index" :class="item.from==from_username?' x-message-left':' x-message-right'">
+               
+                
                 <div class="x-message-imgBox" :class="item.from==from_username?' x-message-left-img':' x-message-right-img'">
                   <img :src="item.mainPic" width="40px" height="40px;" />
                 </div>
@@ -54,7 +56,17 @@
                     </div>
                   </div>
                   <div>
-                    <span class="x-message-text" :class="item.from==from_username?' fl':' fr'" v-html="handleMsg(item.sourceMsg)"></span>
+                    <span class="x-message-text" v-if="item.messageType=='typeText'" :class="item.from==from_username?' fl':' fr'" v-html="handleMsg(item.sourceMsg)"></span>
+
+                   <span class="x-message-text"  v-else-if="item.messageType=='typeImg'" :class="item.from==from_username?' fl':' fr'"> <img :src="item.messageBody.fileUrl" /> </span>
+                    <span class="x-message-text"  v-else-if="item.messageType=='typeVideo'" :class="item.from==from_username?' fl':' fr'"> <img :src="item.messageBody.thumbnail" />
+                    <div class="x-message-typeVideo">
+                      <div class="x-message-deg">
+
+
+                      </div>
+                    </div>
+                     </span>
                   </div>
                 </div>
               </div>
@@ -73,6 +85,7 @@
 
 
                 <span class="el-icon-picture">
+
                 </span>
                 <span class="el-icon-delete" @click="clearChat">
                 </span>
@@ -84,8 +97,8 @@
         </div>
       </Split>
     </div>
-    <right-menu>
-    </right-menu>
+    <!-- <right-menu>
+    </right-menu> -->
     <g-footer></g-footer>
   </el-row>
 
@@ -304,9 +317,9 @@
           Object.keys(ChatDataList).forEach(function (key) {
             // console.log(ChatDataList[key])
             let MesArr = ChatDataList[key].msgs.filter(e => {
-              return e.from == key;
+              return e.projectId == _that.proTitle.proId && e.from == key;
             });
-
+           if(MesArr.length!=0){
             let showListObj = {
               from: MesArr[0].from,
               sourceMsg: MesArr[MesArr.length - 1].sourceMsg,
@@ -320,34 +333,14 @@
               Memberlist: ChatDataList[key].Memberlist,
               newTime:ChatDataList[key].newTime,
             };
-            //     if(ChatDataList[key].type=='groupchat'){
-            //       let mainPics=[];
-            // //查询群组群成员ID
-            //   var pageNum = 1,
-            //       pageSize = 1000;
-            //       var options = {
-            //           pageNum: pageNum,
-            //           pageSize: pageSize,
-            //           groupId: key,
-            //           success: function (resp) { console.log("Response: ", resp)},
-            //           error: function(e){}
-            //       };
-            //       console.log(options)
-            //       setTimeout(function(){
-            //         _that.$imconn.listGroupMember(options);
-
-            //       },100)
-
-            //       // _that.getGroupChatMemberId(key)
-
-            //     }
-
             arr.push(showListObj);
               var compare = function (obj1, obj2) {
                 var val1 = obj1.newTime;
                 var val2 = obj2.newTime;
                     return val2-val1;
             } 
+           }
+            
                       
             _that.messageList = arr.sort(compare);
           });
@@ -370,16 +363,21 @@
       },
 
       getChatListDataFromLocal() {
+        
         var chatData = JSON.parse(localStorage.getItem("chatData"));
+       
         if (chatData) {
           let ChatDataList = chatData.chatHistoryData;
+         
           this.showMseList = ChatDataList;
           // 从localstroage获取聊天历史记录
-
-          if (chatData.chatHistoryData[this.to_username.toUpperCase()]) {
+          if (ChatDataList[this.to_username.toUpperCase()]) {
+           
             var currentChatData =
-              chatData.chatHistoryData[this.to_username.toUpperCase()].msgs;
+              ChatDataList[this.to_username.toUpperCase()].msgs;
+            
             if (currentChatData) {
+            
               currentChatData = currentChatData.filter(e => {
                 return e.projectId == this.proTitle.proId;
               });
@@ -387,6 +385,7 @@
             }
           }
         }
+      
       },
       //发起群聊(单聊)
       addChatWithChange(){
@@ -396,7 +395,8 @@
       // 接受文本消息
       receiveTextMsg(message) {
         // message:{"id":"465540634703299052","type":"chat","from":"1","to":"2","data":"5共和国","ext":{"weichat":{"originType":"webim"}},"sourceMsg":"5共和国","error":false,"errorText":"","errorCode":"","time":"2018-05-10T12:55:27.432Z"}
-        // console.log(message)
+        console.log(message.ext.messageType)
+     
         let TextMsg = null;
         // let nickName = null;
         if (message.type == "chat") {
@@ -417,14 +417,31 @@
           sendTimeWZ.getHours() +
           ":" +
           sendTimeWZ.getMinutes();
+         
         let receiveMessage = {
           from: TextMsg,
           sourceMsg: message.sourceMsg,
           time: sendTime,
           nickName: message.ext.userName,
           mainPic: message.ext.userPortraitUri,
-          projectId: message.ext.projectId
+          projectId: message.ext.projectId,
+          messageType:message.ext.messageType,
         };
+       
+        
+        if(message.ext.messageType=='typeText'){
+          receiveMessage.sourceMsg =  message.sourceMsg
+        }else if(message.ext.messageType=='typeImg'){
+           let msgFileUrl = JSON.parse(message.ext.messageBody)
+           console.log(msgFileUrl)
+          receiveMessage.sourceMsg = '[图片消息]'
+            receiveMessage.messageBody =  msgFileUrl
+        }else if(message.ext.messageType=='typeVideo'){
+           let msgFileUrl = JSON.parse(message.ext.messageBody)
+           receiveMessage.sourceMsg = '[视频消息]'
+           receiveMessage.messageBody =  msgFileUrl
+        }
+
         let to_username = this.to_username;
         var chatData = JSON.parse(localStorage.getItem("chatData"));
         if (chatData) {
@@ -546,7 +563,7 @@
           setTimeout(function () {
             localStorage.setItem("chatData", JSON.stringify(chatData));
             _that.getMsgsList();
-          }, 500);
+          }, 1000);
         } else {
           // console.log(message)
           let chatHistoryData = {};
@@ -618,6 +635,7 @@
       },
       // 接受表情消息
       receiveEmojiMessage(message) {
+        console.log(message,1111111)
         this.chatHistory.push(message);
       },
       // 接受图片消息
@@ -676,7 +694,8 @@
               nickName: "我",
               mainPic: _that.myUserPortraitUri,
               projectId: _that.proTitle.proId,
-              count: 0
+              count: 0,
+               messageType: "typeText"
             };
             var chatData = JSON.parse(localStorage.getItem("chatData"));
             if (chatData) {
@@ -705,12 +724,6 @@
                 JSON.stringify({ chatHistoryData })
               );
               _that.getMsgsList();
-
-
-
-
-
-
             }
             _thisChatHistory.push(sendMessage);
 
@@ -762,7 +775,8 @@
                nickName: "我",
              mainPic: _that.myUserPortraitUri,
               projectId: _that.proTitle.proId,
-              count: 0
+              count: 0,
+              messageType: "typeText"
             }
 
 

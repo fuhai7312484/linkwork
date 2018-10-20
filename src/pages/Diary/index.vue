@@ -65,7 +65,7 @@
  <!-- </div> -->
       </div>
 
-    <right-menu></right-menu>
+    <!-- <right-menu></right-menu> -->
        <g-footer></g-footer>
   </el-row>
 

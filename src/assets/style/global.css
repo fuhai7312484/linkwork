@@ -2265,6 +2265,43 @@ width: 90%;
     border-radius:5px; 
     padding: 6px 10px; 
     display: inline-block;
+    position: relative;
+}
+.x-message-right .x-message-typeVideo{
+    height: 50px;
+    width: 50px;
+    border:5px rgba(0, 0, 0, 0.5) solid; 
+    position: absolute;
+    top: 30%;
+    left: 80px;
+    border-radius:50%; 
+    cursor: pointer;
+    
+}
+
+
+
+.x-message-right .x-message-typeVideo .x-message-deg{
+    margin:7px 0px 0px 15px;
+    display:block;
+    width:0;
+    height:0;
+    border-width:13px 0 13px 13px;
+    border-style:solid;
+    border-color:transparent transparent transparent rgba(0, 0, 0, 0.5);
+}
+.x-message-right .x-message-typeVideo:hover{
+    background: #000;
+     
+ }
+ .x-message-right .x-message-typeVideo:hover .x-message-deg{
+    border-color:transparent transparent transparent #fff;
+ }
+
+.x-message-right span.x-message-text img{
+   
+     width: 190px;
+     height: auto;
 }
 .x-message-right-img{
     float: right;
