@@ -9,7 +9,7 @@ import "./assets/style/iconfont.css";
 import { getStorage } from "./assets/lib/myStorage";
 
 import store from "./store";
-
+import $ from 'jquery'
 require('./assets/webim.config.js')
 let WebIM = require('easemob-websdk')
 Vue.prototype.$webim = WebIM

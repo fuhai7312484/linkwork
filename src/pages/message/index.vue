@@ -56,10 +56,63 @@
                     </div>
                   </div>
                   <div>
+                    
+                  
+                   
+
                     <span class="x-message-text" v-if="item.messageType=='typeText'" :class="item.from==from_username?' fl':' fr'" v-html="handleMsg(item.sourceMsg)"></span>
 
                    <span class="x-message-text"  v-else-if="item.messageType=='typeImg'" :class="item.from==from_username?' fl':' fr'"> <img :src="item.messageBody.fileUrl" /> </span>
+                    <!-- hidden="true" -->
+
+
+
+                    <span class="x-message-text"  v-else-if="item.messageType=='typeVoice'" :class="item.from==from_username?' fl':' fr'">
+                        <!-- <video controls="" autoplay="" name="media"><source :src="item.messageBody.fileUrl" type="audio/mpeg"></video> -->
+
+<p class="weixinAudio" 
+@click="typeVoicePlay(item.messageBody.fileUrl,index,item.id)"
+ :id="'media'+''+index" 
+ :ref="'media'+''+index" 
+ data-play="false" 
+ :style="{width:item.messageBody.duration*50+'px'}"
+  >
+  <!-- {{item.messageBody.duration*10+'px'}} -->
+		<audio :data="index" @canplay="playing(item.id)" @ended="ended(index)" width="1" height="1"  type="audio/mpeg" class="mx-audio" preload >
+      <source :src="item.messageBody.fileUrl" type="audio/mpeg">
+      </audio>
+			<span id="audio_area" class="db audio_area">
+			<span class="audio_wrp db">
+			<span class="audio_play_area">
+				<i class="icon_audio_default"></i>
+				<i class="icon_audio_playing"></i>
+            </span>
+			<span id="audio_length" class="audio_length tips_global">{{item.messageBody.duration}}"</span>
+			<!-- <span class="db audio_info_area">    
+                <strong class="db audio_title">Title/标题</strong>
+                <span class="audio_source tips_global">From/来源</span>
+			</span> -->
+			<!-- <span id="audio_progress" class="progress_bar" style="width: 0%;"></span> -->
+			</span>
+			</span>
+		</p>
+ 
+<div class="VoiceUnread" v-if='item.unlook'>
+
+</div>
+
+                      <!-- <audio controls preload="auto" :id="'media'+''+index" :ref="'media'+''+index" controls>
+                        <source :src="item.messageBody.fileUrl" type="audio/mpeg">
+                        </audio> -->
+         
+                      </span>
+
+                        
                     <span class="x-message-text"  v-else-if="item.messageType=='typeVideo'" :class="item.from==from_username?' fl':' fr'"> <img :src="item.messageBody.thumbnail" />
+                    
+
+
+                    
                     <div class="x-message-typeVideo">
                       <div class="x-message-deg">
 
@@ -104,6 +157,7 @@
 
 </template>
 <script>
+
   import LeftMenu from "@/components/LeftMenu";
   import RightMenu from "@/components/RightMenu";
   import GHeader from "@/components/Header.vue";
@@ -395,7 +449,7 @@
       // 接受文本消息
       receiveTextMsg(message) {
         // message:{"id":"465540634703299052","type":"chat","from":"1","to":"2","data":"5共和国","ext":{"weichat":{"originType":"webim"}},"sourceMsg":"5共和国","error":false,"errorText":"","errorCode":"","time":"2018-05-10T12:55:27.432Z"}
-        console.log(message.ext.messageType)
+        // console.log(message)
      
         let TextMsg = null;
         // let nickName = null;
@@ -439,6 +493,12 @@
         }else if(message.ext.messageType=='typeVideo'){
            let msgFileUrl = JSON.parse(message.ext.messageBody)
            receiveMessage.sourceMsg = '[视频消息]'
+           receiveMessage.messageBody =  msgFileUrl
+        }else if(message.ext.messageType=='typeVoice'){
+           let msgFileUrl = JSON.parse(message.ext.messageBody)
+           receiveMessage.sourceMsg = '[语音消息]'
+            receiveMessage.id = (new Date()).getTime()
+           receiveMessage.unlook = true
            receiveMessage.messageBody =  msgFileUrl
         }
 
@@ -646,8 +706,67 @@
         console.log(this.chatHistory);
       },
 
-      // 发送文本消息
+      typeVoicePlay(url,index,id){
+        // console.log(url,index,id)
+        var chatData = JSON.parse(localStorage.getItem("chatData"));
+         let to_username = this.to_username;
       
+        chatData.chatHistoryData[to_username].msgs.forEach(e => {
+          if(e.id == id){
+            e.unlook = false;
+         
+          }
+        });
+         localStorage.setItem("chatData", JSON.stringify(chatData));
+        this.getChatListDataFromLocal()
+        let _that = this;
+        Object.keys(_that.$refs).forEach(function(key){
+      
+          if(_that.$refs[key][0]){
+             _that.$refs[key][0].dataset.play = false
+          _that.$refs[key][0].querySelector('.mx-audio').pause()
+          _that.$refs[key][0].querySelector('.icon_audio_playing').style.display = 'none'
+          _that.$refs[key][0].querySelector('.icon_audio_default').style.display = 'inline-block'
+          }
+         
+});
+
+        var Pdom = this.$refs['media'+ '' +index][0]
+        var audio = Pdom.querySelector('.mx-audio')
+        var defaultIcon = Pdom.querySelector('.icon_audio_default')
+        var playingIcon = Pdom.querySelector('.icon_audio_playing')
+        audio.currentTime = 0
+       
+        if(Pdom.dataset.play=='false'){
+           audio.play()
+             defaultIcon.style.display = 'none'
+        playingIcon.style.display = 'inline-block'
+           Pdom.dataset.play = true
+        }else{
+           audio.pause()
+            // audio.currentTime = 0
+            
+             defaultIcon.style.display = 'inline-block'
+        playingIcon.style.display = 'none'
+            Pdom.dataset.play = false
+        }
+      },
+       playing(id) {
+            // console.log('开始');
+            // console.log(id)
+       },
+      ended(index){
+         var Pdom = this.$refs['media'+ '' +index][0]
+         var audio = Pdom.querySelector('.mx-audio')
+           var defaultIcon = Pdom.querySelector('.icon_audio_default')
+        var playingIcon = Pdom.querySelector('.icon_audio_playing')
+         Pdom.dataset.play = false
+         defaultIcon.style.display = 'inline-block'
+        playingIcon.style.display = 'none'
+    
+      },
+
+      // 发送文本消息
       sendTextMsg() {
         var text = document.querySelector("#inputcontent").value;
         text = text.replace(/\n/g, "");
@@ -867,6 +986,28 @@
       }
     },
     mounted() {
+
+
+      // console.log($)
+
+      // 修改了返回的对象,以前的无法接收
+
+// var weixinAudioObj = $('.weixinAudio').weixinAudio();
+// // 添加单一播放的逻辑
+// $('.weixinAudio').on('click',function(event) {
+//     var $this = $(this);
+//     var currentIndex = $this.index();
+//     // 遍历所有对象，找到非当前点击，执行pause()方法;
+//     $.each(weixinAudioObj,function(i, el) {
+//         if(i != 'weixinAudio'+currentIndex){
+//             el.pause();
+//         }
+//     });
+// });
+
+
+
+
       let addDe = {
         lookUserId: getStorage("userInfo").id,
         projectId: this.proTitle.proId,
@@ -926,4 +1067,36 @@
   };
 </script>
 <style>
+.app-voice-pause,.app-voice-play{
+   height: 18px;
+   background-repeat: no-repeat;
+    /* background-image: url(../img/voice.png); */
+   background-size: 18px auto;
+   opacity: 0.5;
+  }
+   .app-voice-you .app-voice-pause{
+   /*从未播放*/
+   background-position: 0px -39px;
+ }
+ .app-voice-you .app-voice-play{
+   /*播放中（不需要过渡动画）*/
+   background-position: 0px -39px;
+   -webkit-animation: voiceplay 1s infinite step-start;
+   -moz-animation: voiceplay 1s infinite step-start;
+   -o-animation: voiceplay 1s infinite step-start;
+   animation: voiceplay 1s infinite step-start;
+ }
+ @-webkit-keyframes voiceplay {
+  0%,
+  100% {
+     background-position: 0px -39px;
+   }
+   33.333333% {
+     background-position: 0px -0px;
+  }
+   66.666666% {
+     background-position: 0px -19.7px;
+   }
+ }
+
 </style>
