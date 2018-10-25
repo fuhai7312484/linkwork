@@ -10,14 +10,12 @@
   :visible.sync="FriendsVisible"
   width="30%"
   :before-close="handleClose">
-
-
 <friends-list :FriendsVisible="FriendsVisible" @handleClose="handleClose" @handFriendArr="handFriendArr" >
-
-
-
 </friends-list>
 </el-dialog>
+
+
+
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <div class="editDiaryBox">
                 <div class="editDiaryTop">
@@ -355,8 +353,6 @@
              handFriendArr(data){
                 this.FriendsVisible = false;
                 this.FriendArr = data;
-            
-              
             },
 
             baiduMapFromChild(data) {

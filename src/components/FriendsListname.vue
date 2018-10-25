@@ -68,12 +68,13 @@
 import { getPostInfo, getStorage } from "../assets/lib/myStorage.js";
 import { mapState } from "vuex";
 export default {
-  name: "FriendsList",
+  name: "FriendsListname",
   props:['FriendsVisible'],
   data() {
     return {
       filterText: "",
       userIdChecked: [],
+    
       FriendData: [],
       defaultProps: {
         children: "children",
@@ -103,48 +104,16 @@ export default {
             this.$emit('handFriendArr',this.userIdChecked);
       },
     handleCheckChange(data, checked, indeterminate) {
-     
- 
-if(data.pid===3){
-    if(checked){
-    this.userIdChecked.push(data.userId);
-    }else{
-        var index = this.userIdChecked.indexOf(data.userId);
-         this.userIdChecked.splice(index, 1);
-    }
-}
+          if(data.pid===3){
+            if(checked){
+            this.userIdChecked.push({userId:data.userId,userName:data.label});
+            }else{
+                var index = this.userIdChecked.indexOf(data.userId);
+                      this.userIdChecked.splice(index, 1);
+            }
+          }
 
-      //  if(checked){
-      //   if(data.pid===3){
-      //     console.log(data.userId)
-      //      this.userIdChecked.push(data.userId);
-      //   }else if(data.pid===2){
-      //     data.children.forEach(e=>{
-      //        this.userIdChecked.push(e.userId)
-      //     })
-      //   }
-      // }
-
-
-
-
-     
-      // if(checked){
-      //   if(data.pid===3){
-      //     console.log(data.userId)
-      //      this.userIdChecked.push(data.userId);
-      //   }else if(data.pid===2){
-      //     data.children.forEach(e=>{
-      //        this.userIdChecked.push(e.userId)
-      //     })
-      //   }
-      // }
-
-      // else{
-      //   var index = this.userIdChecked.indexOf(data.userId);
-      //     this.userIdChecked.splice(index, 1);
-      // }
-  
+   
       
     },
     levelChange(level) {
