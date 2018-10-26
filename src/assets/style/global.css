@@ -2354,9 +2354,14 @@ width: 90%;
     border-bottom:1px #ccc dashed; 
     cursor: pointer;
 padding:10px 10px ;}
+.messageTabs{
+    background: #b4e4fc;
+}
+
 .x-message-msgList:hover{
     background: rgb(219, 219, 219);
 }
+
 .x-message-msgList-box{
     padding: 10px;
     overflow: hidden;
@@ -2383,6 +2388,7 @@ padding:10px 10px ;}
     display: block;
     /* width: 17px;
     height: 17px; */
+    margin:0 1px 1px 0;
     overflow: hidden;
     border-radius:3px; 
     
@@ -2504,7 +2510,13 @@ top: 0;
     display: inline-block;
     border-radius:5px; 
 }
+.noXmessage{
+    text-align: center;
+    color: #ccc;
+    font-size: 20px;
+    padding: 80px 0;
 
+}
 
 .db {
     display: block;
