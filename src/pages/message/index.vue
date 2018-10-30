@@ -33,6 +33,7 @@
                 <div class="x-message-msgList" v-for="(msgList,index) in messageList" :key="index" :class="{ messageTabs:changeRed == index}"  @click="msgListChange(index,msgList.from,msgList.title,msgList.type)"
                   v-if="msgList.isShow">
                   <!-- <div @click="getCreateChatGroupUsersInfo(msgList.from)">查看群成员</div> -->
+                  
                   <i class="x-message-msgTime">{{msgList.time}}</i>
                   <div class="x-message-msgImg fl" v-if="msgList.type==='chat'">
                     <img :src="msgList.mainPic" />
@@ -67,13 +68,54 @@
           <div class="webim-chatwindow-title">
             {{to_name}}
             <div class="x-message-setting">
-              <span class="el-icon-arrow-down" @click="show3 = !show3"></span>
+              <span :class="show3?'el-icon-arrow-up':'el-icon-arrow-down'" @click="show3 = !show3"></span>
               <el-collapse-transition>
-                <div v-show="show3">
+                <div v-if="to_username" v-show="show3">
                   <div class="x-message-settingBox">
-                    <div>
-                      成员列表
-                    </div>
+                    <ul class="x-message-users">
+                       <li v-for="(usersItem,index) in groupUsers" :key="index" class="x-message-usersSpan">
+                    <span class="x-message-usersOwner iconfont" v-if="usersItem.owner">&#xe61c;</span> 
+                          <el-popover
+                          v-if="deleShow && usersItem.status!=1 && !usersItem.owner"
+                            placement="top"
+                            width="160"
+                            v-model="usersItem.succShow">
+                            <p>确定删除群成员{{usersItem.userName}}吗？</p>
+                            <div style="text-align: right; margin: 0">
+                              <el-button size="mini" type="text" @click="usersItem.succShow = false">取消</el-button>
+                              <el-button type="primary" size="mini" @click="deleteUserChange(index,usersItem.userId)">确定</el-button>
+                            </div>
+                    <span slot="reference" class="x-message-DelUsers" >
+                          <i class="el-icon-close"></i>
+                        </span>
+                   </el-popover>
+                    <span class="deleStatus1" v-if="usersItem.status==1">
+                     <i class="iconfont">&#xe64b;</i>
+                    </span>
+                      <img :src="usersItem.mainPic"/>
+                      <div> {{usersItem.userName}}</div>
+                      <!-- {{groupUsers}} -->
+                     
+                    </li>
+                    <li class="x-message-usersSpan" v-if="isOwner">
+                      <span class="x-message-addUser">
+                       <i class="el-icon-plus"></i>
+                      </span>
+                    <div>   添加</div>
+                    </li>
+
+                      <li class="x-message-usersSpan" @click="deleShow = !deleShow" v-if="isOwner">
+                      <span class="x-message-addUser">
+                           <i class="el-icon-minus"></i>
+                      </span>
+                    <div> {{deleShow?'取消':'删除'}} </div>
+                    </li>
+
+                    
+                    </ul>
+                   <div class="x-chatTitle">
+                     单(群)聊名称：{{to_name}}     <el-button v-if="isOwner" size="mini" type="primary" icon="el-icon-edit" circle></el-button> 
+                   </div>
                     <el-button type="primary" @click="leaveGroup">
                       退出群聊
                     </el-button>
@@ -221,6 +263,10 @@
     name: "messageIndex",
     data() {
       return {
+        isOwner:false,
+        deleShow:false,
+        visible2: false,
+        groupUsers:[],
         changeRed:-1,
         FriendArr: [],
         FriendsVisible: false,
@@ -311,12 +357,32 @@
       },
       //退出群组
       leaveGroup() {
-        console.log(this.to_username, this.proTitle.userId);
+        // console.log(this.to_username, this.proTitle.userId);
+        let _that = this;
         var option = {
-          to: this.proTitle.userId,
-          roomId: this.to_username,
+          to: _that.proTitle.userId,
+          roomId: _that.to_username,
           success: function () {
             console.log("退出群组成功！");
+
+       let obj={
+              userId:getStorage("userInfo").id,
+              projectId:_that.proTitle.proId,
+              groupId:_that.to_username,
+              targetId:'',
+              type: 'removeMyself'
+            }
+            
+          getPostInfo("yq_api/chat/contact/remvChatGroupPeople", obj).then(res => {
+            
+            if(res.data.code==200){
+               _that.open2("成功退出群组！");
+              _that.groupUsers[index].status = '1'
+            }
+            
+          })
+
+
           },
           error: function () {
             console.log("退出群组失败！");
@@ -325,7 +391,8 @@
         this.$imconn.leaveGroupBySelf(option);
       },
       msgListChange(index,toId, name, type) {
-      
+        this.deleShow = false;
+        this.show3 = false;
       this.changeRed = index;
         this.to_username = toId;
         this.to_msgType = type;
@@ -411,7 +478,52 @@
       //   }
       //   return theRequest
       // },
+      //删除群成员
+      deleteUserChange(index,id){
+        // console.log(index,id)
+  let _that = this
+    var option = {
+        affiliation: 'owner',                       // 写死
+        roomId: _that.to_username,                    // 群组ID
+        success: function () {
+            // console.log('add to black list succeed');
+        },
+        to: id                               // 需要删除的成员ID
+    };
+  
+     _that.$imconn.addToGroupBlackList(option);
+      let obj={
+              userId:getStorage("userInfo").id,
+              projectId:_that.proTitle.proId,
+              groupId:_that.to_username,
+              targetId:id,
+              type: 'removePeople'
+            }
+            
+          getPostInfo("yq_api/chat/contact/remvChatGroupPeople", obj).then(res => {
+            
+            if(res.data.code==200){
+               _that.open2("成员删除成功！");
+              _that.groupUsers[index].status = '1'
+            }
+            
+          })
 
+
+      },
+      //获取当前群信息
+      getChatGroupInfo(){
+       let obj = {
+          groupId: this.to_username,
+          projectId: this.proTitle.proId,
+          type: "1",
+          userId: getStorage("userInfo").id
+        };
+        console.log(obj)
+           getPostInfo("yq_api/chat/contact/findChatGroupInfo", obj).then(res => {
+             console.log(res)
+           })
+      },
       //从localstroage获取聊天列表
       getMsgsList() {
         var chatData = JSON.parse(localStorage.getItem("chatData"));
@@ -419,12 +531,14 @@
           let ChatDataList = chatData.chatHistoryData;
           let _that = this;
           let arr = [];
+       
           //从localstroage获取聊天列表
           Object.keys(ChatDataList).forEach(function (key) {
-            // console.log(ChatDataList[key])
+           
             let MesArr = ChatDataList[key].msgs.filter(e => {
               return e.projectId == _that.proTitle.proId && e.from == key;
             });
+          
             if (MesArr.length != 0) {
               let showListObj = {
                 from: MesArr[0].from,
@@ -466,7 +580,10 @@
                 return val2 - val1;
               };
             }
-            _that.messageList = arr.sort(compare);
+          // if(ChatDataList[key].projectId == _that.proTitle.proId){
+          _that.messageList = arr.sort(compare);
+          // }
+           
             // console.log(_that.messageList)
           });
         }
@@ -505,30 +622,96 @@
         }, 500);
       },
       //查询群里群成员ID
-      getGroupChatMemberId(id) {
-        let obj = {
-          groupId: id,
-          projectId: this.proTitle.proId,
+      getGroupChatMemberId() {
+        // console.log(1111111,this.to_username)
+       if(this.to_username.length===14){
+        let _that = this
+        var pageNum = 1,
+        pageSize = 1000;
+        var options = {
+            pageNum: pageNum,
+            pageSize: pageSize,
+            groupId: _that.to_username,
+            success: function (resp) {
+              let Gowner=''
+              resp.data.forEach(e=>{
+                if(e.owner){
+                  if(e.owner.toUpperCase() ==_that.proTitle.userId){
+                   _that.isOwner = true;
+                  }else{
+                     _that.isOwner = false;
+                  }
+                  Gowner = e.owner.toUpperCase()
+
+                }
+              })
+
+         
+
+  // var chatData = JSON.parse(localStorage.getItem("chatData"));
+  //       if (chatData) {
+  //          let ChatDataList = chatData.chatHistoryData;
+  //          ChatDataList[id].Memberlist.forEach(el=>{
+  //            if(el.userId == Gowner){
+  //              el.owner = true
+  //             // console.log(el.userId,Gowner)
+  //            }
+  //          })
+  //          _that.groupUsers = ChatDataList[id].Memberlist
+         
+  //       }
+  //       console.log(_that.groupUsers)
+
+
+
+                 let obj = {
+          groupId: _that.to_username,
+          projectId: _that.proTitle.proId,
           type: "1",
           userId: getStorage("userInfo").id
         };
-        // console.log(obj)
+
         getPostInfo("yq_api/chat/contact/findChatGroupInfo", obj).then(res => {
           // console.log(res)
           if (res.data.code == 200) {
             let robj = {
               gid: res.data.gid,
-              groupId: id,
-              projectId: this.proTitle.proId,
+              groupId: _that.to_username,
+              projectId: _that.proTitle.proId,
               type: "1",
               userId: getStorage("userInfo").id
             };
             getPostInfo("yq_api/chat/contactGroup/userList", robj).then(resd => {
-              return resd;
-              console.log(resd);
+              if(resd.data.code==200){
+                resd.data.data.forEach(el=>{
+                 el.succShow = false;
+                  if(el.userId == Gowner){
+                    el.owner = true
+                  }
+                })
+                 _that.groupUsers = resd.data.data;
+         
+              }
+           
             });
           }
         });
+
+
+              
+              
+              },
+            error: function(e){}
+        };
+   this.$imconn.listGroupMember(options);
+
+
+
+
+       }
+
+       
+     
 
         // var pageNum = 1,
         //   pageSize = 1000;
@@ -546,6 +729,7 @@
 
       getChatListDataFromLocal() {
         var chatData = JSON.parse(localStorage.getItem("chatData"));
+       
         if (chatData) {
           let ChatDataList = chatData.chatHistoryData;
           this.showMseList = ChatDataList;
@@ -557,10 +741,12 @@
               currentChatData = currentChatData.filter(e => {
                 return e.projectId == this.proTitle.proId;
               });
+           
               this.chatHistory = currentChatData;
             }
           }
         }
+ 
       },
       todu(time) {
         return time < 10 ? "0" + time : "" + time;
@@ -757,6 +943,7 @@
                                 type: chatType == "0" ? "chat" : "groupchat",
                                 isShow: true,
                                 count: 0,
+                                projectId:_that.proTitle.proId,
                                 msgs: [
                                   {
                                     from: res.data.conditions,
@@ -781,6 +968,7 @@
                                 title: userNames.join("、") + "-" + times,
                                 count: 0,
                                 isShow: true,
+                                projectId:_that.proTitle.proId,
                                 msgs: [
                                   {
                                     from: res.data.conditions,
@@ -859,7 +1047,7 @@
       // 接受文本消息
       receiveTextMsg(message) {
         // message:{"id":"465540634703299052","type":"chat","from":"1","to":"2","data":"5共和国","ext":{"weichat":{"originType":"webim"}},"sourceMsg":"5共和国","error":false,"errorText":"","errorCode":"","time":"2018-05-10T12:55:27.432Z"}
-        // console.log(message);
+        console.log(message);
         this.changeRed = -1;
         let TextMsg = null;
         if (message.type == "chat") {
@@ -923,7 +1111,8 @@
               type: message.type,
               isShow: true,
               count: 1,
-              msgs: [receiveMessage]
+              msgs: [receiveMessage],
+              // projectId:message.ext.projectId,
             };
             if (message.type == "chat") {
               chatData.chatHistoryData[TextMsg].mainPic =
@@ -960,7 +1149,7 @@
                           res.data.data;
                         chatData.chatHistoryData[TextMsg].peopleNum =
                           res.data.data.length;
-                        console.log(res, chatData.chatHistoryData[TextMsg]);
+                        // console.log(res, chatData.chatHistoryData[TextMsg]);
                       }
                     }
                   );
@@ -975,6 +1164,7 @@
             chatData.chatHistoryData[TextMsg].title = message.ext.userName;
             chatData.chatHistoryData[TextMsg].isShow = true;
             chatData.chatHistoryData[TextMsg].type = message.type;
+            // chatData.chatHistoryData[TextMsg].projectId = message.ext.projectId;
             if (TextMsg != to_username) {
               chatData.chatHistoryData[TextMsg].count =
                 chatData.chatHistoryData[TextMsg].count + 1;
@@ -1047,7 +1237,8 @@
                 : message.ext.userName,
             count: 1,
             isShow: true,
-            msgs: [receiveMessage]
+            msgs: [receiveMessage],
+            //  projectId:message.ext.projectId,
           };
           if (message.type == "chat") {
             chatHistoryData[TextMsg].mainPic = message.ext.userPortraitUri;
@@ -1445,16 +1636,24 @@
           });
         }
       }
-
+      
       this.loginEasemob();
       this.getMsgsList();
+      // this.getGroupChatMemberId()
     },
     watch: {
       chatHistory() {
         this.scrollToBottom();
       },
       to_username(n, o) {
-        this.getChatListDataFromLocal();
+        let _that = this
+        _that.getChatListDataFromLocal();
+        _that.getMsgsList();
+      
+        setTimeout(function(){
+        _that.getGroupChatMemberId()
+        } ,300)
+        
         // console.log('变了',n,o)
       }
     }

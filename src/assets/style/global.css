@@ -2481,6 +2481,11 @@ top: 0;
     cursor: pointer;
    
 }
+.x-message-setting .el-icon-arrow-up{
+    width: 30px;
+    cursor: pointer;
+   
+}
 .x-message-settingBox{
     /* background: #000; */
     background: #fff;
@@ -2496,6 +2501,54 @@ top: 0;
     padding: 10px;
     box-sizing: border-box;
 }
+.x-message-users{
+    width: 100%;
+    overflow: hidden;
+    padding: 10px 0;
+    /* background: #000; */
+}
+.x-message-usersSpan{
+    height: 50px;
+    width: 50px;
+    float: left;
+    text-align: center;
+    position: relative;
+}
+.x-message-usersOwner{
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border-radius:50%;
+    color: #fff; 
+    line-height: 20px;
+    background:rgb(202, 0, 0);
+}
+.x-message-users span.x-message-addUser{
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    border: 2px solid #ccc;
+    border-radius:50%;
+    box-sizing: border-box; 
+    margin-bottom:5px; 
+    cursor: pointer;
+}
+.x-message-addUser i.el-icon-minus{
+    font-size: 26px;
+    color: #ccc;
+}
+.x-message-addUser i.el-icon-plus{
+    font-size: 26px;
+    color: #ccc;
+}
+.x-message-usersSpan img{
+    width: 30px;
+    height: 30px;
+    border-radius:4px; 
+}
+
 .x-message-Tip{
     text-align: center;
     font-size: 12px;
@@ -2518,6 +2571,42 @@ top: 0;
 
 }
 
+.deleStatus1{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.5);
+    line-height: 30px;
+    border-radius:4px; 
+    color: rgb(228, 0, 0);
+ 
+}
+.x-message-DelUsers{
+    position: absolute;
+    top: -6px;
+    right: 5px;
+    width: 15px;
+    height: 15px;
+    border-radius:3px;
+    border: 1px solid #fff;
+    background: red; 
+    color: #fff;
+    z-index: 1;
+    line-height: 15px;
+    /* padding: 3px; */
+    box-sizing: border-box;
+}
+.x-message-DelUsers i{
+    font-weight: bold;
+    cursor: pointer;
+   
+}
+
+.x-chatTitle{
+     font-size: 14px;
+     padding: 10px;
+     box-sizing: border-box;
+}
 .db {
     display: block;
 }
