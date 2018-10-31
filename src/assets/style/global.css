@@ -2601,11 +2601,19 @@ top: 0;
     cursor: pointer;
    
 }
+.elEditStyle{
+     margin: 0 10px;
+     font-size: 18px;
+     cursor: pointer;
+}
 
 .x-chatTitle{
      font-size: 14px;
      padding: 10px;
      box-sizing: border-box;
+}
+.x-chatTitle-em{
+    color: #ccc;
 }
 .db {
     display: block;

@@ -110,11 +110,15 @@
                       </span>
                     <div> {{deleShow?'取消':'删除'}} </div>
                     </li>
-
-                    
                     </ul>
                    <div class="x-chatTitle">
-                     单(群)聊名称：{{to_name}}     <el-button v-if="isOwner" size="mini" type="primary" icon="el-icon-edit" circle></el-button> 
+                     <span class="x-chatTitle-em">单(群)聊名称：</span>
+                     <div>
+                       <el-input v-if="isOwner && to_username.length==14" style="max-width:60%;" v-model="editTo_name" placeholder="请输入群名称">
+                       </el-input>
+                      <span v-else> {{to_name}} </span>
+                       <i v-if="isOwner" @click="EditGroupName" class="el-icon-edit elEditStyle"></i>
+                       </div>    
                    </div>
                     <el-button type="primary" @click="leaveGroup">
                       退出群聊
@@ -127,7 +131,15 @@
           <div class="userDataDetil" :style="{height:sWHeight}">
             <div class="webim-chatwindow-msg" id="data-list-content" :style="{height:computeMessageHeight(sWHeight)}">
               <div v-for="(item,index) in chatHistory" :key="index" :class="item.from==from_username?' x-message-left':' x-message-right'">
-                <div v-if="item.messageType=='inviteChatGroup'" class="x-message-Tip">
+                 <div v-if="item.messageType=='ModifyingGroupName'" class="x-message-Tip">
+                    <!-- <div><span>
+                          {{item.time}}
+                        </span></div> -->
+                  <span>
+                    ({{item.time}}) - {{item.sourceMsg}}
+                  </span>
+                </div>
+                <div v-else-if="item.messageType=='inviteChatGroup'" class="x-message-Tip">
                     <!-- <div><span>
                           {{item.time}}
                         </span></div> -->
@@ -263,6 +275,7 @@
     name: "messageIndex",
     data() {
       return {
+        gid:'',
         isOwner:false,
         deleShow:false,
         visible2: false,
@@ -276,6 +289,7 @@
         split1: 0.3,
         from_username: "", // url中的发起方用户名
         to_username: "", // url中的接收方用户名
+        editTo_name:'',
         to_msgType: "",
         conn: {}, // 与环信的通信长连接
         chatHistory: [], // 聊天记录数组
@@ -288,6 +302,7 @@
         myOrgName: "",
         myProjectName: "",
         myUserName: "楠",
+        GownerUserName:'',
         myUserPortraitUri:
           "http://39.107.254.60:801/project/2C9136AE655B671001655B75312F0008/userHead.png",
         emojiMap: {
@@ -397,6 +412,7 @@
         this.to_username = toId;
         this.to_msgType = type;
         this.to_name = name;
+        this.editTo_name = name;
         var chatData = JSON.parse(localStorage.getItem("chatData"));
         if (chatData) {
           chatData.chatHistoryData[toId].count = 0;
@@ -480,7 +496,7 @@
       // },
       //删除群成员
       deleteUserChange(index,id){
-        // console.log(index,id)
+       
   let _that = this
     var option = {
         affiliation: 'owner',                       // 写死
@@ -490,7 +506,6 @@
         },
         to: id                               // 需要删除的成员ID
     };
-  
      _that.$imconn.addToGroupBlackList(option);
       let obj={
               userId:getStorage("userInfo").id,
@@ -499,17 +514,12 @@
               targetId:id,
               type: 'removePeople'
             }
-            
           getPostInfo("yq_api/chat/contact/remvChatGroupPeople", obj).then(res => {
-            
             if(res.data.code==200){
                _that.open2("成员删除成功！");
               _that.groupUsers[index].status = '1'
             }
-            
           })
-
-
       },
       //获取当前群信息
       getChatGroupInfo(){
@@ -621,6 +631,170 @@
           return arr;
         }, 500);
       },
+      //发送提示消息
+      sendTipTextMsg(oldName,tip){
+
+          var id = this.$imconn.getUniqueId();           // 生成本地消息id
+         var msg = new WebIM.message('txt', id); // 创建文本消息
+         let _that = this;
+         let myNickName = this.getMyNickName;
+          let headimgurl = this.headimgurl;
+
+          console.log(oldName,_that.editTo_name)
+    var option = {
+        msg: tip,             // 消息内容
+        ext: {
+            name: _that.editTo_name,
+           oldName: oldName,
+            messageTip:'ModifyingGroupName',
+            nickName: myNickName,
+            headimgurl,
+            projectId: this.proTitle.proId,
+            orgId: this.myOrgId,
+            orgName: this.myOrgName,
+            projectName: this.myProjectName,
+            userName: this.myUserName,
+            userId: this.proTitle.userId,
+            singleChatToUserName:_that.editTo_name,
+            userPortraitUri: this.myUserPortraitUri,
+          }, //用户自扩展的消息内容（群聊用法相同）
+
+        to: _that.to_username,                     // 接收消息对象(群组id)
+        roomType: false,
+        chatType: 'chatRoom',
+        success: function () {
+  var chatData = JSON.parse(localStorage.getItem("chatData"));
+                        if(chatData){
+                          if(chatData.chatHistoryData[_that.to_username]){
+                            
+                            chatData.chatHistoryData[_that.to_username].title = _that.editTo_name;
+                          }
+                        }
+                        localStorage.setItem("chatData", JSON.stringify(chatData));
+            _that.getMsgsList();
+            // console.log('发送成功！');
+        },
+        fail: function () {
+            console.log('failed');
+        }
+    };
+    console.log(option)
+    msg.set(option);
+  
+     msg.setGroup("groupchat");
+ _that.$imconn.send(msg.body);
+
+
+
+
+
+
+
+    //      msg.set({
+    //       msg: text,
+    //       action: "action", //用户自定义，cmd消息必填
+    //       ext: {
+    //         messageTip:'ModifyingGroupName',
+    //         nickName: myNickName,
+    //         headimgurl,
+    //         projectId: this.proTitle.proId,
+    //         orgId: this.myOrgId,
+    //         orgName: this.myOrgName,
+    //         projectName: this.myProjectName,
+    //         userName: this.myUserName,
+    //         userId: this.proTitle.userId,
+    //         singleChatToUserName:to_username,
+    //         userPortraitUri: this.myUserPortraitUri
+    //       }, //用户自扩展的消息内容（群聊用法相同）
+
+    //       to: this.to_username,
+    //       roomType: false,
+    //       // chatType: 'chatRoom',
+    //       success: function (id, serverMsgId) {
+    //         let sendMessage = {
+    //           from: fromUserName,
+    //           sourceMsg: text,
+    //           time: sendTime,
+    //           nickName: "我",
+    //           mainPic: _that.myUserPortraitUri,
+    //           projectId: _that.proTitle.proId,
+    //           count: 0,
+    //           messageType: "typeText"
+    //         };
+    //         var chatData = JSON.parse(localStorage.getItem("chatData"));
+    //         if (chatData) {
+    //           if (chatData.chatHistoryData[to_username]) {
+    //             (chatData.chatHistoryData[
+    //               to_username
+    //             ].newTime = new Date().getTime()),
+    //               (chatData.chatHistoryData[to_username].count = 0);
+    //             chatData.chatHistoryData[to_username].msgs.push(sendMessage);
+    //           } else {
+    //             chatData.chatHistoryData[to_username] = {
+    //               newTime: new Date().getTime(),
+    //               count: 0,
+    //               msgs: [sendMessage]
+    //             };
+    //           }
+    //           localStorage.setItem("chatData", JSON.stringify(chatData));
+    //           _that.getMsgsList();
+    //         } else {
+    //           let chatHistoryData = {};
+    //           chatHistoryData[to_username] = {
+    //             newTime: new Date().getTime(),
+    //             count: 0,
+    //             msgs: [sendMessage]
+    //           };
+    //           localStorage.setItem(
+    //             "chatData",
+    //             JSON.stringify({ chatHistoryData })
+    //           );
+    //           _that.getMsgsList();
+    //         }
+    //         _thisChatHistory.push(sendMessage);
+    //       },
+    //       fail: function (e) {
+    //         console.log("Send private text error");
+    //       }
+    //     });
+
+     
+
+
+
+      },
+      //修改群名称
+      EditGroupName(){
+          let _that = this
+    var option = {
+        roomId: _that.to_username,
+        subject: _that.editTo_name,    // 群组名称
+        description: '',  // 群组简介
+        success: function () {
+            console.log('Change Group Names Success!');
+            let robj = {
+              userId:getStorage("userInfo").id,
+               projectId: _that.proTitle.proId,
+              gid: _that.gid,
+              groupId: _that.to_username,
+              name:_that.editTo_name,
+            };
+              getPostInfo("yq_api/chat/contact/editeGroupUserInfo", robj).then(res => {
+                if(res.data.code ==200){
+                      _that.sendTipTextMsg(_that.to_name,_that.GownerUserName+' 修改了群名称为： '+_that.editTo_name)
+                       _that.to_name = _that.editTo_name;
+                       _that.show3 = false
+                  _that.open2('群名称修改成功！！')
+                }
+             
+              })
+
+        }
+    };
+    this.$imconn.changeGroupSubject(option);
+
+
+      },
       //查询群里群成员ID
       getGroupChatMemberId() {
         // console.log(1111111,this.to_username)
@@ -637,6 +811,7 @@
               resp.data.forEach(e=>{
                 if(e.owner){
                   if(e.owner.toUpperCase() ==_that.proTitle.userId){
+                    
                    _that.isOwner = true;
                   }else{
                      _that.isOwner = false;
@@ -672,8 +847,9 @@
         };
 
         getPostInfo("yq_api/chat/contact/findChatGroupInfo", obj).then(res => {
-          // console.log(res)
+       
           if (res.data.code == 200) {
+            _that.gid = res.data.data.gid;
             let robj = {
               gid: res.data.gid,
               groupId: _that.to_username,
@@ -684,8 +860,11 @@
             getPostInfo("yq_api/chat/contactGroup/userList", robj).then(resd => {
               if(resd.data.code==200){
                 resd.data.data.forEach(el=>{
+                  
                  el.succShow = false;
                   if(el.userId == Gowner){
+               
+                    _that.GownerUserName =  el.userName;
                     el.owner = true
                   }
                 })
@@ -874,6 +1053,20 @@
               _that.loading = true;
       _that.open2("群组创建成功！");
       
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
                             _that.to_username = respData.data.groupid;
                             _that.to_name =
                               userNames.join("、") +
@@ -919,9 +1112,50 @@
                           robj
                         ).then(userResd => {
                           if (userResd.data.code == 200) {
-                            Memberlist = userResd.data.data;
 
-                           
+                            // _that.sendTipTextMsg('',userNames.join("、")+'加入聊天')
+
+
+setTimeout(function(){
+
+    var id = _that.$imconn.getUniqueId();           // 生成本地消息id
+         var msg = new WebIM.message('txt', id); // 创建文本消息
+    //  console.log(id,msg)
+         let myNickName = _that.getMyNickName;
+          let headimgurl = _that.headimgurl;
+         
+    var option1 = {
+        msg: '邀请'+userNames.join("、")+'加入聊天',             // 消息内容
+        ext: {
+            name:userNames.join("、") +
+                              "-" +
+                              times +
+                              "---------------加个串",
+         
+            messageTip:'inviteChatGroup',
+            nickName: _that.proTitle.userId,
+            headimgurl:'http://',
+            projectId: _that.proTitle.proId,
+            orgId: _that.myOrgId,
+            orgName: _that.myOrgName,
+            projectName: _that.myProjectName,
+            userName: _that.myUserName,
+            userId: _that.proTitle.userId,
+            singleChatToUserName:userNames.join("、") +
+                              "-" +
+                              times +
+                              "---------------加个串",
+            userPortraitUri: _that.myUserPortraitUri,
+          }, //用户自扩展的消息内容（群聊用法相同）
+
+        to: infores.data.data.id,                     // 接收消息对象(群组id)
+        roomType: false,
+        chatType: 'chatRoom',
+        success: function () {
+console.log('发送成功')
+
+
+                            Memberlist = userResd.data.data;
                             let sendTimeWZ = new Date();
                             let sendTime =
                               sendTimeWZ.getMonth() +
@@ -985,16 +1219,25 @@
                                 JSON.stringify({ chatHistoryData })
                               );
                             }
-                            setTimeout(function () {
-                         console.log( _that.to_username)
+                            
+                       
                         _that.msgListChange(0,_that.to_username,_that.to_name,'groupchat')
                               _that.getChatListDataFromLocal();
                               _that.getMsgsList();
-                             
-                              //  _that.to_username = usersIds[0];
-                              //  _that.to_name = res.data.conditions;
                               _that.loading = false;
-                            }, 500);
+
+        },
+        fail: function () {
+            console.log('failed');
+        }
+    };
+    // console.log(option1)
+    msg.set(option1);
+     msg.setGroup("groupchat");
+ _that.$imconn.send(msg.body);
+},1000)
+
+
                           }
                         });
                       }
@@ -1098,16 +1341,16 @@
         if (message.ext.messageTip == "inviteChatGroup") {
           receiveMessage.messageType = "inviteChatGroup";
         }
+         if (message.ext.messageTip == "ModifyingGroupName") {
+          receiveMessage.messageType = "ModifyingGroupName";
+        }
         let to_username = this.to_username;
         var chatData = JSON.parse(localStorage.getItem("chatData"));
         if (chatData) {
           if (!chatData.chatHistoryData[TextMsg]) {
             chatData.chatHistoryData[TextMsg] = {
               newTime: new Date().getTime(),
-              title:
-                message.type == "groupchat"
-                  ? message.ext.singleChatToUserName
-                  : message.ext.userName,
+              title:message.type=='groupchat'?message.ext.singleChatToUserName:message.ext.userName,
               type: message.type,
               isShow: true,
               count: 1,
@@ -1161,7 +1404,7 @@
             }
           } else {
             chatData.chatHistoryData[TextMsg].newTime = new Date().getTime();
-            chatData.chatHistoryData[TextMsg].title = message.ext.userName;
+            chatData.chatHistoryData[TextMsg].title = message.type=='groupchat'?message.ext.singleChatToUserName:message.ext.userName;
             chatData.chatHistoryData[TextMsg].isShow = true;
             chatData.chatHistoryData[TextMsg].type = message.type;
             // chatData.chatHistoryData[TextMsg].projectId = message.ext.projectId;
@@ -1208,7 +1451,7 @@
                         res.data.data.forEach(e => {
                           nameStr += e.userName + "、";
                         });
-                        chatData.chatHistoryData[TextMsg].title = nameStr;
+                        chatData.chatHistoryData[TextMsg].title = message.type=='groupchat'?message.ext.singleChatToUserName:message.ext.userName;
                       }
                     }
                   );
@@ -1231,10 +1474,7 @@
           chatHistoryData[TextMsg] = {
             newTime: new Date().getTime(),
             type: message.type,
-            title:
-              message.type == "groupchat"
-                ? message.ext.singleChatToUserName
-                : message.ext.userName,
+            title:message.type=='groupchat'?message.ext.singleChatToUserName:message.ext.userName,
             count: 1,
             isShow: true,
             msgs: [receiveMessage],
@@ -1276,7 +1516,7 @@
                       res.data.data.forEach(e => {
                         nameStr += e.userName + "、";
                       });
-                      chatData.chatHistoryData[TextMsg].title = nameStr;
+                      chatData.chatHistoryData[TextMsg].title = message.type=='groupchat'?message.ext.singleChatToUserName:message.ext.userName;
                       //  console.log(res,chatData.chatHistoryData[TextMsg])
                     }
                   }
@@ -1404,6 +1644,7 @@
             projectName: this.myProjectName,
             userName: this.myUserName,
             userId: this.proTitle.userId,
+            singleChatToUserName:this.to_name,
             userPortraitUri: this.myUserPortraitUri
           }, //用户自扩展的消息内容（群聊用法相同）
 
@@ -1632,6 +1873,7 @@
             if (e.projectId == _that.proTitle.proId) {
               _that.to_username = key;
               _that.to_name = ChatDataList[key].title;
+              _that.editTo_name = ChatDataList[key].title;
             }
           });
         }
