@@ -580,6 +580,7 @@ return str.replace(/\n|\r\n/g,"<br/>")
       }
     },
     getOperationType(typeStr) {
+      // console.log(typeStr)
       let HtmlStr = "";
       switch (typeStr) {
         case "look":
@@ -718,7 +719,7 @@ return str.replace(/\n|\r\n/g,"<br/>")
 
     getPostInfo("yq_api/projectDiary/detail", obj).then(res => {
       if (res.data.code === 200) {
-       
+        console.log(res.data.data)
         this.detailList =
           res.data.data == null ? (res.data.data = []) : res.data.data;
         this.isLike =
@@ -728,10 +729,10 @@ return str.replace(/\n|\r\n/g,"<br/>")
         this.isEdit = getDayNewTime(this.detailList.createTime);
    
       }
-    
-
       this.loading = false;
     });
+
+
   },
   watch: {
     detailList: {

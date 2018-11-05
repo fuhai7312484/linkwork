@@ -249,12 +249,12 @@ return str.replace(/\n|\r\n/g,"<br/>")
         // type:'mv',
         look:'look',
     }
-    console.log(searchObj)
+    // console.log(searchObj)
 
        getPostInfo('yq_api/projectDiary/searchMyFriendsDariyList',searchObj)
             .then(res=>{
                 if(res.data.code===200){
-                    console.log(res.data.data)
+                    // console.log(res.data.data)
                     // this.myDiaryList = res.data.data;
                     // this.loading = false;
                 

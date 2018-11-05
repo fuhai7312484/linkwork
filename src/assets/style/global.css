@@ -2410,15 +2410,27 @@ border-radius:5px;
 }
 .x-message-msgTime{
     color: #ccc;
-
 }
-.x-message-msgList i{
-position: absolute;
-top: 15px;
-right: 10px;
+
+.x-message-msgList .x-message-operate{
+    position: absolute;
+    /* width: 50px; */
+    /* background: #000; */
+    /* height: 20px; */
+    bottom: 8px;
+    right: 10px;
+font-size: 14px;
+color: #6c6c6c;
+}
+.x-message-msgList i.x-message-times{
+    top: 12px;
+    right: 10px;
+    position: absolute;
+
 font-size: 12px;
 font-style: normal;
 }
+
 .x-message-msgName{
     height: 25px;
     line-height: 25px;
@@ -2434,6 +2446,7 @@ font-style: normal;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    /* position: relative; */
 }
 
 .x-message-msgInfo-box{
@@ -2441,6 +2454,11 @@ font-style: normal;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+/* .x-message-msgInfo .mark{
+    position:absolute;
+    right: 0;
+    top: 0px;
+} */
 .x-message-msgInfo .mark sup{
 top: 0;
 }
@@ -2606,7 +2624,23 @@ top: 0;
      font-size: 18px;
      cursor: pointer;
 }
-
+.LordTransfer{
+    padding: 10px 10px;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #ff6700;
+    cursor: pointer;
+}
+.LordTransferList{
+    margin: 15px 10px;
+}
+.LordTransferList img{
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    /* margin-top:5px;  */
+    border-radius:4px; 
+}
 .x-chatTitle{
      font-size: 14px;
      padding: 10px;
