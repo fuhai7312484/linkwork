@@ -15,7 +15,8 @@
   <router-link tag="li" class="leftMenuList" to="/message" >
 <span class="iconfont LeftIcon">&#xe626;</span>
 <span class="LeftMenuTitle">
-消息
+  
+消息<el-badge v-if="MessageUnreadCount!=0" class="mark" :value="MessageUnreadCount" size="small" />
 </span>
     </router-link>
 
@@ -59,6 +60,7 @@ export default {
   name: 'LeftMenu',
       data(){
         return {
+            MessageUnread:0,
             userData:{},
             modHeight:'',
             menuList:[
@@ -69,18 +71,19 @@ export default {
     computed:{
         ...mapState(
             {userInfo:state=>state.userInfo,
-            sWHeight:state=>state.sWHeight
+            sWHeight:state=>state.sWHeight,
+            MessageUnreadCount:state=>state.MessageUnreadCount
             }),
           
     },
     methods: {
           ...mapMutations(
-                ['changeLogin','getScrllH']),
-
-
+                ['changeLogin','getScrllH','getMessageUnreadCount']),
     },
    
     mounted(){
+        this.getMessageUnreadCount()
+        // this.getMessageUnread()
       this.userData = getStorage('userInfo')
       this.modHeight = (autodivheight()-60)+'px';
        this.getScrllH((autodivheight()-60)+'px')

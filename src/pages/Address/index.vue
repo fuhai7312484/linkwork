@@ -605,7 +605,24 @@ export default {
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
-    }
+    },
+    getUsersStatus(){
+      // let 
+         let addDe = {
+              lookUserId: getStorage("userInfo").id,
+              projectId: this.proTitle.proId,
+              userId: getStorage("userInfo").id
+            };
+            getPostInfo("/yq_api/projectUserRef/searchProjectUser", addDe).then(
+              res => {
+                if (res.data.code === 200) {
+                //  console.log(res)
+               
+                }
+              }
+            );
+
+    },
   },
   watch: {
     filterText(val) {
@@ -616,7 +633,7 @@ export default {
   mounted() {
 
  
-
+this.getUsersStatus()
 
     this.getInveList();
     this.getRoleList();
@@ -630,7 +647,8 @@ export default {
       projectId: this.proTitle.proId
     };
     getPostInfo("/yq_api/orgDepartment/searchLinkmanList", addObj).then(res => {
-      if (res.data.code === 200) {
+      //  console.log(status.code)
+      if (res.data.code == 200) {
         // console.log(res.data.data)
         let data = res.data.data.orgList;
 

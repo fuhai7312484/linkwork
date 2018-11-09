@@ -35,6 +35,7 @@ export default new vuex.Store({
     ProList:[],
     DraftBox:[],
     AddressUid:{},
+    MessageUnreadCount:0,
     // create1proId:{},
     // create2orgId:'',
 
@@ -49,6 +50,25 @@ export default new vuex.Store({
    },
     getWorkCount(state,data){
       state.fiaworkfiow = data;
+  },
+  getMessageUnreadCount(state){
+      let count = 0 
+    var chatData = JSON.parse(localStorage.getItem("chatData"));
+    if(chatData){
+        if(chatData.chatHistoryData){
+        
+Object.keys(chatData.chatHistoryData).forEach(function(key){
+  count += chatData.chatHistoryData[key].count
+  state.MessageUnreadCount += chatData.chatHistoryData[key].count
+});     
+        }else{
+          count = 0;
+        }
+        
+    }else{
+      count = 0;
+    }
+    state.MessageUnreadCount = count
   },
   getProList(state,data){
     state.ProList = data;

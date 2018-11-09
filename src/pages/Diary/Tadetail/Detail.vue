@@ -158,6 +158,7 @@
                                 </div>
                             </el-col>
                         </el-row>
+
                         <el-dialog :visible.sync="videoVisible">
                             <!-- <img width="100%" :src="dialogImageUrl" alt=""> -->
 
@@ -171,6 +172,7 @@
                          </video-player>
 
                         </el-dialog>
+
                     </div>
 
 
@@ -516,7 +518,6 @@ return str.replace(/\n|\r\n/g,"<br/>")
                 return setFileTyleImge(fileName);
             },
              Largevideo(videoUrl) {
-               
                  this.playerOptions.sources[0].src = videoUrl;
                 this.videoVisible = true;
             },

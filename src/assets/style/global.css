@@ -2299,10 +2299,15 @@ width: 90%;
     border-color:transparent transparent transparent #fff;
  }
 
-.x-message-right span.x-message-text img{
+.x-message-right span.x-message-text .x-message-StyleImg img{
    
      width: 190px;
      height: auto;
+     cursor: pointer;
+}
+.x-message-right span.x-message-text .VisibleImg img{
+    text-align: center;
+    width: 100%;
 }
 .x-message-right-img{
     float: right;
@@ -2648,6 +2653,9 @@ top: 0;
 }
 .x-chatTitle-em{
     color: #ccc;
+}
+.messageIcon{
+    font-size: 24px;
 }
 .db {
     display: block;
