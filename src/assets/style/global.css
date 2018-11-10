@@ -2232,6 +2232,15 @@ width: 90%;
     font-weight: bold;
     box-sizing: border-box;
     width: 94.4%;
+ 
+    
+}
+
+.webim-chatwindowText{
+    width: 80.4%;
+       overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .webim-chatwindow-msg::-webkit-scrollbar {/*滚动条整体样式*/
